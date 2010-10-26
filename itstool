@@ -428,11 +428,17 @@ class Document (object):
 
 if __name__ == '__main__':
     options = optparse.OptionParser()
-    options.add_option('-m',
+    options.set_usage('\n  itstool [OPTIONS] [XMLFILES]\n  itstool -m <MOFILE> [OPTIONS] [XMLFILES]')
+    options.add_option('-i', '--its',
+                       action='append',
+                       dest='itsfile',
+                       metavar='ITS',
+                       help='load the ITS rules in the file ITS (can specify multiple times)')
+    options.add_option('-m', '--merge',
                        dest='merge',
                        metavar='FILE',
                        help='merge from a PO or MO file FILE and output XML files')
-    options.add_option('-o',
+    options.add_option('-o', '--output',
                        dest='output',
                        default='-',
                        metavar='OUT',
@@ -444,6 +450,9 @@ if __name__ == '__main__':
         for filename in args[1:]:
             doc = Document(filename, messages)
             doc.apply_its_rules()
+            if opts.itsfile is not None:
+                for itsfile in opts.itsfile:
+                    doc.apply_its_file(itsfile)
             doc.generate_messages()
         if opts.output == '-':
             out = sys.stdout
@@ -466,6 +475,9 @@ if __name__ == '__main__':
             messages = MessageList()
             doc = Document(filename, messages)
             doc.apply_its_rules()
+            if opts.itsfile is not None:
+                for itsfile in opts.itsfile:
+                    doc.apply_its_file(itsfile)
             doc.merge_translations(translations)
             fout = out
             if isinstance(fout, basestring):
