@@ -1,0 +1,36 @@
+<its:rules
+    xmlns:its="http://www.w3.org/2005/11/its"
+    xmlns:itst="http://example.com/itstool/"
+		xmlns:mal="http://projectmallard.org/1.0/"
+    its:version="1.0">
+
+  <itst:match selector="/mal:page"/>
+
+  <itst:credits>
+    <credit type="translator copyright">
+      <name>
+        <itst:value-of select="name"/>
+      </name>
+      <email>
+        <itst:value-of select="email"/>
+      </email>
+      <years>
+        <itst:value-of select="years"/>
+      </years>
+    </credit>
+  </itst:credits>
+
+  <its:withinTextRule withinText="yes" selector="//mal:cite//*"/>
+  <its:withinTextRule withinText="yes" selector="//mal:code//*"/>
+  <its:withinTextRule withinText="yes" selector="//mal:desc//*"/>
+  <its:withinTextRule withinText="yes" selector="//mal:email//*"/>
+  <its:withinTextRule withinText="yes" selector="//mal:link//*"/>
+  <its:withinTextRule withinText="yes" selector="//mal:name//*"/>
+  <its:withinTextRule withinText="yes" selector="//mal:p//*"/>
+  <its:withinTextRule withinText="yes" selector="//mal:screen//*"/>
+  <its:withinTextRule withinText="yes" selector="//mal:title//*"/>
+  <its:withinTextRule withinText="yes" selector="//mal:years//*"/>
+
+  <itst:preserveSpaceRule preserveSpace="yes" selector="//mal:code"/>
+  <itst:preserveSpaceRule preserveSpace="yes" selector="//mal:screen"/>
+</its:rules>
