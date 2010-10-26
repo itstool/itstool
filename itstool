@@ -355,6 +355,7 @@ class Document (object):
         return retnode
 
     def generate_messages (self):
+        self._in_translatable = True
         for child in xml_child_iter(self._doc):
             if child.type == 'element':
                 self.generate_message (child, None)
@@ -366,26 +367,40 @@ class Document (object):
             return
         if node.type != 'element':
             return
-        if self.get_its_translate(node) != 'yes':
+        translate = self.get_its_translate(node)
+        if translate is None:
+            if self._in_translatable:
+                translate = 'yes'
+            else:
+                translate = 'no'
+        if translate == 'no':
             if msg is not None:
                 msg.add_placeholder(node)
-            return
-        is_unit = msg is None or self.is_translation_unit(node)
-        if is_unit:
-            if msg is not None:
-                msg.add_placeholder(node)
-            msg = Message()
-            if self.get_preserve_space(node):
-                msg.preserve_space()
-            msg.add_source('%s:%i(%s/%s)' % (self._doc.name, node.lineNo(), node.parent.name, node.name))
+            is_unit = False
+            msg = None
         else:
-            msg.add_start_tag(node)
+            is_unit = msg is None or self.is_translation_unit(node)
+            if is_unit:
+                if msg is not None:
+                    msg.add_placeholder(node)
+                msg = Message()
+                if self.get_preserve_space(node):
+                    msg.preserve_space()
+                msg.add_source('%s:%i(%s/%s)' % (self._doc.name, node.lineNo(), node.parent.name, node.name))
+            else:
+                msg.add_start_tag(node)
+
+        in_translatable = self._in_translatable
+        self._in_translatable = (translate == 'yes')
         for child in xml_child_iter(node):
             self.generate_message(child, msg)
-        if is_unit and not msg.is_empty():
-            self._msgs.add_message(msg, node)
-        else:
-            msg.add_end_tag(node)
+        self._in_translatable = in_translatable
+
+        if translate:
+            if is_unit and not msg.is_empty():
+                self._msgs.add_message(msg, node)
+            elif msg is not None:
+                msg.add_end_tag(node)
 
     def is_translation_unit (self, node):
         return self.get_its_within_text(node) != 'yes'
@@ -401,13 +416,11 @@ class Document (object):
         return False
 
     def get_its_translate (self, node):
-        while node.type == 'element':
-            if node.hasNsProp('translate', NS_ITS):
-                return node.nsProp('translate', NS_ITS)
-            if self._its_translate_nodes.has_key(node):
-                return self._its_translate_nodes[node]
-            node = node.parent
-        return 'yes'
+        if node.hasNsProp('translate', NS_ITS):
+            return node.nsProp('translate', NS_ITS)
+        if self._its_translate_nodes.has_key(node):
+            return self._its_translate_nodes[node]
+        return None
 
     def get_its_within_text (self, node):
         return self._its_within_text_nodes.get(node, 'no')
