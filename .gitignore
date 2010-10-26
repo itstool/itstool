@@ -1,0 +1,15 @@
+*~
+ChangeLog
+Makefile
+Makefile.in
+aclocal.m4
+autom4te.cache
+blip.pc
+blip-admin
+blip-sweep
+config.log
+config.status
+configure
+install-sh
+missing
+py-compile
