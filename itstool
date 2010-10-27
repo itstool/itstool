@@ -54,6 +54,8 @@ class MessageList (object):
                     msgdict[key].add_source(source)
                 for comment in msg.get_comments():
                     msgdict[key].add_comment(comment)
+                if msg.get_preserve_space():
+                    msgdict[key].set_preserve_space()
             else:
                 msgs.append(msg)
                 msgdict[key] = msg
@@ -158,8 +160,11 @@ class Message (object):
             message = re.sub('\s+', ' ', message).strip()
         return message
 
-    def preserve_space (self):
-        self._preserve = True
+    def get_preserve_space (self):
+        return self._preserve
+
+    def set_preserve_space (self, preserve=True):
+        self._preserve = preserve
 
     def format (self):
         ret = ''
@@ -465,7 +470,7 @@ class Document (object):
                     msg.add_placeholder(node)
                 msg = Message()
                 if self.get_preserve_space(node):
-                    msg.preserve_space()
+                    msg.set_preserve_space()
                 msg.add_source('%s:%i(%s/%s)' % (self._doc.name, node.lineNo(), node.parent.name, node.name))
             else:
                 msg.add_start_tag(node)
@@ -503,6 +508,9 @@ class Document (object):
     def get_its_translate (self, node):
         if node.hasNsProp('translate', NS_ITS):
             return node.nsProp('translate', NS_ITS)
+        if xml_is_ns_name(node, NS_ITS, 'span'):
+            if node.hasProp('translate'):
+                return node.prop('translate')
         if self._its_translate_nodes.has_key(node):
             return self._its_translate_nodes[node]
         return None
