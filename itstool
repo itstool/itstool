@@ -206,7 +206,7 @@ def xml_child_iter (node):
 def xml_is_ns_name (node, ns, name):
     if node.type != 'element':
         return False
-    return node.name == name and node.ns().content == ns
+    return node.name == name and node.ns() is not None and node.ns().content == ns
 
 
 class Document (object):
@@ -512,9 +512,9 @@ class Document (object):
 
     def get_its_loc_note (self, node):
         if node.hasNsProp('locNote', NS_ITS):
-            return re.sub('\s+', ' ', node.NsProp('locNote', NS_ITS)).strip()
+            return re.sub('\s+', ' ', node.nsProp('locNote', NS_ITS)).strip()
         if node.hasNsProp('locNoteRef', NS_ITS):
-            return 'SEE: ' + re.sub('\s+', ' ', node.NsProp('locNoteRef', NS_ITS)).strip()
+            return 'SEE: ' + re.sub('\s+', ' ', node.nsProp('locNoteRef', NS_ITS)).strip()
         if xml_is_ns_name(node, NS_ITS, 'span'):
             if node.hasProp('locNote'):
                 return re.sub('\s+', ' ', node.prop('locNote')).strip()
