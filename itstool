@@ -301,16 +301,39 @@ class Document (object):
     def apply_its_file (self, filename):
         doc = libxml2.parseFile(filename)
         xpath = self._doc.xpathNewContext()
-        for root in xml_child_iter(doc):
-            if xml_is_ns_name(root, NS_ITS, 'rules'):
-                break
-        if root is None:
+        root = doc.getRootElement()
+        if not xml_is_ns_name(root, NS_ITS, 'rules'):
             return
         nsdef = root.nsDefs()
         while nsdef is not None:
             if nsdef.name is not None:
                 xpath.xpathRegisterNs(nsdef.name, nsdef.content)
             nsdef = nsdef.next
+        matched = True
+        for match in xml_child_iter(root):
+            if xml_is_ns_name(match, NS_ITST, 'match'):
+                matched = False
+                nsdef = match.nsDefs()
+                if nsdef is not None:
+                    match_xpath = self._doc.xpathNewContent()
+                    nsdef = root.nsDefs()
+                    while nsdef is not None:
+                        if nsdef.name is not None:
+                            xpath.xpathRegisterNs(nsdef.name, nsdef.content)
+                        nsdef = nsdef.next
+                    nsdef = match.nsDefs()
+                    while nsdef is not None:
+                        if nsdef.name is not None:
+                            xpath.xpathRegisterNs(nsdef.name, nsdef.content)
+                        nsdef = nsdef.next
+                else:
+                    match_xpath = xpath
+                if match.hasProp('selector'):
+                    for node in match_xpath.xpathEval(match.prop('selector')):
+                        matched = True
+                        break
+        if matched == False:
+            return
         for rule in xml_child_iter(root):
             nsdef = rule.nsDefs()
             if nsdef is not None:
