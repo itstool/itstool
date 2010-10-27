@@ -269,12 +269,18 @@ class Document (object):
                             ref = True
                         else:
                             continue
+                        try:
+                            oldnode = xpath.contextNode()
+                        except:
+                            oldnode = None
+                        xpath.setContextNode(node)
                         for note in xpath.xpathEval(sel):
                             cont = re.sub('\s+', ' ', note.content).strip()
                             if ref:
                                 cont = 'SEE: ' + cont
                             self._its_loc_notes[node] = cont
                             break
+                        xpath.setContextNode(oldnode)
 
     def apply_its_rules (self):
         dirs = []
