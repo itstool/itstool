@@ -52,6 +52,8 @@ class MessageList (object):
             if msgdict.has_key(key):
                 for source in msg.get_sources():
                     msgdict[key].add_source(source)
+                for comment in msg.get_comments():
+                    msgdict[key].add_comment(comment)
             else:
                 msgs.append(msg)
                 msgdict[key] = msg
@@ -67,6 +69,7 @@ class Message (object):
         self._ctxt = None
         self._placeholders = []
         self._sources = []
+        self._comments = []
         self._preserve = False
 
     class Placeholder (object):
@@ -136,6 +139,12 @@ class Message (object):
     def get_sources (self):
         return self._sources
 
+    def add_comment (self, comment):
+        self._comments.append(comment)
+
+    def get_comments (self):
+        return self._comments
+
     def get_string (self):
         message = ''
         placeholder = 1
@@ -154,6 +163,19 @@ class Message (object):
 
     def format (self):
         ret = ''
+        for i in range(len(self._comments)):
+            if i != 0:
+                ret += '#\n'
+            comment = self._comments[i]
+            while len(comment) > 72:
+                j = comment.rfind(' ', 0, 72)
+                if j == -1:
+                    j = comment.find(' ')
+                if j == -1:
+                    break
+                ret += '# %s\n' % comment[:j]
+                comment = comment[j+1:]
+            ret += '# %s\n' % comment
         for source in self._sources:
             ret += '#: %s\n' % source
         if self._preserve:
@@ -207,6 +229,7 @@ class Document (object):
         self._msgs = messages
         self._its_translate_nodes = {}
         self._its_within_text_nodes = {}
+        self._its_loc_notes = {}
         self._itst_preserve_space_nodes = {}
 
     def apply_its_rule(self, rule, xpath):
@@ -224,6 +247,34 @@ class Document (object):
             if rule.prop('selector') is not None:
                 for node in xpath.xpathEval(rule.prop('selector')):
                     self._itst_preserve_space_nodes[node] = rule.prop('preserveSpace')
+        elif xml_is_ns_name(rule, NS_ITS, 'locNoteRule'):
+            locnote = None
+            for child in xml_child_iter(rule):
+                if xml_is_ns_name(child, NS_ITS, 'locNote'):
+                    locnote = re.sub('\s+', ' ', child.content).strip()
+                    break
+            if locnote is None:
+                if rule.hasProp('locNoteRef'):
+                    locnote = 'SEE: ' + re.sub('\s+', ' ', rule.prop('locNoteRef')).strip()
+            if rule.prop('selector') is not None:
+                for node in xpath.xpathEval(rule.prop('selector')):
+                    if locnote is not None:
+                        self._its_loc_notes[node] = locnote
+                    else:
+                        if rule.hasProp('locNotePointer'):
+                            sel = rule.prop('locNotePointer')
+                            ref = False
+                        elif rule.hasProp('locNoteRefPointer'):
+                            sel = rule.prop('locNoteRefPointer')
+                            ref = True
+                        else:
+                            continue
+                        for note in xpath.xpathEval(sel):
+                            cont = re.sub('\s+', ' ', note.content).strip()
+                            if ref:
+                                cont = 'SEE: ' + cont
+                            self._its_loc_notes[node] = cont
+                            break
 
     def apply_its_rules (self):
         dirs = []
@@ -300,7 +351,7 @@ class Document (object):
 
     def merge_translations (self, translations, node=None):
         if node is None:
-            self.generate_messages()
+            self.generate_messages(comments=False)
             node = self._doc.getRootElement()
         if node is None or node.type != 'element':
             return
@@ -354,14 +405,14 @@ class Document (object):
             retnode.addChild(child.copyNode(1))
         return retnode
 
-    def generate_messages (self):
+    def generate_messages (self, comments=True):
         self._in_translatable = True
         for child in xml_child_iter(self._doc):
             if child.type == 'element':
-                self.generate_message (child, None)
+                self.generate_message (child, None, comments=comments)
                 break
 
-    def generate_message (self, node, msg):
+    def generate_message (self, node, msg, comments=True):
         if node.type in ('text', 'cdata') and msg is not None:
             msg.add_text(node.content)
             return
@@ -390,10 +441,15 @@ class Document (object):
             else:
                 msg.add_start_tag(node)
 
+        if comments and msg is not None:
+            comment = self.get_its_loc_note(node)
+            if comment is not None:
+                msg.add_comment(comment)
+
         in_translatable = self._in_translatable
         self._in_translatable = (translate == 'yes')
         for child in xml_child_iter(node):
-            self.generate_message(child, msg)
+            self.generate_message(child, msg, comments=comments)
         self._in_translatable = in_translatable
 
         if translate:
@@ -424,6 +480,18 @@ class Document (object):
 
     def get_its_within_text (self, node):
         return self._its_within_text_nodes.get(node, 'no')
+
+    def get_its_loc_note (self, node):
+        if node.hasNsProp('locNote', NS_ITS):
+            return re.sub('\s+', ' ', node.NsProp('locNote', NS_ITS)).strip()
+        if node.hasNsProp('locNoteRef', NS_ITS):
+            return 'SEE: ' + re.sub('\s+', ' ', node.NsProp('locNoteRef', NS_ITS)).strip()
+        if xml_is_ns_name(node, NS_ITS, 'span'):
+            if node.hasProp('locNote'):
+                return re.sub('\s+', ' ', node.prop('locNote')).strip()
+            if node.hasProp('locNoteRef'):
+                return 'SEE: ' + re.sub('\s+', ' ', node.prop('locNoteRef')).strip()
+        return self._its_loc_notes.get(node, None)
 
 
 if __name__ == '__main__':
