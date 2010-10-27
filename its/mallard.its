@@ -1,7 +1,7 @@
 <its:rules
     xmlns:its="http://www.w3.org/2005/11/its"
     xmlns:itst="http://example.com/itstool/"
-		xmlns:mal="http://projectmallard.org/1.0/"
+    xmlns:mal="http://projectmallard.org/1.0/"
     its:version="1.0">
 
   <itst:match selector="/mal:page"/>
@@ -33,4 +33,6 @@
 
   <itst:preserveSpaceRule preserveSpace="yes" selector="//mal:code"/>
   <itst:preserveSpaceRule preserveSpace="yes" selector="//mal:screen"/>
+
+  <its:translateRule translate="no" selector="//mal:comment/descendant-or-self::*"/>
 </its:rules>
