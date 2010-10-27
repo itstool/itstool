@@ -58,7 +58,7 @@ class MessageList (object):
                 msgs.append(msg)
                 msgdict[key] = msg
         for msg in msgs:
-            out.write(msg.format().encode('utf-8'))
+            out.write(msg.format())
             out.write('\n')
 
 
@@ -156,7 +156,7 @@ class Message (object):
                 placeholder += 1
         if not self._preserve:
             message = re.sub('\s+', ' ', message).strip()
-        return message.decode('utf-8')
+        return message
 
     def preserve_space (self):
         self._preserve = True
