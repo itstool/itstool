@@ -1,0 +1,6 @@
+<its:rules
+    xmlns:its="http://www.w3.org/2005/11/its"
+    xmlns:tt="http://www.w3.org/ns/ttml"
+    its:version="1.0">
+  <its:withinTextRule withinText="yes" selector="//tt:p//*"/>
+</its:rules>
