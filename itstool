@@ -545,7 +545,7 @@ if __name__ == '__main__':
                        help='merge from a PO or MO file FILE and output XML files')
     options.add_option('-o', '--output',
                        dest='output',
-                       default='-',
+                       default=None,
                        metavar='OUT',
                        help='output PO files to file OUT or XML files in directory OUT')
     (opts, args) = options.parse_args(sys.argv)
@@ -559,20 +559,27 @@ if __name__ == '__main__':
                 for itsfile in opts.itsfile:
                     doc.apply_its_file(itsfile)
             doc.generate_messages()
-        if opts.output == '-':
+        if opts.output is None or opts.output == '-':
             out = sys.stdout
         else:
-            out = file(opts.output, 'w')
+            try:
+                out = file(opts.output, 'w')
+            except:
+                sys.stderr.write('Error: Cannot write to file %s\n' % opts.output)
+                sys.exit(1)
         messages.output(out)
     else:
         translations = gettext.GNUTranslations(open(opts.merge, 'rb'))
         translations.add_fallback(NoneTranslations())
-        if opts.output == '-':
-            out = sys.stdout
+        if opts.output is None:
+            out = './'
         elif os.path.isdir(opts.output):
             out = opts.output
         elif len(args) == 2:
-            out = file(opts.output, 'w')
+            if opts.output == '-':
+                out = sys.stdout
+            else:
+                out = file(opts.output, 'w')
         else:
             sys.stderr.write('Error: Non-directory output for multiple files\n')
             sys.exit(1)
