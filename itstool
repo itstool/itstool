@@ -384,7 +384,9 @@ class Document (object):
                 self.apply_its_rule(rule, rule_xpath)
 
     def merge_translations (self, translations, node=None):
+        fix_ns = False
         if node is None:
+            fix_ns = True
             self.generate_messages(comments=False)
             node = self._doc.getRootElement()
         if node is None or node.type != 'element':
@@ -398,6 +400,24 @@ class Document (object):
             newnode = self.get_translated(node, translations)
             if newnode != node:
                 node.replaceNode(newnode)
+        # Because of the way we create nodes and rewrite the document,
+        # we end up with lots of redundant namespace definitions. We
+        # kill them off in one fell swoop at the end.
+        if fix_ns:
+            def fix_node_ns (node, nsdefs):
+                childnsdefs = nsdefs.copy()
+                nsdef = node.nsDefs()
+                while nsdef is not None:
+                    nextnsdef = nsdef.next
+                    if nsdefs.has_key(nsdef.name) and nsdefs[nsdef.name] == nsdef.content:
+                        node.removeNsDef(nsdef.content)
+                    else:
+                        childnsdefs[nsdef.name] = nsdef.content
+                    nsdef = nextnsdef
+                for child in xml_child_iter(node):
+                    if child.type == 'element':
+                        fix_node_ns(child, childnsdefs)
+            fix_node_ns(node, {})
 
     def get_translated (self, node, translations):
         msg = self._msgs.get_message_by_node(node)
@@ -412,14 +432,16 @@ class Document (object):
                 reg_ns(node.parent, nss)
             nsdef = node.nsDefs()
             while nsdef is not None:
-                if nsdef.name is not None:
-                    nss[nsdef.name] = nsdef.content
+                nss[nsdef.name] = nsdef.content
                 nsdef = nsdef.next
         reg_ns(node, nss)
         nss['_'] = NS_BLANK
         blurb = '<' + node.name
         for nsname in nss.keys():
-            blurb += ' xmlns:%s="%s"' % (nsname, nss[nsname])
+            if nsname is None:
+                blurb += ' xmlns="%s"' % nss[nsname]
+            else:
+                blurb += ' xmlns:%s="%s"' % (nsname, nss[nsname])
         blurb += '>%s</%s>' % (trans.encode('utf-8'), node.name)
         ctxt = libxml2.createDocParserCtxt(blurb)
         ctxt.replaceEntities(0)
