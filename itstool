@@ -4,6 +4,7 @@ import gettext
 import libxml2
 import optparse
 import os
+import os.path
 import re
 import sys
 
@@ -43,6 +44,9 @@ class MessageList (object):
 
     def get_message_by_node (self, node):
         return self._by_node.get(node, None)
+
+    def get_nodes_with_messages (self):
+        return self._by_node.keys()
 
     def output (self, out):
         msgs = []
@@ -236,6 +240,8 @@ class Document (object):
         self._its_within_text_nodes = {}
         self._its_loc_notes = {}
         self._itst_preserve_space_nodes = {}
+        self._its_lang = {}
+        self._itst_lang_attr = {}
 
     def apply_its_rule(self, rule, xpath):
         if rule.type != 'element':
@@ -286,6 +292,24 @@ class Document (object):
                             self._its_loc_notes[node] = cont
                             break
                         xpath.setContextNode(oldnode)
+        elif xml_is_ns_name(rule, NS_ITS, 'langRule'):
+            if rule.prop('selector') is not None and rule.prop('langPointer') is not None:
+                for node in xpath.xpathEval(rule.prop('selector')):
+                    try:
+                        oldnode = xpath.contextNode()
+                    except:
+                        oldnode = None
+                    xpath.setContextNode(node)
+                    res = xpath.xpathEval(rule.prop('langPointer'))
+                    if len(res) > 0:
+                        self._its_lang[node] = res[0].content
+                    # We need to construct language attributes, not just read
+                    # language information. Technically, langPointer could be
+                    # any XPath expression. But if it looks like an attribute
+                    # accessor, just use the attribute name.
+                    if rule.prop('langPointer')[0] == '@':
+                        self._itst_lang_attr[node] = rule.prop('langPointer')[1:]
+                    xpath.setContextNode(oldnode)
 
     def apply_its_rules (self):
         dirs = []
@@ -311,57 +335,45 @@ class Document (object):
 
     def apply_its_file (self, filename):
         doc = libxml2.parseFile(filename)
-        xpath = self._doc.xpathNewContext()
         root = doc.getRootElement()
         if not xml_is_ns_name(root, NS_ITS, 'rules'):
             return
-        nsdef = root.nsDefs()
-        while nsdef is not None:
-            if nsdef.name is not None:
-                xpath.xpathRegisterNs(nsdef.name, nsdef.content)
-            nsdef = nsdef.next
         matched = True
         for match in xml_child_iter(root):
             if xml_is_ns_name(match, NS_ITST, 'match'):
                 matched = False
-                nsdef = match.nsDefs()
-                if nsdef is not None:
-                    match_xpath = self._doc.xpathNewContent()
-                    nsdef = root.nsDefs()
+                xpath = self._doc.xpathNewContext()
+                par = match
+                nss = {}
+                while par is not None:
+                    nsdef = par.nsDefs()
                     while nsdef is not None:
                         if nsdef.name is not None:
-                            xpath.xpathRegisterNs(nsdef.name, nsdef.content)
+                            if not nss.has_key(nsdef.name):
+                                nss[nsdef.name] = nsdef.content
+                                xpath.xpathRegisterNs(nsdef.name, nsdef.content)
                         nsdef = nsdef.next
-                    nsdef = match.nsDefs()
-                    while nsdef is not None:
-                        if nsdef.name is not None:
-                            xpath.xpathRegisterNs(nsdef.name, nsdef.content)
-                        nsdef = nsdef.next
-                else:
-                    match_xpath = xpath
+                    par = par.parent
                 if match.hasProp('selector'):
-                    for node in match_xpath.xpathEval(match.prop('selector')):
+                    if len(xpath.xpathEval(match.prop('selector'))) > 0:
                         matched = True
                         break
         if matched == False:
             return
         for rule in xml_child_iter(root):
-            nsdef = rule.nsDefs()
-            if nsdef is not None:
-                rule_xpath = self._doc.xpathNewContent()
-                nsdef = root.nsDefs()
+            xpath = self._doc.xpathNewContext()
+            par = match
+            nss = {}
+            while par is not None:
+                nsdef = par.nsDefs()
                 while nsdef is not None:
                     if nsdef.name is not None:
-                        xpath.xpathRegisterNs(nsdef.name, nsdef.content)
+                        if not nss.has_key(nsdef.name):
+                            nss[nsdef.name] = nsdef.content
+                            xpath.xpathRegisterNs(nsdef.name, nsdef.content)
                     nsdef = nsdef.next
-                nsdef = rule.nsDefs()
-                while nsdef is not None:
-                    if nsdef.name is not None:
-                        xpath.xpathRegisterNs(nsdef.name, nsdef.content)
-                    nsdef = nsdef.next
-            else:
-                rule_xpath = xpath
-            self.apply_its_rule(rule, rule_xpath)
+                par = par.parent
+            self.apply_its_rule(rule, xpath)
 
     def apply_local_its_rules (self):
         for rules in self._localrules:
@@ -383,10 +395,10 @@ class Document (object):
                     rule_xpath = xpath
                 self.apply_its_rule(rule, rule_xpath)
 
-    def merge_translations (self, translations, node=None):
-        fix_ns = False
+    def merge_translations (self, translations, language, node=None):
+        is_root = False
         if node is None:
-            fix_ns = True
+            is_root = True
             self.generate_messages(comments=False)
             node = self._doc.getRootElement()
         if node is None or node.type != 'element':
@@ -395,15 +407,38 @@ class Document (object):
         if msg is None:
             children = [child for child in xml_child_iter(node)]
             for child in children:
-                self.merge_translations(translations, node=child)
+                self.merge_translations(translations, language, node=child)
         else:
             newnode = self.get_translated(node, translations)
             if newnode != node:
                 node.replaceNode(newnode)
-        # Because of the way we create nodes and rewrite the document,
-        # we end up with lots of redundant namespace definitions. We
-        # kill them off in one fell swoop at the end.
-        if fix_ns:
+        if is_root:
+            # Apply language attributes to untranslated nodes. We don't do
+            # this before processing, because then these attributes would
+            # be copied into the new nodes. We apply the attribute without
+            # checking whether it was translated, because any that were will
+            # just be floating around, unattached to a document.
+            for lcnode in self._msgs.get_nodes_with_messages():
+                attr = self._itst_lang_attr.get(lcnode)
+                if attr is None:
+                    continue
+                origlang = None
+                lcpar = lcnode
+                while lcpar is not None:
+                    origlang = self._its_lang.get(lcpar)
+                    if origlang is not None:
+                        break
+                    lcpar = lcpar.parent
+                if origlang is not None:
+                    lcnode.setProp(attr, origlang)
+            # And then set the language attribute on the root node.
+            if language is not None:
+                attr = self._itst_lang_attr.get(node)
+                if attr is not None:
+                    node.setProp(attr, language)
+            # Because of the way we create nodes and rewrite the document,
+            # we end up with lots of redundant namespace definitions. We
+            # kill them off in one fell swoop at the end.
             def fix_node_ns (node, nsdefs):
                 childnsdefs = nsdefs.copy()
                 nsdef = node.nsDefs()
@@ -561,6 +596,11 @@ if __name__ == '__main__':
                        dest='itsfile',
                        metavar='ITS',
                        help='load the ITS rules in the file ITS (can specify multiple times)')
+    options.add_option('-l', '--lang',
+                       dest='lang',
+                       default=None,
+                       metavar='LANGUAGE',
+                       help='explicitly set the language code for output file')
     options.add_option('-m', '--merge',
                        dest='merge',
                        metavar='FILE',
@@ -591,8 +631,14 @@ if __name__ == '__main__':
                 sys.exit(1)
         messages.output(out)
     else:
-        translations = gettext.GNUTranslations(open(opts.merge, 'rb'))
+        try:
+            translations = gettext.GNUTranslations(open(opts.merge, 'rb'))
+        except:
+            sys.stderr.write('Error: cannot open mo file %s\n' % opts.merge)
+            sys.exit(1)
         translations.add_fallback(NoneTranslations())
+        if opts.lang is None:
+            opts.lang = os.path.splitext(os.path.basename(opts.merge))[0]
         if opts.output is None:
             out = './'
         elif os.path.isdir(opts.output):
@@ -612,7 +658,7 @@ if __name__ == '__main__':
             if opts.itsfile is not None:
                 for itsfile in opts.itsfile:
                     doc.apply_its_file(itsfile)
-            doc.merge_translations(translations)
+            doc.merge_translations(translations, opts.lang)
             fout = out
             if isinstance(fout, basestring):
                 fout = file(os.path.join(fout, os.path.basename(filename)), 'w')

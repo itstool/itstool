@@ -6,6 +6,10 @@
 
   <itst:match selector="/mal:page"/>
 
+  <!-- Any extension on projectmallard.org will use xml:lang -->
+  <its:langRule selector="//*[starts-with(namespace-uri(.), 'http://projectmallard.org/')]"
+                langPointer="@xml:lang"/>
+
   <itst:credits>
     <credit type="translator copyright">
       <name>

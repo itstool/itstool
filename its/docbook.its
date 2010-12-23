@@ -5,6 +5,9 @@
 
   <itst:match selector="/book"/>
   <itst:match selector="/article"/>
+  <itst:match selector="/chapter"/>
+
+  <its:langRule selector="//*[namespace-uri(.) = '']" langPointer="@lang"/>
 
   <itst:credits>
     <othercredit class="translator">
