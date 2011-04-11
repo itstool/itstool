@@ -10,18 +10,12 @@
   <its:langRule selector="//*[starts-with(namespace-uri(.), 'http://projectmallard.org/')]"
                 langPointer="@xml:lang"/>
 
-  <itst:credits>
-    <credit type="translator copyright">
-      <name>
-        <itst:value-of select="name"/>
-      </name>
-      <email>
-        <itst:value-of select="email"/>
-      </email>
-      <years>
-        <itst:value-of select="years"/>
-      </years>
-    </credit>
+  <itst:credits appendTo="/mal:page/mal:info">
+    <mal:credit type="translator copyright">
+      <mal:name><itst:value-of select="name"/></mal:name>
+      <mal:email><itst:value-of select="email"/></mal:email>
+      <mal:years><itst:value-of select="years"/></mal:years>
+    </mal:credit>
   </itst:credits>
 
   <its:withinTextRule withinText="yes" selector="//mal:cite//*"/>

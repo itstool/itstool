@@ -9,26 +9,18 @@
 
   <its:langRule selector="//*[namespace-uri(.) = '']" langPointer="@lang"/>
 
-  <itst:credits>
+  <itst:credits appendTo="/book/bookinfo | /article/articleinfo | /chapter/chapterinfo">
     <othercredit class="translator">
       <personname>
-        <firstname>
-          <itst:value-of select="name"/>
-        </firstname>
+        <firstname><itst:value-of select="name"/></firstname>
       </personname>
-      <email>
-        <itst:value-of select="email"/>
-      </email>
+      <email><itst:value-of select="email"/></email>
     </othercredit>
     <copyright>
-      <itst:for-each select="year">
-        <year>
-          <itst:value-of select="."/>
-        </year>
+      <itst:for-each select="years">
+        <year><itst:value-of select="year"/></year>
       </itst:for-each>
-      <holder>
-        <itst:value-of select="name"/>
-      </holder>
+      <holder><itst:value-of select="name"/></holder>
     </copyright>
   </itst:credits>
 
