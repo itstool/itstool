@@ -554,10 +554,11 @@ class Document (object):
         return retnode
 
     def generate_messages(self, comments=True):
-        msg = Message()
-        msg.add_text('translator-credits')
-        msg.add_comment('Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2')
-        self._msgs.add_message(msg, None)
+        if self._itst_credits is not None:
+            msg = Message()
+            msg.add_text('translator-credits')
+            msg.add_comment('Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2')
+            self._msgs.add_message(msg, None)
         self._in_translatable = True
         for child in xml_child_iter(self._doc):
             if child.type == 'element':
