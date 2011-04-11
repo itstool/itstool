@@ -11,7 +11,7 @@ import sys
 NS_ITS = 'http://www.w3.org/2005/11/its'
 NS_ITST = 'http://example.com/itstool/'
 NS_BLANK = 'http://example.com/itstool/blank/'
-
+NS_XLINK = 'http://www.w3.org/1999/xlink'
 
 class NoneTranslations:
     def gettext(self, message):
@@ -232,7 +232,15 @@ class Document (object):
                     if child.prop('parse') == 'text':
                         child.xincludeProcessTree()
                 elif xml_is_ns_name(child, NS_ITS, 'rules'):
-                    self._localrules.append(child)
+                    if child.hasNsProp('href', NS_XLINK):
+                        href = child.nsProp('href', NS_XLINK)
+                        href = os.path.join(os.path.dirname(filename), href)
+                        hctxt = libxml2.createFileParserCtxt(href)
+                        hctxt.replaceEntities(1)
+                        hctxt.parseDocument()
+                        self._localrules.append(hctxt.doc().getRootElement())
+                    else:
+                        self._localrules.append(child)
                 pre_process(child)
         pre_process(self._doc)
         self._msgs = messages
