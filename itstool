@@ -438,6 +438,7 @@ class Document (object):
             elif select == 'year' and len(trdata) == 4:
                 val = trdata[3]
             if val is not None:
+                val = val.encode('utf-8')
                 parent.addContent(val)
         else:
             newnode = node.copyNode(2)
