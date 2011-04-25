@@ -34,4 +34,6 @@
 
   <its:translateRule translate="no" selector="//mal:comment/descendant-or-self::*"/>
   <its:translateRule translate="no" selector="//mal:credit/mal:email"/>
+
+  <itst:externalRefRule selector="//mal:media" refPointer="@src"/>
 </its:rules>

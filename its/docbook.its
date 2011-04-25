@@ -215,6 +215,11 @@
   <!-- Some hacks -->
   <its:translateRule translate="no" selector="//releaseinfo[@role = 'CVS' and normalize-space(.) = '$Id$']"/>
 
+  <!-- External media files -->
+  <itst:externalRefRule selector="//audiodata" refPointer="@fileref"/>
+  <itst:externalRefRule selector="//imagedata" refPointer="@fileref"/>
+  <itst:externalRefRule selector="//videodata" refPointer="@fileref"/>
+
   <!-- FIXME below -->
 
   <!-- abstract -->

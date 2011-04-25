@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import gettext
+import hashlib
 import libxml2
 import optparse
 import os
@@ -41,12 +42,14 @@ class MessageList (object):
 
     def add_message (self, message, node):
         self._messages.append (message)
-        self._by_node[node] = message
+        if node is not None:
+            self._by_node[node] = message
 
     def add_credits(self):
         if self._has_credits:
             return
         msg = Message()
+        msg.set_context('_')
         msg.add_text('translator-credits')
         msg.add_comment('Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2')
         self._messages.append(msg)
@@ -234,6 +237,7 @@ class Document (object):
         ctxt.lineNumbers(1)
         ctxt.replaceEntities(1)
         ctxt.parseDocument()
+        self._filename = filename
         self._doc = ctxt.doc()
         self._localrules = []
         def pre_process (node):
@@ -261,6 +265,7 @@ class Document (object):
         self._its_lang = {}
         self._itst_lang_attr = {}
         self._itst_credits = None
+        self._itst_externals = []
 
     def apply_its_rule(self, rule, xpath):
         if rule.type != 'element':
@@ -334,6 +339,18 @@ class Document (object):
                 for node in xpath.xpathEval(rule.prop('appendTo')):
                     self._itst_credits = (node, rule)
                     break
+        elif xml_is_ns_name(rule, NS_ITST, 'externalRefRule'):
+            if rule.prop('selector') is not None and rule.prop('refPointer') is not None:
+                for node in xpath.xpathEval(rule.prop('selector')):
+                    try:
+                        oldnode = xpath.contextNode()
+                    except:
+                        oldnode = None
+                    xpath.setContextNode(node)
+                    res = xpath.xpathEval(rule.prop('refPointer'))
+                    if len(res) > 0:
+                        self._itst_externals.append((node, res[0].content))
+                    xpath.setContextNode(oldnode)
 
     def apply_its_rules (self):
         dirs = []
@@ -449,7 +466,10 @@ class Document (object):
     def merge_credits(self, translations, language, node):
         if self._itst_credits is None:
             return
-        trans = translations.ugettext('translator-credits')
+        # Dear Python, please implement pgettext.
+        # http://bugs.python.org/issue2504
+        # Sincerely, Shaun
+        trans = translations.ugettext('_\x04translator-credits')
         if trans is None or trans == 'translator-credits':
             return
         regex = re.compile('(.*) \<(.*)\>, (.*)')
@@ -567,6 +587,25 @@ class Document (object):
     def generate_messages(self, comments=True):
         if self._itst_credits is not None:
             self._msgs.add_credits()
+        for ext in self._itst_externals:
+            msg = Message()
+            try:
+                fullfile = os.path.join(os.path.dirname(self._filename), ext[1])
+                filefp = open(fullfile)
+                filemd5 = hashlib.md5(filefp.read()).hexdigest()
+                filefp.close()
+            except:
+                filemd5 = '__failed__'
+            txt = "external ref='%s' md5='%s'" % (ext[1], filemd5)
+            msg.set_context('_')
+            msg.add_text(txt)
+            msg.add_source('%s:%i(%s)' % (self._doc.name, ext[0].lineNo(), ext[0].name))
+            msg.add_comment('This is a reference to an external file such as an image or'
+                            ' video. When the file changes, the md5 hash will change to'
+                            ' let you know you need to update your localized copy. The'
+                            ' msgstr is not used at all. Set it to whatever you like'
+                            ' once you have updated your copy of the file.')
+            self._msgs.add_message(msg, None)
         self._in_translatable = True
         for child in xml_child_iter(self._doc):
             if child.type == 'element':
