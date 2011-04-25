@@ -1,0 +1,44 @@
+<its:rules
+    xmlns:its="http://www.w3.org/2005/11/its"
+    xmlns:itst="http://example.com/itstool/"
+    xmlns:html="http://www.w3.org/1999/xhtml"
+    its:version="1.0">
+
+  <itst:match selector="/html:html"/>
+
+  <its:translateRule translate="no" selector="//html:script"/>
+  <its:translateRule translate="no" selector="//html:style"/>
+
+  <its:withinTextRule withinText="yes" selector="//html:a"/>
+  <its:withinTextRule withinText="yes" selector="//html:abbr"/>
+  <its:withinTextRule withinText="yes" selector="//html:acronym"/>
+  <its:withinTextRule withinText="yes" selector="//html:b"/>
+  <its:withinTextRule withinText="yes" selector="//html:bdo"/>
+  <its:withinTextRule withinText="yes" selector="//html:big"/>
+  <its:withinTextRule withinText="yes" selector="//html:br"/>
+  <its:withinTextRule withinText="yes" selector="//html:center"/>
+  <its:withinTextRule withinText="yes" selector="//html:cite"/>
+  <its:withinTextRule withinText="yes" selector="//html:code"/>
+  <its:withinTextRule withinText="yes" selector="//html:del"/>
+  <its:withinTextRule withinText="yes" selector="//html:dfn"/>
+  <its:withinTextRule withinText="yes" selector="//html:em"/>
+  <its:withinTextRule withinText="yes" selector="//html:font"/>
+  <its:withinTextRule withinText="yes" selector="//html:hr"/>
+  <its:withinTextRule withinText="yes" selector="//html:i"/>
+  <its:withinTextRule withinText="yes" selector="//html:img"/>
+  <its:withinTextRule withinText="yes" selector="//html:ins"/>
+  <its:withinTextRule withinText="yes" selector="//html:isindex"/>
+  <its:withinTextRule withinText="yes" selector="//html:kbd"/>
+  <its:withinTextRule withinText="yes" selector="//html:q"/>
+  <its:withinTextRule withinText="yes" selector="//html:s"/>
+  <its:withinTextRule withinText="yes" selector="//html:samp"/>
+  <its:withinTextRule withinText="yes" selector="//html:small"/>
+  <its:withinTextRule withinText="yes" selector="//html:span"/>
+  <its:withinTextRule withinText="yes" selector="//html:strike"/>
+  <its:withinTextRule withinText="yes" selector="//html:strong"/>
+  <its:withinTextRule withinText="yes" selector="//html:sub"/>
+  <its:withinTextRule withinText="yes" selector="//html:sup"/>
+  <its:withinTextRule withinText="yes" selector="//html:tt"/>
+  <its:withinTextRule withinText="yes" selector="//html:u"/>
+  <its:withinTextRule withinText="yes" selector="//html:var"/>
+</its:rules>
