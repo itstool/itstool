@@ -9,6 +9,8 @@
   <its:translateRule translate="no" selector="//html:script"/>
   <its:translateRule translate="no" selector="//html:style"/>
 
+  <itst:preserveSpaceRule preserveSpace="yes" selector="//html:pre"/>
+
   <its:withinTextRule withinText="yes" selector="//html:a"/>
   <its:withinTextRule withinText="yes" selector="//html:abbr"/>
   <its:withinTextRule withinText="yes" selector="//html:acronym"/>
