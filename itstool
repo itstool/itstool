@@ -8,6 +8,7 @@ import os
 import os.path
 import re
 import sys
+import time
 
 NS_ITS = 'http://www.w3.org/2005/11/its'
 NS_ITST = 'http://itstool.org/extensions/'
@@ -76,6 +77,17 @@ class MessageList (object):
             else:
                 msgs.append(msg)
                 msgdict[key] = msg
+        out.write('msgid ""\n')
+        out.write('msgstr ""\n')
+        out.write('"Project-Id-Version: PACKAGE VERSION\\n"\n')
+        out.write('"POT-Creation-Date: %s\\n"\n' % time.strftime("%Y-%m-%d %H:%M%z"))
+        out.write('"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n"\n')
+        out.write('"Last-Translator: FULL NAME <EMAIL@ADDRESS>\\n"\n')
+        out.write('"Language-Team: LANGUAGE <LL@li.org>\\n"\n')
+        out.write('"MIME-Version: 1.0\\n"\n')
+        out.write('"Content-Type: text/plain; charset=UTF-8\\n"\n')
+        out.write('"Content-Transfer-Encoding: 8bit\\n"\n')
+        out.write('\n')
         for msg in msgs:
             out.write(msg.format())
             out.write('\n')
