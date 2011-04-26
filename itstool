@@ -10,8 +10,8 @@ import re
 import sys
 
 NS_ITS = 'http://www.w3.org/2005/11/its'
-NS_ITST = 'http://example.com/itstool/'
-NS_BLANK = 'http://example.com/itstool/blank/'
+NS_ITST = 'http://itstool.org/extensions/'
+NS_BLANK = 'http://itstool.org/extensions/blank/'
 NS_XLINK = 'http://www.w3.org/1999/xlink'
 
 class NoneTranslations:

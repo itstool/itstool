@@ -1,6 +1,6 @@
 <its:rules
     xmlns:its="http://www.w3.org/2005/11/its"
-    xmlns:itst="http://example.com/itstool/"
+    xmlns:itst="http://itstool.org/extensions/"
     xmlns:mal="http://projectmallard.org/1.0/"
     its:version="1.0">
 
