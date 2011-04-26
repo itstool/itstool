@@ -199,7 +199,7 @@ class Message (object):
         ret = ''
         for i in range(len(self._comments)):
             if i != 0:
-                ret += '#\n'
+                ret += '#.\n'
             comment = self._comments[i]
             while len(comment) > 72:
                 j = comment.rfind(' ', 0, 72)
@@ -207,9 +207,9 @@ class Message (object):
                     j = comment.find(' ')
                 if j == -1:
                     break
-                ret += '# %s\n' % comment[:j]
+                ret += '#. %s\n' % comment[:j]
                 comment = comment[j+1:]
-            ret += '# %s\n' % comment
+            ret += '#. %s\n' % comment
         for source in self._sources:
             ret += '#: %s\n' % source
         if self._preserve:
