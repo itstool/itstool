@@ -2,7 +2,7 @@ SUBDIRS = its
 
 bin_SCRIPTS = itstool
 
-EXTRA_DIST = ChangeLog COPYING.GPL3 $(bin_SCRIPTS)
+EXTRA_DIST = ChangeLog COPYING.GPL3 $(bin_SCRIPTS) itstool.in
 
 ChangeLog:
 	@if test -f $(top_srcdir)/.git/HEAD; then \

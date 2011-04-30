@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+VERSION="@VERSION@"
+
 import gettext
 import hashlib
 import libxml2
@@ -731,7 +733,16 @@ if __name__ == '__main__':
                        default=None,
                        metavar='OUT',
                        help='output PO files to file OUT or XML files in directory OUT')
+    options.add_option('-v', '--version',
+                       action='store_true',
+                       dest='version',
+                       default=False,
+                       help='output PO files to file OUT or XML files in directory OUT')
     (opts, args) = options.parse_args(sys.argv)
+
+    if opts.version:
+        print 'itstool ' + VERSION
+        sys.exit(0)
 
     if opts.merge is None:
         messages = MessageList()
