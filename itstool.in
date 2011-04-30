@@ -737,7 +737,7 @@ if __name__ == '__main__':
                        action='store_true',
                        dest='version',
                        default=False,
-                       help='output PO files to file OUT or XML files in directory OUT')
+                       help='print itstool version and exit')
     (opts, args) = options.parse_args(sys.argv)
 
     if opts.version:
