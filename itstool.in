@@ -711,6 +711,33 @@ class Document (object):
         return self._its_loc_notes.get(node, None)
 
 
+_locale_pattern = re.compile('([a-zA-Z0-9-]+)(_[A-Za-z0-9]+)?(@[A-Za-z0-9]+)?(\.[A-Za-z0-9]+)?')
+def convert_locale (locale):
+    # Automatically convert POSIX-style locales to BCP47
+    match = _locale_pattern.match(locale)
+    if match is None:
+        return locale
+    ret = match.group(1).lower()
+    variant = match.group(3)
+    if variant == '@cyrillic':
+        ret += '-Cyrl'
+        variant = None
+    if variant == '@devanagari':
+        ret += '-Deva'
+        variant = None
+    elif variant == '@latin':
+        ret += '-Latn'
+        variant = None
+    elif variant == '@shaw':
+        ret += '-Shaw'
+        variant = None
+    if match.group(2) is not None:
+        ret += '-' + match.group(2)[1:].upper()
+    if variant is not None and variant != '@euro':
+        ret += '-' + variant[1:].lower()
+    return ret
+
+
 if __name__ == '__main__':
     options = optparse.OptionParser()
     options.set_usage('\n  itstool [OPTIONS] [XMLFILES]\n  itstool -m <MOFILE> [OPTIONS] [XMLFILES]')
@@ -770,7 +797,7 @@ if __name__ == '__main__':
             sys.exit(1)
         translations.add_fallback(NoneTranslations())
         if opts.lang is None:
-            opts.lang = os.path.splitext(os.path.basename(opts.merge))[0]
+            opts.lang = convert_locale(os.path.splitext(os.path.basename(opts.merge))[0])
         if opts.output is None:
             out = './'
         elif os.path.isdir(opts.output):
