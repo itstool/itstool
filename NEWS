@@ -1,3 +1,10 @@
+1.0.1
+=====
+* Convert POSIX-style locales to BCP47
+* Use #. instead of plain # for comments
+* Added PO header to output
+* Added --version
+
 1.0.0
 =====
 * Initial release
