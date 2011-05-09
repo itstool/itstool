@@ -286,15 +286,15 @@ class Document (object):
             return
         if xml_is_ns_name(rule, NS_ITS, 'translateRule'):
             if rule.prop('selector') is not None:
-                for node in xpath.xpathEval(rule.prop('selector')):
+                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
                     self._its_translate_nodes[node] = rule.prop('translate')
         elif xml_is_ns_name(rule, NS_ITS, 'withinTextRule'):
             if rule.prop('selector') is not None:
-                for node in xpath.xpathEval(rule.prop('selector')):
+                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
                     self._its_within_text_nodes[node] = rule.prop('withinText')
         elif xml_is_ns_name(rule, NS_ITST, 'preserveSpaceRule'):
             if rule.prop('selector') is not None:
-                for node in xpath.xpathEval(rule.prop('selector')):
+                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
                     self._itst_preserve_space_nodes[node] = rule.prop('preserveSpace')
         elif xml_is_ns_name(rule, NS_ITS, 'locNoteRule'):
             locnote = None
@@ -306,7 +306,7 @@ class Document (object):
                 if rule.hasProp('locNoteRef'):
                     locnote = 'SEE: ' + re.sub('\s+', ' ', rule.prop('locNoteRef')).strip()
             if rule.prop('selector') is not None:
-                for node in xpath.xpathEval(rule.prop('selector')):
+                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
                     if locnote is not None:
                         self._its_loc_notes[node] = locnote
                     else:
@@ -323,7 +323,7 @@ class Document (object):
                         except:
                             oldnode = None
                         xpath.setContextNode(node)
-                        for note in xpath.xpathEval(sel):
+                        for note in self._try_xpath_eval(xpath, sel):
                             cont = re.sub('\s+', ' ', note.content).strip()
                             if ref:
                                 cont = 'SEE: ' + cont
@@ -332,13 +332,13 @@ class Document (object):
                         xpath.setContextNode(oldnode)
         elif xml_is_ns_name(rule, NS_ITS, 'langRule'):
             if rule.prop('selector') is not None and rule.prop('langPointer') is not None:
-                for node in xpath.xpathEval(rule.prop('selector')):
+                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
                     try:
                         oldnode = xpath.contextNode()
                     except:
                         oldnode = None
                     xpath.setContextNode(node)
-                    res = xpath.xpathEval(rule.prop('langPointer'))
+                    res = self._try_xpath_eval(xpath, rule.prop('langPointer'))
                     if len(res) > 0:
                         self._its_lang[node] = res[0].content
                     # We need to construct language attributes, not just read
@@ -350,18 +350,18 @@ class Document (object):
                     xpath.setContextNode(oldnode)
         elif xml_is_ns_name(rule, NS_ITST, 'credits'):
             if rule.prop('appendTo') is not None:
-                for node in xpath.xpathEval(rule.prop('appendTo')):
+                for node in self._try_xpath_eval(xpath, rule.prop('appendTo')):
                     self._itst_credits = (node, rule)
                     break
         elif xml_is_ns_name(rule, NS_ITST, 'externalRefRule'):
             if rule.prop('selector') is not None and rule.prop('refPointer') is not None:
-                for node in xpath.xpathEval(rule.prop('selector')):
+                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
                     try:
                         oldnode = xpath.contextNode()
                     except:
                         oldnode = None
                     xpath.setContextNode(node)
-                    res = xpath.xpathEval(rule.prop('refPointer'))
+                    res = self._try_xpath_eval(xpath, rule.prop('refPointer'))
                     if len(res) > 0:
                         self._itst_externals.append((node, res[0].content))
                     xpath.setContextNode(oldnode)
@@ -410,7 +410,7 @@ class Document (object):
                         nsdef = nsdef.next
                     par = par.parent
                 if match.hasProp('selector'):
-                    if len(xpath.xpathEval(match.prop('selector'))) > 0:
+                    if len(self._try_xpath_eval(xpath, match.prop('selector'))) > 0:
                         matched = True
                         break
         if matched == False:
@@ -709,6 +709,14 @@ class Document (object):
             if node.hasProp('locNoteRef'):
                 return 'SEE: ' + re.sub('\s+', ' ', node.prop('locNoteRef')).strip()
         return self._its_loc_notes.get(node, None)
+
+    @staticmethod
+    def _try_xpath_eval (xpath, expr):
+        try:
+            return xpath.xpathEval(expr)
+        except:
+            sys.stderr.write('Warning: Invalid XPath: %s\n' % expr)
+            return []
 
 
 _locale_pattern = re.compile('([a-zA-Z0-9-]+)(_[A-Za-z0-9]+)?(@[A-Za-z0-9]+)?(\.[A-Za-z0-9]+)?')
