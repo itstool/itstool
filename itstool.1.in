@@ -1,0 +1,77 @@
+.TH ITSTOOL "1" "May 2011" "itstool @VERSION@"
+.SH NAME
+itstool \- convert between XML and PO using ITS
+
+.SH SYNOPSIS
+itstool [OPTIONS] [XMLFILES]
+.br
+itstool \fB\-m\fR <MOFILE> [OPTIONS] [XMLFILES]
+
+.SH DESCRIPTION
+.BR itstool
+extracts messages from XML files and outputs PO template files, then merges
+translations from MO files to create translated XML files. It determines what
+to translate and how to chunk it into messages using the W3C Internationalization
+Tag Set (ITS).
+
+To extract messages from XML files \fBFILES\fR and output them to \fBOUT.pot\fR:
+
+\fBitstool -o OUT.pot FILES\fR
+
+After merging with existing translations or translating strings, generate an
+MO file with \fBmsgfmt(1)\fR, then output translated files to the directory
+\fBDIR\fR:
+
+\fBitstool -m OUT.mo -o DIR FILES\fR
+
+ITS definitions are loaded from the built-in rules, rules embedded in the source
+XML files, files passed with the \fB-i\fR option, and ITS attributes in the source
+XML files. Later definitions take precedence.
+
+.SH OPTIONS
+.SS "Extracting"
+.IP "\fB\-o \fIFILE\fR" 4
+.PD 0
+.IP "\fB\-\-out=\fIFILE \fR" 4
+.PD
+output PO template to the file
+.BR OUT
+.SS "Merging"
+.IP "\fB\-m \fIFILE\fR" 4
+.PD 0
+.IP "\fB\-\-merge=\fIFILE \fR" 4
+.PD
+merge from an MO file
+.BR FILE
+and output XML files
+.TP
+.IP "\fB\-l \fILANG\fR" 4
+.PD 0
+.IP "\fB\-\-lang=\fILANG \fR" 4
+.PD
+explicitly set the language code output to XML
+.TP
+.IP "\fB\-o \fIFILE\fR" 4
+.PD 0
+.IP "\fB\-\-out=\fIFILE \fR" 4
+.PD
+output XML files in the directory
+.BR OUT
+.SS "Common"
+.IP "\fB\-i \fIITS\fR" 4
+.PD 0
+.IP "\fB\-\-its=\fIITS \fR" 4
+.PD
+load the ITS rules in the file ITS (can specify
+multiple times)
+
+.SH AUTHOR
+Shaun McCance <shaunm@gnome.org>
+
+.SH "SEE ALSO"
+More documentation for
+.B itstool
+is maintained online. For more information, see:
+.IP
+.B http://itstool.org/documentation/
+.PP
