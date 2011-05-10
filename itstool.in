@@ -203,15 +203,24 @@ class Message (object):
             if i != 0:
                 ret += '#.\n'
             comment = self._comments[i]
-            while len(comment) > 72:
-                j = comment.rfind(' ', 0, 72)
-                if j == -1:
-                    j = comment.find(' ')
-                if j == -1:
-                    break
-                ret += '#. %s\n' % comment[:j]
-                comment = comment[j+1:]
-            ret += '#. %s\n' % comment
+            if '\n' in comment:
+                doadd = False
+                for line in comment.split('\n'):
+                    if line != '':
+                        doadd = True
+                    if not doadd:
+                        continue
+                    ret += '#. %s\n' % line
+            else:
+                while len(comment) > 72:
+                    j = comment.rfind(' ', 0, 72)
+                    if j == -1:
+                        j = comment.find(' ')
+                    if j == -1:
+                        break
+                    ret += '#. %s\n' % comment[:j]
+                    comment = comment[j+1:]
+                ret += '#. %s\n' % comment
         for source in self._sources:
             ret += '#: %s\n' % source
         if self._preserve:
@@ -324,7 +333,10 @@ class Document (object):
                             oldnode = None
                         xpath.setContextNode(node)
                         for note in self._try_xpath_eval(xpath, sel):
-                            cont = re.sub('\s+', ' ', note.content).strip()
+                            if self.get_preserve_space(note):
+                                cont = note.content
+                            else:
+                                cont = re.sub('\s+', ' ', note.content).strip()
                             if ref:
                                 cont = 'SEE: ' + cont
                             self._its_loc_notes[node] = cont
