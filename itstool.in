@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 VERSION="@VERSION@"
+DATADIR="@DATADIR@"
 
 import gettext
 import hashlib
@@ -386,7 +387,9 @@ class Document (object):
         dirs.append(ddir)
         ddir = os.getenv('XDG_DATA_DIRS', '')
         if ddir == '':
-            ddir = '/usr/local/share:/usr/share'
+            if DATADIR not in ('/usr/local/share', '/usr/share'):
+                ddir += DATADIR + ':'
+            ddir += '/usr/local/share:/usr/share'
         dirs.extend(ddir.split(':'))
         ddone = {}
         for ddir in dirs:
