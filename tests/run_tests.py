@@ -110,6 +110,10 @@ class ItstoolTests(unittest.TestCase):
     def test_withintext_linkedrules(self):
         self._test_translation_process('WithinText2.xml')
 
+    # **** custom itst rules ****
+    def test_droprule(self):
+        self._test_translation_process('Droprule.xml')
+
     def test_attributes1(self):
         self._test_translation_process('Attributes1.xml')
 

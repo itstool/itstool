@@ -318,6 +318,7 @@ class Document (object):
         self._its_within_text_nodes = {}
         self._its_loc_notes = {}
         self._itst_preserve_space_nodes = {}
+        self._itst_drop_nodes = []
         self._its_lang = {}
         self._itst_lang_attr = {}
         self._itst_credits = None
@@ -338,6 +339,10 @@ class Document (object):
             if rule.prop('selector') is not None:
                 for node in self._try_xpath_eval(xpath, rule.prop('selector')):
                     self._itst_preserve_space_nodes[node] = rule.prop('preserveSpace')
+        elif xml_is_ns_name(rule, NS_ITST, 'dropRule'):
+            if rule.prop('selector') is not None:
+                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
+                    self._itst_drop_nodes.append(node)
         elif xml_is_ns_name(rule, NS_ITS, 'locNoteRule'):
             locnote = None
             for child in xml_child_iter(rule):
@@ -689,7 +694,7 @@ class Document (object):
         if node.type in ('text', 'cdata') and msg is not None:
             msg.add_text(node.content)
             return
-        if node.type != 'element':
+        if node.type != 'element' or node in self._itst_drop_nodes:
             return
         translate = self.get_its_translate(node)
         if translate is None:
