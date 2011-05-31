@@ -92,7 +92,7 @@ class MessageList (object):
         out.write('"Content-Transfer-Encoding: 8bit\\n"\n')
         out.write('\n')
         for msg in msgs:
-            out.write(msg.format())
+            out.write(msg.format().encode('utf-8'))
             out.write('\n')
 
 
@@ -109,7 +109,7 @@ class Message (object):
     class Placeholder (object):
         def __init__ (self, node):
             self.node = node
-            self.name = node.name
+            self.name = unicode(node.name, 'utf-8')
 
     def escape (self, text):
         return text.replace('\\','\\\\').replace('"', "\\\"").replace("\n","\\n").replace("\t","\\t")
@@ -117,6 +117,8 @@ class Message (object):
     def add_text (self, text):
         if len(self._message) == 0 or not(isinstance(self._message[-1], basestring)):
             self._message.append('')
+        if not isinstance(text, unicode):
+            text = unicode(text, 'utf-8')
         self._message[-1] += text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
         if re.sub('\s+', ' ', text).strip() != '':
             self._empty = False
@@ -129,8 +131,8 @@ class Message (object):
     def get_placeholder (self, name):
         placeholder = 1
         for holder in self._placeholders:
-            holdername = '%s-%i' % (holder.name, placeholder)
-            if holdername == name:
+            holdername = u'%s-%i' % (holder.name, placeholder)
+            if holdername == unicode(name, 'utf-8'):
                 return holder
             placeholder += 1
 
@@ -156,7 +158,7 @@ class Message (object):
         if node.children is not None:
             if len(self._message) == 0 or not(isinstance(self._message[-1], basestring)):
                 self._message.append('')
-            self._message[-1] += ('</%s>' % node.name)
+            self._message[-1] += (u'</%s>' % unicode(node.name, 'utf-8'))
 
     def is_empty (self):
         return self._empty
@@ -168,7 +170,7 @@ class Message (object):
         self._ctxt = ctxt
 
     def add_source (self, source):
-        self._sources.append(source)
+        self._sources.append(unicode(source, 'utf-8'))
 
     def get_sources (self):
         return self._sources
@@ -180,13 +182,13 @@ class Message (object):
         return self._comments
 
     def get_string (self):
-        message = ''
+        message = u''
         placeholder = 1
         for msg in self._message:
             if isinstance(msg, basestring):
                 message += msg
             elif isinstance(msg, Message.Placeholder):
-                message += '<_:%s-%i/>' % (msg.name, placeholder)
+                message += u'<_:%s-%i/>' % (msg.name, placeholder)
                 placeholder += 1
         if not self._preserve:
             message = re.sub('\s+', ' ', message).strip()
@@ -199,7 +201,7 @@ class Message (object):
         self._preserve = preserve
 
     def format (self):
-        ret = ''
+        ret = u''
         for i in range(len(self._comments)):
             if i != 0:
                 ret += '#.\n'
@@ -211,7 +213,7 @@ class Message (object):
                         doadd = True
                     if not doadd:
                         continue
-                    ret += '#. %s\n' % line
+                    ret += u'#. %s\n' % line
             else:
                 while len(comment) > 72:
                     j = comment.rfind(' ', 0, 72)
@@ -219,27 +221,27 @@ class Message (object):
                         j = comment.find(' ')
                     if j == -1:
                         break
-                    ret += '#. %s\n' % comment[:j]
+                    ret += u'#. %s\n' % comment[:j]
                     comment = comment[j+1:]
                 ret += '#. %s\n' % comment
         for source in self._sources:
-            ret += '#: %s\n' % source
+            ret += u'#: %s\n' % source
         if self._preserve:
-            ret += '#, no-wrap\n'
+            ret += u'#, no-wrap\n'
         if self._ctxt is not None:
-            ret += 'msgctxt "%s"\n' % self._ctxt
+            ret += u'msgctxt "%s"\n' % self._ctxt
         message = self.get_string()
         if self._preserve:
-            ret += 'msgid ""\n'
+            ret += u'msgid ""\n'
             lines = message.split('\n')
             for line, no in zip(lines, range(len(lines))):
                 if no == len(lines) - 1:
-                    ret += '"%s"\n' % self.escape(line)
+                    ret += u'"%s"\n' % self.escape(line)
                 else:
-                    ret += '"%s\\n"\n' % self.escape(line)
+                    ret += u'"%s\\n"\n' % self.escape(line)
         else:
-            ret += 'msgid "%s"\n' % self.escape(message)
-        ret += 'msgstr ""\n'
+            ret += u'msgid "%s"\n' % self.escape(message)
+        ret += u'msgstr ""\n'
         return ret
 
 
