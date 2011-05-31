@@ -602,7 +602,8 @@ class Document (object):
         ctxt.parseDocument()
         trnode = ctxt.doc().getRootElement()
         def scan_node(node):
-            for child in xml_child_iter(node):
+            children = [child for child in xml_child_iter(node)]
+            for child in children:
                 if child.type != 'element':
                     continue
                 if child.ns() is not None and child.ns().content == NS_BLANK:

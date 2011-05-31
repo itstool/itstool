@@ -26,7 +26,7 @@
      <z:段落识别 id="A34B"><z:姓名>Pippin</z:姓名> regarda depuis l'abri du manteau de <z:姓名>Gandalf</z:姓名>.</z:段落识别>
     </z:章节>
     <z:躯>
-     <i:rules version="1.0" xmlns:cml="myChineseMakupLanguage">
+     <i:rules version="1.0">
       <i:translateRule selector="//cml:作者" translate="no"/>
       <i:translateRule selector="//cml:姓名" translate="no"/>
       <i:withinTextRule selector="//cml:姓名" withinText="yes"/>
