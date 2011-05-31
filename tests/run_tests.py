@@ -28,24 +28,53 @@ class ItstoolTests(unittest.TestCase):
         result = self.run_command("diff -u %s %s %s" % (options, f1, f2))
         return self.assertEqual(result[1], "", result[1])
 
-    def test_unicode_markup(self):
+    def _test_translation_process(self, start_file):
+        start_file_base = os.path.splitext(start_file)[0]
         result = self.run_command("cd %(dir)s && python itstool_test -o %(out)s %(in)s" % {
             'dir' : ITSTOOL_DIR,
             'out' : os.path.join('tests', "test.pot"),
-            'in'  : os.path.join('tests', 'Translate1.xml'),
+            'in'  : os.path.join('tests', start_file),
         })
-        self.assertFilesEqual(os.path.join(TEST_DIR, "test.pot"), os.path.join(TEST_DIR, "Translate1.pot"))
+        # If a reference pot file is present, test the output with this file
+        reference_pot = start_file_base + ".pot"
+        if os.path.exists(reference_pot):
+            self.assertFilesEqual(os.path.join(TEST_DIR, "test.pot"), os.path.join(TEST_DIR, reference_pot))
 
         # Compile mo and merge
-        self.run_command("cd %(dir)s && msgfmt -o test.mo Translate1.ll.po" % {'dir': TEST_DIR}) 
+        self.run_command("cd %(dir)s && msgfmt -o test.mo %(base)s.ll.po" % {'dir': TEST_DIR, 'base': start_file_base}) 
         res = self.run_command("cd %(dir)s && python itstool_test -m %(mo)s -o %(res)s %(src)s" % {
             'dir': ITSTOOL_DIR,
             'mo' : os.path.join(TEST_DIR, "test.mo"),
             'res': os.path.join(TEST_DIR, "test.xml"),
-            'src': os.path.join(TEST_DIR, "Translate1.xml"),
+            'src': os.path.join(TEST_DIR, start_file),
         })
-        self.assertFilesEqual(os.path.join(TEST_DIR, "test.xml"), os.path.join(TEST_DIR, "Translate1.ll.xml"))
+        self.assertFilesEqual(os.path.join(TEST_DIR, "test.xml"), os.path.join(TEST_DIR, "%s.ll.xml" % start_file_base))
 
+
+    def test_unicode_markup(self):
+        self._test_translation_process('Translate1.xml')
+
+    def test_external_rules(self):
+        self._test_translation_process('Translate2.xml')
+
+    def test_embedded_its(self):
+        self._test_translation_process('Translate3.xml')
+
+    def test_notranslate_to_simpletag(self):
+        self._test_translation_process('Translate4.xml')
+
+    def test_selector_translate_rule(self):
+        self._test_translation_process('Translate5.xml')
+
+    def test_root_selector(self):
+        self._test_translation_process('Translate6.xml')
+
+    def test_last_rule_win(self):
+        self._test_translation_process('Translate7.xml')
+
+    # FIXME: currently deactivated until attributes are translatable
+    def xx_test_attribute_selectable(self):
+        self._test_translation_process('TranslateGlobal.xml')
 
 class ITSTestRunner(unittest.TextTestRunner):
     def run(self, test):
