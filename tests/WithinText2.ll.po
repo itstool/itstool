@@ -1,0 +1,51 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2011-06-01 09:34+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: tests/WithinText2.xml:9(prolog/author)
+msgid "Zebulon Fairfield"
+msgstr "Zebulon Fairfield"
+
+#: tests/WithinText2.xml:10(prolog/version)
+msgid "version 12, revision 2 - 2006-08-14"
+msgstr "version 12, révision 2 - 14/08/2006"
+
+#: tests/WithinText2.xml:11(keywords/kw)
+msgid "horse"
+msgstr "cheval"
+
+#: tests/WithinText2.xml:11(keywords/kw)
+msgid "appaloosa"
+msgstr "appaloosa"
+
+#: tests/WithinText2.xml:12(prolog/storageKey)
+msgid "articles-6D272BA9-3B89CAD8"
+msgstr "articles-6D272BA9-3B89CAD8"
+
+#: tests/WithinText2.xml:16(section/title)
+msgid "Appaloosa"
+msgstr "Appaloosa"
+
+#: tests/WithinText2.xml:17(p/fnote)
+msgid "The name comes from \"Palouse horse\" in reference to the Palouse River in Northern Idaho."
+msgstr "Le nom provient de « cheval de Palouse » en référence à la rivière Palouse en Idaho du Nord."
+
+#: tests/WithinText2.xml:17(section/p)
+msgid "The Appaloosa<_:fnote-1/> are rugged horses originally breed by the <kw>Nez-Perce</kw> tribe in the US Northwest."
+msgstr "Les appaloosas<_:fnote-1/> sont de rudes chevaux élevés initialement par la tribu des <kw>Nez-Percés</kw> dans le Nord-ouest américain."
+
+#: tests/WithinText2.xml:20(section/p)
+msgid "They are often characterized by their spotted coats, as shown here: <img src=\"appaloosa.png\" alt=\"Appaloosa horses\"/>"
+msgstr "Ils sont souvent caractérisés par leur robe tachetée, comme sur cette image : <img src=\"appaloosa.png\" alt=\"Chevaux appaloosas\"/>"
+
+#: tests/WithinText2.xml:23(footer/p)
+msgid "Copyright: <em>Zebulon Inc.</em>"
+msgstr "Copyright : <em>Zebulon Inc.</em>"
+

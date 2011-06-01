@@ -1,0 +1,30 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2011-06-01 10:12+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. SEE: http://en.wikipedia.org/wiki/Doppelganger
+#: tests/LocNote4.xml:5(span/span)
+msgid "doppelgänger"
+msgstr ""
+
+#: tests/LocNote4.xml:6(span/b)
+msgid "serious"
+msgstr ""
+
+#. SEE: http://en.wikipedia.org/wiki/Aficionado
+#: tests/LocNote4.xml:6(span/span)
+msgid "aficionado"
+msgstr ""
+
+#. If possible keep the non-English terms in the translated version too
+#: tests/LocNote4.xml:4(p/span)
+msgid "Everything started when Zebulon discovered that he had a <_:span-1/> who was a <_:b-2/> baseball <_:span-3/>."
+msgstr ""
+

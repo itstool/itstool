@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book xmlns:its="http://www.w3.org/2005/11/its" its:version="1.0" lang="test">
+ <head>
+  <title>La vie d'un simple homme</title>
+ </head>
+ <body>
+  <p>Tout commença alors que Zebulon découvrit qu'il avait un <fexp its:translate="no">doppelgänger</fexp> qui était un <fexp its:translate="no">aficionado</fexp> sérieux de baseball.</p>
+ </body>
+</book>
+<!-- timestamp $Id: Translate4.xml,v 1.4 2007/02/02 19:29:30 ysavoure Exp $ -->

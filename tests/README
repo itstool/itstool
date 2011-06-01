@@ -1,0 +1,5 @@
+To run the test suite, place yourself in the itstool root directory and run:
+    $ python tests/run_tests.py
+
+Test files are coming from:
+    http://www.w3.org/International/its/tests/

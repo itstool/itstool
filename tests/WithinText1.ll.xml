@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc>
+ <head>
+  <its:rules xmlns:its="http://www.w3.org/2005/11/its" version="1.0">
+   <its:withinTextRule withinText="yes" selector="//b|//u|//i"/>
+   <its:withinTextRule withinText="nested" selector="//fn"/>
+  </its:rules>
+ </head>
+  <body>
+   <p>Ceci est un paragraphe avec <b>gras</b>, <i>italique</i> et <u>souligné</u>.</p>
+   <p>Voici un paragraphe avec une note de pied de page<fn>Voici le texte d'une note de pied de page</fn> insérée au milieu.</p>
+  </body>
+ </doc>
+<!-- timestamp $Id: WithinText1.xml,v 1.3 2007/02/02 16:55:05 srahtz3 Exp $ -->

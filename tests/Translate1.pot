@@ -1,0 +1,35 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2011-05-30 18:39+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: tests/Translate1.xml:15(body/par)
+msgid "Text with an image: <img alt=\"Image description\" src=\"img.png\"/>."
+msgstr ""
+
+#: tests/Translate1.xml:16(body/par)
+msgid "This is the first paragraph. It has some <_:verbatim-1/>."
+msgstr ""
+
+#: tests/Translate1.xml:21(封面/汇集)
+msgid "The Lord of the Rings"
+msgstr ""
+
+#: tests/Translate1.xml:22(封面/标题)
+msgid "The Return of the King"
+msgstr ""
+
+#: tests/Translate1.xml:26(章节/头注)
+msgid "Minas Tirith"
+msgstr ""
+
+#: tests/Translate1.xml:27(章节/段落识别)
+msgid "<_:姓名-1/> looked out from the shelter of <_:姓名-2/>'s cloak."
+msgstr ""
+

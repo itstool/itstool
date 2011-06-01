@@ -1,0 +1,21 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2011-06-01 10:24+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. Indicates that the resource file {0} could not be loaded.
+#: tests/EX-locNotePointer-attribute-1.xml:12(msg/data)
+msgid "Cannot find the file {0}."
+msgstr ""
+
+#. A division by 0 was going to be computed.
+#: tests/EX-locNotePointer-attribute-1.xml:16(msg/data)
+msgid "Invalid parameter."
+msgstr ""
+
