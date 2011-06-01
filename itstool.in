@@ -277,8 +277,7 @@ class Document (object):
                         hctxt.replaceEntities(1)
                         hctxt.parseDocument()
                         self._localrules.append(hctxt.doc().getRootElement())
-                    else:
-                        self._localrules.append(child)
+                    self._localrules.append(child)
                 pre_process(child)
         pre_process(self._doc)
         self._msgs = messages
