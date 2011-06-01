@@ -1,0 +1,23 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2011-06-01 08:49+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: tests/WithinText1.xml:9(body/p)
+msgid "This is a paragraph with <b>bold</b>, <i>italic</i>, and <u>underlined</u>."
+msgstr ""
+
+#: tests/WithinText1.xml:10(p/fn)
+msgid "This is the text of the footnote"
+msgstr ""
+
+#: tests/WithinText1.xml:10(body/p)
+msgid "This is a paragraph with a footnote<_:fn-1/> at the middle."
+msgstr ""
+

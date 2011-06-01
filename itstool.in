@@ -279,8 +279,7 @@ class Document (object):
                         hctxt.replaceEntities(1)
                         hctxt.parseDocument()
                         self._localrules.append(hctxt.doc().getRootElement())
-                    else:
-                        self._localrules.append(child)
+                    self._localrules.append(child)
                 pre_process(child)
         pre_process(self._doc)
         self._msgs = messages
@@ -460,6 +459,8 @@ class Document (object):
             xpath = self._doc.xpathNewContext()
             reg_ns(xpath, rules)
             for rule in xml_child_iter(rules):
+                if rule.type != 'element':
+                    continue
                 if rule.nsDefs() is not None:
                     rule_xpath = self._doc.xpathNewContent()
                     reg_ns(rule_xpath, rule)

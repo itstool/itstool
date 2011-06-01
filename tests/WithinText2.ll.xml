@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<myDocument xmlns="http://my.DocumentURI/" xml:lang="en">
+ <prolog>
+<its:rules xmlns:its="http://www.w3.org/2005/11/its" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:d="http://my.DocumentURI/" version="1.0" xlink:type="simple" xlink:href="WithinText2_LinkedRules.xml">
+ <its:withinTextRule selector="//d:keywords/d:kw" withinText="no"/>
+</its:rules>
+  <author>Zebulon Fairfield</author>
+  <version>version 12, révision 2 - 14/08/2006</version>
+  <keywords><kw>cheval</kw><kw>appaloosa</kw></keywords>
+  <storageKey>articles-6D272BA9-3B89CAD8</storageKey>
+ </prolog>
+ <content>
+  <section>
+   <title>Appaloosa</title>
+   <p>Les appaloosas<fnote>Le nom provient de « cheval de Palouse » en référence à la rivière Palouse en Idaho du Nord.</fnote> sont de rudes chevaux élevés initialement par la tribu des <kw>Nez-Percés</kw> dans le Nord-ouest américain.</p>
+   <p>Ils sont souvent caractérisés par leur robe tachetée, comme sur cette image : <img src="appaloosa.png" alt="Chevaux appaloosas"/></p>
+  </section>
+  <footer><p>Copyright : <em>Zebulon Inc.</em></p></footer>
+ </content>
+</myDocument>
+<!-- timestamp $Id: WithinText2.xml,v 1.8 2007/02/02 16:55:05 srahtz3 Exp $ -->
