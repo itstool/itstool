@@ -40,7 +40,7 @@ class ItstoolTests(unittest.TestCase):
         # If a reference pot file is present, test the output with this file
         if reference_pot is None:
             reference_pot = start_file_base + ".pot"
-        if os.path.exists(reference_pot):
+        if os.path.exists(os.path.join(TEST_DIR, reference_pot)):
             self.assertFilesEqual(os.path.join(TEST_DIR, "test.pot"), os.path.join(TEST_DIR, reference_pot))
 
     def _test_translation_process(self, start_file):
@@ -64,7 +64,7 @@ class ItstoolTests(unittest.TestCase):
 
     def test_locnotes_external(self):
         # FIXME: only the third note appears currently, as attribute extraction is not yet implemented
-        self._test_pot_generation('LocNote2.xml', reference_pot='LocNote1.pot')
+        self._test_pot_generation('LocNote2.xml')
 
     def test_locnotes_ontags(self):
         self._test_pot_generation('LocNote3.xml')
