@@ -9,6 +9,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#: tests/Translate2.xml:8(body/par@title)
+msgid "Text"
+msgstr ""
+
 #: tests/Translate2.xml:8(body/par)
 msgid "This is the first paragraph. It has some <_:code-1/>."
 msgstr ""

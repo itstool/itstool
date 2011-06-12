@@ -59,11 +59,11 @@ class ItstoolTests(unittest.TestCase):
 
 
     def test_locnotes(self):
-        # FIXME: only the third note appears currently, as attribute extraction is not yet implemented
+        # FIXME: only the third note appears currently, as notes on subnodes don't propagate to parent nodes
         self._test_pot_generation('LocNote1.xml')
 
     def test_locnotes_external(self):
-        # FIXME: only the third note appears currently, as attribute extraction is not yet implemented
+        # FIXME: only the third note appears currently, as notes on subnodes don't propagate to parent nodes
         self._test_pot_generation('LocNote2.xml')
 
     def test_locnotes_ontags(self):
@@ -101,8 +101,7 @@ class ItstoolTests(unittest.TestCase):
     def test_last_rule_win(self):
         self._test_translation_process('Translate7.xml')
 
-    # FIXME: currently deactivated until attributes are translatable
-    def xx_test_attribute_selectable(self):
+    def test_attribute_selectable(self):
         self._test_translation_process('TranslateGlobal.xml')
 
     def test_withintext(self):

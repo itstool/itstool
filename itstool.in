@@ -123,6 +123,11 @@ class Message (object):
         self._comments = []
         self._preserve = False
 
+    def __repr__(self):
+        if self._empty:
+            return "Empty message"
+        return self.get_string()
+
     class Placeholder (object):
         def __init__ (self, node):
             self.node = node
@@ -187,13 +192,16 @@ class Message (object):
         self._ctxt = ctxt
 
     def add_source (self, source):
-        self._sources.append(unicode(source, 'utf-8'))
+        if not isinstance(source, unicode):
+            source = unicode(source, 'utf-8')
+        self._sources.append(source)
 
     def get_sources (self):
         return self._sources
 
     def add_comment (self, comment):
-        self._comments.append(comment)
+        if comment is not None:
+            self._comments.append(comment)
 
     def get_comments (self):
         return self._comments
@@ -267,6 +275,12 @@ def xml_child_iter (node):
     while child is not None:
         yield child
         child = child.next
+
+def xml_attr_iter (node):
+    attr = node.get_properties()
+    while attr is not None:
+        yield attr
+        attr = attr.next
 
 def xml_is_ns_name (node, ns, name):
     if node.type != 'element':
@@ -542,12 +556,14 @@ class Document (object):
             self.merge_credits(translations, language, node)
         msg = self._msgs.get_message_by_node(node)
         if msg is None:
+            self.translate_attrs(node, node)
             children = [child for child in xml_child_iter(node)]
             for child in children:
                 self.merge_translations(translations, language, node=child)
         else:
             newnode = self.get_translated(node, translations)
             if newnode != node:
+                self.translate_attrs(node, newnode)
                 node.replaceNode(newnode)
         if is_root:
             # Apply language attributes to untranslated nodes. We don't do
@@ -590,6 +606,13 @@ class Document (object):
                     if child.type == 'element':
                         fix_node_ns(child, childnsdefs)
             fix_node_ns(node, {})
+
+    def translate_attrs(self, oldnode, newnode):
+        trans_attrs = [attr for attr in xml_attr_iter(oldnode) if self._its_translate_nodes.get(attr, 'no') == 'yes']
+        for attr in trans_attrs:
+            newcontent = translations.ugettext(attr.get_content())
+            if newcontent:
+                newnode.setProp(attr.name, translations.ugettext(attr.get_content()))
 
     def get_translated (self, node, translations):
         msg = self._msgs.get_message_by_node(node)
@@ -684,6 +707,16 @@ class Document (object):
             if is_unit:
                 if msg is not None:
                     msg.add_placeholder(node)
+                # Add msg for translatable node attributes
+                for attr in xml_attr_iter(node):
+                    if self._its_translate_nodes.get(attr, 'no') == 'yes':
+                        attr_msg = Message()
+                        attr_msg.add_source('%s:%i(%s/%s@%s)' % (
+                            self._doc.name, node.lineNo(), node.parent.name, node.name, attr.name))
+                        attr_msg.add_text(attr.content)
+                        if comments:
+                            attr_msg.add_comment(self.get_its_loc_note(attr))
+                        self._msgs.add_message(attr_msg, attr)
                 msg = Message()
                 if self.get_preserve_space(node):
                     msg.set_preserve_space()
@@ -692,9 +725,7 @@ class Document (object):
                 msg.add_start_tag(node)
 
         if comments and msg is not None:
-            comment = self.get_its_loc_note(node)
-            if comment is not None:
-                msg.add_comment(comment)
+            msg.add_comment(self.get_its_loc_note(node))
 
         in_translatable = self._in_translatable
         self._in_translatable = (translate == 'yes')

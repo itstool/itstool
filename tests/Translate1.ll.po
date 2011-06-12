@@ -13,6 +13,10 @@ msgstr ""
 msgid "Text with an image: <img alt=\"Image description\" src=\"img.png\"/>."
 msgstr "Texte avec une image : <img alt=\"Description d'image\" src=\"img.png\"/>."
 
+#: tests/Translate1.xml:16(body/par@title)
+msgid "Text"
+msgstr "Texte"
+
 #: tests/Translate1.xml:16(body/par)
 msgid "This is the first paragraph. It has some <_:verbatim-1/>."
 msgstr "C'est le premier paragraphe. Il contient du texte <_:verbatim-1/>."

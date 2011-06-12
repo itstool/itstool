@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2011-05-31 21:15+0200\n"
+"POT-Creation-Date: 2011-06-04 17:32+0200\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -9,11 +9,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/Translate2.xml:8(body/par@title)
+#: tests/TranslateGlobal.xml:10(body/par@title)
 msgid "Text"
-msgstr "Texte"
+msgstr ""
 
-#: tests/Translate2.xml:8(body/par)
+#: tests/TranslateGlobal.xml:10(body/par)
 msgid "This is the first paragraph. It has some <_:code-1/>."
-msgstr "C'est le premier paragraphe. Il contient du texte <_:code-1/>."
+msgstr ""
+
+#: tests/TranslateGlobal.xml:11(body/par)
+msgid "Some additional text."
+msgstr ""
 
