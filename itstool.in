@@ -697,6 +697,7 @@ class Document (object):
                 translate = 'yes'
             else:
                 translate = 'no'
+        withinText = False
         if translate == 'no':
             if msg is not None:
                 msg.add_placeholder(node)
@@ -707,22 +708,26 @@ class Document (object):
             if is_unit:
                 if msg is not None:
                     msg.add_placeholder(node)
-                # Add msg for translatable node attributes
-                for attr in xml_attr_iter(node):
-                    if self._its_translate_nodes.get(attr, 'no') == 'yes':
-                        attr_msg = Message()
-                        attr_msg.add_source('%s:%i(%s/%s@%s)' % (
-                            self._doc.name, node.lineNo(), node.parent.name, node.name, attr.name))
-                        attr_msg.add_text(attr.content)
-                        if comments:
-                            attr_msg.add_comment(self.get_its_loc_note(attr))
-                        self._msgs.add_message(attr_msg, attr)
                 msg = Message()
                 if self.get_preserve_space(node):
                     msg.set_preserve_space()
                 msg.add_source('%s:%i(%s/%s)' % (self._doc.name, node.lineNo(), node.parent.name, node.name))
             else:
+                withinText = True
                 msg.add_start_tag(node)
+
+        if not withinText:
+            # Add msg for translatable node attributes
+            for attr in xml_attr_iter(node):
+                if self._its_translate_nodes.get(attr, 'no') == 'yes':
+                    attr_msg = Message()
+                    attr_msg.add_source('%s:%i(%s/%s@%s)' % (
+                        self._doc.name, node.lineNo(), node.parent.name, node.name, attr.name))
+                    attr_msg.add_text(attr.content)
+                    if comments:
+                        attr_msg.add_comment(self.get_its_loc_note(attr))
+                    self._msgs.add_message(attr_msg, attr)
+
 
         if comments and msg is not None:
             msg.add_comment(self.get_its_loc_note(node))

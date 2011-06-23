@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page>
+ <info>
+  <its:rules xmlns:its="http://www.w3.org/2005/11/its" version="1.0">
+   <its:translateRule selector="//code" translate="no"/>
+   <its:translateRule selector="//@title" translate="yes"/>
+  </its:rules>
+ </info>
+ <code title="eins">Not translated <span title="zwei"/></code>
+</page>

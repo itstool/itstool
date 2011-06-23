@@ -110,6 +110,9 @@ class ItstoolTests(unittest.TestCase):
     def test_withintext_linkedrules(self):
         self._test_translation_process('WithinText2.xml')
 
+    def test_attr1(self):
+        self._test_translation_process('x-attr1.xml')
+
 
 class ITSTestRunner(unittest.TextTestRunner):
     def run(self, test):
