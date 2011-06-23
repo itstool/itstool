@@ -9,11 +9,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/x-attr1.xml:9(page/code@title)
+#: tests/Attributes1.xml:9(page/code@title)
 msgid "one"
-msgstr "eins"
+msgstr ""
 
-#: tests/x-attr1.xml:9(code/span@title)
+#: tests/Attributes1.xml:9(code/span@title)
 msgid "two"
-msgstr "zwei"
+msgstr ""
 
