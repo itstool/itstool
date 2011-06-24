@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/python -s
 #
 # Copyright (c) 2010-2011 Shaun McCance <shaunm@gnome.org>
 #
