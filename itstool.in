@@ -866,7 +866,7 @@ if __name__ == '__main__':
     (opts, args) = options.parse_args(sys.argv)
 
     if opts.version:
-        print 'itstool ' + VERSION
+        print('itstool %s' % VERSION)
         sys.exit(0)
 
     if opts.merge is None:

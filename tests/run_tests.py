@@ -18,7 +18,7 @@ class ItstoolTests(unittest.TestCase):
         """ Helper method to run a shell command """
         # Set stdout = sys.stdout to debug a subprocess if you set a breakpoint in it
         pipe = Popen(cmd, shell=True, env=os.environ, stdin=None, stdout=PIPE, stderr=PIPE)
-        (output, errout) = pipe.communicate()
+        (output, errout) = map(lambda x:x.decode(), pipe.communicate())
         status = pipe.returncode
         self.assertEqual(status, 0, errout or output)
         return (status, output, errout)
