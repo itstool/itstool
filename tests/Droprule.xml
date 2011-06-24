@@ -6,5 +6,7 @@
  </head>
  <content>
   <p><blanktag/>Everything started now.</p>
+  <p itst:drop="yes">This is dropped.</p>
+  <blanktag>This is also dropped.</blanktag>
  </content>
 </doc>
