@@ -319,6 +319,7 @@ class Document (object):
         self._its_loc_notes = {}
         self._itst_preserve_space_nodes = {}
         self._itst_drop_nodes = {}
+        self._itst_contexts = {}
         self._its_lang = {}
         self._itst_lang_attr = {}
         self._itst_credits = None
@@ -343,6 +344,25 @@ class Document (object):
             if rule.prop('selector') is not None:
                 for node in self._try_xpath_eval(xpath, rule.prop('selector')):
                     self._itst_drop_nodes[node] = rule.prop('drop')
+        elif xml_is_ns_name(rule, NS_ITST, 'contextRule'):
+            if rule.prop('selector') is not None:
+                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
+                    if rule.hasProp('context'):
+                        self._itst_contexts[node] = rule.prop('context')
+                    elif rule.hasProp('contextPointer'):
+                        try:
+                            oldnode = xpath.contextNode()
+                        except:
+                            oldnode = None
+                        xpath.setContextNode(node)
+                        ctxt = self._try_xpath_eval(xpath, rule.prop('contextPointer'))
+                        if isinstance(ctxt, basestring):
+                            self._itst_contexts[node] = ctxt
+                        else:
+                            for ctxt in ctxt:
+                                self._itst_contexts[node] = ctxt.content
+                                break
+                        xpath.setContextNode(oldnode)
         elif xml_is_ns_name(rule, NS_ITS, 'locNoteRule'):
             locnote = None
             for child in xml_child_iter(rule):
@@ -632,7 +652,13 @@ class Document (object):
         msg = self._msgs.get_message_by_node(node)
         if msg is None:
             return node
-        trans = translations.ugettext(msg.get_string())
+        msgstr = msg.get_string()
+        # Dear Python, please implement pgettext.
+        # http://bugs.python.org/issue2504
+        # Sincerely, Shaun
+        if msg.get_context() is not None:
+            msgstr = msg.get_context() + '\x04' + msgstr
+        trans = translations.ugettext(msgstr)
         if trans is None:
             return node
         nss = {}
@@ -727,6 +753,13 @@ class Document (object):
                 if msg is not None:
                     msg.add_placeholder(node)
                 msg = Message()
+                ctxt = None
+                if node.hasNsProp('context', NS_ITST):
+                    ctxt = node.nsProp('context', NS_ITST)
+                if ctxt is None:
+                    ctxt = self._itst_contexts.get(node)
+                if ctxt is not None:
+                    msg.set_context(ctxt)
                 if self.get_preserve_space(node):
                     msg.set_preserve_space()
                 msg.add_source('%s:%i(%s/%s)' % (self._doc.name, node.lineNo(), node.parent.name, node.name))

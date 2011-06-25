@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns:its="http://www.w3.org/2005/11/its" xmlns:itst="http://itstool.org/extensions/" its:version="1.0">
+ <info>
+  <its:rules version="1.0">
+   <itst:contextRule selector="//title[@type]" contextPointer="@type"/>
+   <itst:contextRule selector="//title[@type = 'sort']" context="[[sort]]"/>
+   <itst:contextRule selector="//title[@type and @role]" contextPointer="concat(@type, ':', @role)"/>
+  </its:rules>
+  <title type="sort">Sort</title>
+  <title type="link">Linky</title>
+  <title type="link" role="topic">Topics</title>
+ </info>
+ <title>Main title</title>
+ <p itst:context="paragraph">This is a paragraph</p>
+</page>

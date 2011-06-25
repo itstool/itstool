@@ -117,6 +117,9 @@ class ItstoolTests(unittest.TestCase):
     def test_attributes1(self):
         self._test_translation_process('Attributes1.xml')
 
+    def test_context(self):
+        self._test_translation_process('Context.xml')
+
 
 class ITSTestRunner(unittest.TextTestRunner):
     def run(self, test):
