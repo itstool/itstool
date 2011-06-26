@@ -36,4 +36,7 @@
   <its:translateRule translate="no" selector="//mal:credit/mal:email"/>
 
   <itst:externalRefRule selector="//mal:media" refPointer="@src"/>
+
+  <itst:contextRule selector="//mal:info/mal:title[@type]" contextPointer="@type"/>
+  <itst:contextRule selector="//mal:info/mal:title[@type and @role]" contextPointer="concat(@type, ':', @role)"/>
 </its:rules>
