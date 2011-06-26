@@ -390,15 +390,19 @@ class Document (object):
                         except:
                             oldnode = None
                         xpath.setContextNode(node)
-                        for note in self._try_xpath_eval(xpath, sel):
-                            if self.get_preserve_space(note):
-                                cont = note.content
-                            else:
-                                cont = re.sub('\s+', ' ', note.content).strip()
-                            if ref:
-                                cont = 'SEE: ' + cont
-                            self._its_loc_notes[node] = cont
-                            break
+                        note = self._try_xpath_eval(xpath, sel)
+                        if isinstance(note, basestring):
+                            self._its_loc_notes[node] = note
+                        else:
+                            for note in note:
+                                if self.get_preserve_space(note):
+                                    cont = note.content
+                                else:
+                                    cont = re.sub('\s+', ' ', note.content).strip()
+                                if ref:
+                                    cont = 'SEE: ' + cont
+                                self._its_loc_notes[node] = cont
+                                break
                         xpath.setContextNode(oldnode)
         elif xml_is_ns_name(rule, NS_ITS, 'langRule'):
             if rule.prop('selector') is not None and rule.prop('langPointer') is not None:
