@@ -1,3 +1,17 @@
+1.1.0
+=====
+* Added itst:context to set msgctxt
+* Added itst:drop to drop context from translations
+* Allow XML attribute to be translated
+* Allow locNotePointer to return a string
+* Allow localization notes to be space-preserving
+* Allow both XLink and child rules on its:rules
+* Fixed Unicode encoding/decoding errors
+* Added automated test suite
+* Added a man page
+* Python 3 fixes
+* Commits by Shaun McCance, Claude Paroz
+
 1.0.1
 =====
 * Convert POSIX-style locales to BCP47
