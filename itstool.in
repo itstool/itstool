@@ -692,8 +692,13 @@ class Document (object):
                 if child.type != 'element':
                     continue
                 if child.ns() is not None and child.ns().content == NS_BLANK:
-                    repl = self.get_translated(msg.get_placeholder(child.name).node, translations)
-                    child.replaceNode(repl)
+                    ph_node = msg.get_placeholder(child.name).node
+                    if self.has_child_elements(ph_node):
+                        self.merge_translations(translations, None, ph_node)
+                        child.replaceNode(ph_node)
+                    else:
+                        repl = self.get_translated(ph_node, translations)
+                        child.replaceNode(repl)
                 scan_node(child)
         scan_node(trnode)
         retnode = node.copyNode(2)
@@ -801,6 +806,9 @@ class Document (object):
 
     def is_translation_unit (self, node):
         return self.get_its_within_text(node) != 'yes'
+
+    def has_child_elements(self, node):
+        return len([child for child in xml_child_iter(node) if child.type=='element'])
 
     def get_preserve_space (self, node):
         if node.getSpacePreserve() == 1:

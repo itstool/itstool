@@ -18,7 +18,7 @@ class ItstoolTests(unittest.TestCase):
         """ Helper method to run a shell command """
         # Set stdout = sys.stdout to debug a subprocess if you set a breakpoint in it
         pipe = Popen(cmd, shell=True, env=os.environ, stdin=None, stdout=PIPE, stderr=PIPE)
-        (output, errout) = map(lambda x:x.decode(), pipe.communicate())
+        (output, errout) = map(lambda x:x.decode('utf-8'), pipe.communicate())
         status = pipe.returncode
         self.assertEqual(status, 0, errout or output)
         return (status, output, errout)
@@ -120,6 +120,8 @@ class ItstoolTests(unittest.TestCase):
     def test_context(self):
         self._test_translation_process('Context.xml')
 
+    def test_deep_placeholder(self):
+        self._test_translation_process('Placeholder.xml')
 
 class ITSTestRunner(unittest.TextTestRunner):
     def run(self, test):
