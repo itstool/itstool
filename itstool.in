@@ -654,6 +654,7 @@ class Document (object):
                     if child.type == 'element':
                         fix_node_ns(child, childnsdefs)
             fix_node_ns(node, {})
+            self._check_errors()
 
     def translate_attrs(self, oldnode, newnode):
         trans_attrs = [attr for attr in xml_attr_iter(oldnode) if self._its_translate_nodes.get(attr, 'no') == 'yes']
