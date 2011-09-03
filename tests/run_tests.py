@@ -14,48 +14,56 @@ class ItstoolTests(unittest.TestCase):
             if os.path.exists(path):
                 os.remove(path)
 
-    def run_command(self, cmd):
+    def run_command(self, cmd, expected_status=0):
         """ Helper method to run a shell command """
         # Set stdout = sys.stdout to debug a subprocess if you set a breakpoint in it
         pipe = Popen(cmd, shell=True, env=os.environ, stdin=None, stdout=PIPE, stderr=PIPE)
         (output, errout) = map(lambda x:x.decode('utf-8'), pipe.communicate())
         status = pipe.returncode
-        self.assertEqual(status, 0, errout or output)
-        return (status, output, errout)
+        self.assertEqual(status, expected_status, errout or output)
+        return {'status': status, 'output': output, 'errors': errout}
 
     def assertFilesEqual(self, f1, f2):
         options = ""
         if f1.endswith(".po") or f1.endswith(".pot"):
             options = "--ignore-matching-lines=^\\\"POT-Creation-Date"
         result = self.run_command("diff -u %s %s %s" % (options, f1, f2))
-        return self.assertEqual(result[1], "", result[1])
+        self.assertEqual(result['output'], "", result['output'])
 
-    def _test_pot_generation(self, start_file, reference_pot=None):
+    def _test_pot_generation(self, start_file, reference_pot=None, expected_status=0):
         start_file_base = os.path.splitext(start_file)[0]
         result = self.run_command("cd %(dir)s && python itstool_test -o %(out)s %(in)s" % {
             'dir' : ITSTOOL_DIR,
             'out' : os.path.join('tests', "test.pot"),
             'in'  : os.path.join('tests', start_file),
-        })
+        }, expected_status)
         # If a reference pot file is present, test the output with this file
         if reference_pot is None:
             reference_pot = start_file_base + ".pot"
         if os.path.exists(os.path.join(TEST_DIR, reference_pot)):
             self.assertFilesEqual(os.path.join(TEST_DIR, "test.pot"), os.path.join(TEST_DIR, reference_pot))
+        return result
 
-    def _test_translation_process(self, start_file):
+    def _test_translation_process(self, start_file, expected_status=0, po_file=None):
         start_file_base = os.path.splitext(start_file)[0]
         self._test_pot_generation(start_file)
 
         # Compile mo and merge
-        self.run_command("cd %(dir)s && msgfmt -o test.mo %(base)s.ll.po" % {'dir': TEST_DIR, 'base': start_file_base}) 
-        res = self.run_command("cd %(dir)s && python itstool_test -m %(mo)s -o %(res)s %(src)s" % {
+        if po_file is None:
+            po_file = "%s.ll.po" % start_file_base
+        self.run_command("cd %(dir)s && msgfmt -o test.mo %(po_file)s" % {'dir': TEST_DIR, 'po_file': po_file}) 
+        result = self.run_command("cd %(dir)s && python itstool_test -m %(mo)s -o %(res)s %(src)s" % {
             'dir': ITSTOOL_DIR,
             'mo' : os.path.join(TEST_DIR, "test.mo"),
             'res': os.path.join(TEST_DIR, "test.xml"),
             'src': os.path.join(TEST_DIR, start_file),
-        })
-        self.assertFilesEqual(os.path.join(TEST_DIR, "test.xml"), os.path.join(TEST_DIR, "%s.ll.xml" % start_file_base))
+        }, expected_status)
+        if (expected_status == 0):
+            self.assertFilesEqual(
+                os.path.join(TEST_DIR, "test.xml"),
+                os.path.join(TEST_DIR, "%s.ll.xml" % start_file_base)
+            )
+        return result
 
 
     def test_locnotes(self):
@@ -122,6 +130,17 @@ class ItstoolTests(unittest.TestCase):
 
     def test_deep_placeholder(self):
         self._test_translation_process('Placeholder.xml')
+
+    def test_bad_file(self):
+        """ Test that a malformed XML generates a proper exception """
+        res = self._test_pot_generation('Malformed.xml', expected_status=1)
+        self.assertTrue("libxml2.parserError" in res['errors'])
+
+    def test_bad_translation(self):
+        """ Test that bad XML syntax in translation generates a proper exception """
+        res = self._test_translation_process('Translate3.xml', expected_status=1, po_file='Translate3.ll.wrong.po')
+        self.assertTrue("libxml2.parserError" in res['errors'])
+
 
 class ITSTestRunner(unittest.TextTestRunner):
     def run(self, test):

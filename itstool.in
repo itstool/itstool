@@ -287,9 +287,14 @@ def xml_is_ns_name (node, ns, name):
         return False
     return node.name == name and node.ns() is not None and node.ns().content == ns
 
+def xml_error_catcher(doc, error):
+    doc._xml_err += " %s" % error
+
 
 class Document (object):
     def __init__ (self, filename, messages):
+        self._xml_err = ''
+        libxml2.registerErrorHandler(xml_error_catcher, self)
         ctxt = libxml2.createFileParserCtxt(filename)
         ctxt.lineNumbers(1)
         ctxt.replaceEntities(1)
@@ -313,6 +318,7 @@ class Document (object):
                     self._localrules.append(child)
                 pre_process(child)
         pre_process(self._doc)
+        self._check_errors()
         self._msgs = messages
         self._its_translate_nodes = {}
         self._its_within_text_nodes = {}
@@ -324,6 +330,10 @@ class Document (object):
         self._itst_lang_attr = {}
         self._itst_credits = None
         self._itst_externals = []
+
+    def _check_errors(self):
+        if self._xml_err:
+            raise libxml2.parserError(self._xml_err)
 
     def apply_its_rule(self, rule, xpath):
         if rule.type != 'element':
@@ -644,6 +654,7 @@ class Document (object):
                     if child.type == 'element':
                         fix_node_ns(child, childnsdefs)
             fix_node_ns(node, {})
+            self._check_errors()
 
     def translate_attrs(self, oldnode, newnode):
         trans_attrs = [attr for attr in xml_attr_iter(oldnode) if self._its_translate_nodes.get(attr, 'no') == 'yes']

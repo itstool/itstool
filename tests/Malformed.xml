@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<myDoc>
+ <body>
+  <par>This is the first paragraph. It has some <code>malformed XML<code>.</par>
+ </body>
+</myDoc>
