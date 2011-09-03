@@ -1,0 +1,5 @@
+﻿<book xmlns:its="http://www.w3.org/2005/11/its" its:version="1.0">
+ <body>
+  <p>This is the first paragraph. It has a note on its final word<note><p>This is a note.</p></note>.</p>
+ </body>
+</book>
