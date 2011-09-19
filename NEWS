@@ -1,3 +1,10 @@
+1.1.1
+=====
+* Catch XML parsing errors and exit with error code
+* Fixed placeholder translation when it contains sub-elements
+* Improved autogen.sh for out of tree compilations
+* Commits by Claude Paroz, Javier Jardón
+
 1.1.0
 =====
 * Added itst:context to set msgctxt
