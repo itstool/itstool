@@ -318,7 +318,11 @@ class Document (object):
                     self._localrules.append(child)
                 pre_process(child)
         pre_process(self._doc)
-        self._check_errors()
+        try:
+            self._check_errors()
+        except libxml2.parserError as e:
+            sys.stderr.write('Error: Could not parse document:\n%s\n' % str(e))
+            sys.exit(1)
         self._msgs = messages
         self._its_translate_nodes = {}
         self._its_within_text_nodes = {}
@@ -583,7 +587,7 @@ class Document (object):
             for node in xml_child_iter(self._itst_credits[1]):
                 self._append_credits(self._itst_credits[0], node, trdata)
 
-    def merge_translations(self, translations, language, node=None):
+    def merge_translations(self, translations, language, node=None, strict=False):
         is_root = False
         if node is None:
             is_root = True
@@ -607,9 +611,9 @@ class Document (object):
             self.translate_attrs(node, node)
             children = [child for child in xml_child_iter(node)]
             for child in children:
-                self.merge_translations(translations, language, node=child)
+                self.merge_translations(translations, language, node=child, strict=strict)
         else:
-            newnode = self.get_translated(node, translations)
+            newnode = self.get_translated(node, translations, strict=strict)
             if newnode != node:
                 self.translate_attrs(node, newnode)
                 node.replaceNode(newnode)
@@ -663,7 +667,7 @@ class Document (object):
             if newcontent:
                 newnode.setProp(attr.name, translations.ugettext(attr.get_content()))
 
-    def get_translated (self, node, translations):
+    def get_translated (self, node, translations, strict=False):
         msg = self._msgs.get_message_by_node(node)
         if msg is None:
             return node
@@ -697,6 +701,15 @@ class Document (object):
         ctxt.replaceEntities(0)
         ctxt.parseDocument()
         trnode = ctxt.doc().getRootElement()
+        try:
+            self._check_errors()
+        except libxml2.parserError as e:
+            if strict:
+                raise
+            else:
+                sys.stderr.write('Warning: Could not merge translation for msgid:\n%s\n' % msgstr)
+                self._xml_err = ''
+                return node
         def scan_node(node):
             children = [child for child in xml_child_iter(node)]
             for child in children:
@@ -705,10 +718,10 @@ class Document (object):
                 if child.ns() is not None and child.ns().content == NS_BLANK:
                     ph_node = msg.get_placeholder(child.name).node
                     if self.has_child_elements(ph_node):
-                        self.merge_translations(translations, None, ph_node)
+                        self.merge_translations(translations, None, ph_node, strict=strict)
                         child.replaceNode(ph_node)
                     else:
-                        repl = self.get_translated(ph_node, translations)
+                        repl = self.get_translated(ph_node, translations, strict=strict)
                         child.replaceNode(repl)
                 scan_node(child)
         scan_node(trnode)
@@ -914,6 +927,11 @@ if __name__ == '__main__':
                        default=None,
                        metavar='OUT',
                        help='output PO files to file OUT or XML files in directory OUT')
+    options.add_option('-s', '--strict',
+                       action='store_true',
+                       dest='strict',
+                       default=False,
+                       help='Exit with error when PO files contain broken XML')
     options.add_option('-v', '--version',
                        action='store_true',
                        dest='version',
@@ -971,7 +989,11 @@ if __name__ == '__main__':
             if opts.itsfile is not None:
                 for itsfile in opts.itsfile:
                     doc.apply_its_file(itsfile)
-            doc.merge_translations(translations, opts.lang)
+            try:
+                doc.merge_translations(translations, opts.lang, strict=opts.strict)
+            except Exception as e:
+                sys.stderr.write('Error: Could not merge translations:\n%s\n' % str(e))
+                sys.exit(1)
             fout = out
             if isinstance(fout, basestring):
                 fout = file(os.path.join(fout, os.path.basename(filename)), 'w')
