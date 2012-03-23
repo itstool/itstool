@@ -734,6 +734,15 @@ class Document (object):
         if self._itst_credits is not None:
             self._msgs.add_credits()
         for ext in self._itst_externals:
+            translate = None
+            node = ext[0]
+            while node != None:
+                translate = self.get_its_translate(node)
+                if translate is not None:
+                    break
+                node = node.parent
+            if translate == 'no':
+                continue
             msg = Message()
             try:
                 fullfile = os.path.join(os.path.dirname(self._filename), ext[1])
