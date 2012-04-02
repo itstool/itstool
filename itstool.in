@@ -169,6 +169,8 @@ class Message (object):
                     if prop.ns() is not None:
                         name = prop.ns().name + ':' + name
                     atval = prop.content
+                    if not isinstance(atval, unicode):
+                        atval = unicode(atval, 'utf-8')
                     atval = atval.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
                     self._message += " %s=\"%s\"" % (name, atval)
         if node.children is not None:
