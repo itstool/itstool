@@ -297,7 +297,11 @@ class Document (object):
     def __init__ (self, filename, messages):
         self._xml_err = ''
         libxml2.registerErrorHandler(xml_error_catcher, self)
-        ctxt = libxml2.createFileParserCtxt(filename)
+        try:
+            ctxt = libxml2.createFileParserCtxt(filename)
+        except:
+            sys.stderr.write('Error: cannot open XML file %s\n' % filename)
+            sys.exit(1)
         ctxt.lineNumbers(1)
         ctxt.replaceEntities(1)
         ctxt.parseDocument()
