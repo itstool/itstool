@@ -713,7 +713,8 @@ class Document (object):
             if strict:
                 raise
             else:
-                sys.stderr.write('Warning: Could not merge translation for msgid:\n%s\n' % msgstr)
+                sys.stderr.write('Warning: Could not merge translation for msgid:\n%s\n' %
+                                 msgstr.encode('utf-8'))
                 self._xml_err = ''
                 return node
         def scan_node(node):
