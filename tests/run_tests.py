@@ -69,57 +69,57 @@ class ItstoolTests(unittest.TestCase):
         return result
 
 
-    def test_locnotes(self):
+    def test_LocNote1(self):
         # FIXME: only the third note appears currently, as notes on subnodes don't propagate to parent nodes
         self._test_pot_generation('LocNote1.xml')
 
-    def test_locnotes_external(self):
+    def test_LocNote2(self):
         # FIXME: only the third note appears currently, as notes on subnodes don't propagate to parent nodes
         self._test_pot_generation('LocNote2.xml')
 
-    def test_locnotes_ontags(self):
+    def test_LocNote3(self):
         self._test_pot_generation('LocNote3.xml')
 
-    def test_locnotes_onspan(self):
+    def test_LocNote4(self):
         self._test_pot_generation('LocNote4.xml')
-
-    def test_locnotes_pointer(self):
-        self._test_pot_generation('EX-locNotePointer-attribute-1.xml')
-
-    def test_locnotes_refpointer(self):
-        self._test_pot_generation('EX-locNoteRefPointer-attribute-1.xml')
 
     def test_EX_locNote_selector_2(self):
         self._test_pot_generation('EX-locNote-selector-2.xml')
 
-    def test_unicode_markup(self):
+    def test_EX_locNotePointer_attribute_1(self):
+        self._test_pot_generation('EX-locNotePointer-attribute-1.xml')
+
+    def test_EX_locNoteRefPointer_attribute_1(self):
+        self._test_pot_generation('EX-locNoteRefPointer-attribute-1.xml')
+
+    def test_Translate1(self):
         self._test_translation_process('Translate1.xml')
 
-    def test_external_rules(self):
+    def test_Translate2(self):
         self._test_translation_process('Translate2.xml')
 
-    def test_embedded_its(self):
+    def test_Translate3(self):
         self._test_translation_process('Translate3.xml')
 
-    def test_notranslate_to_simpletag(self):
+    def test_Translate4(self):
         self._test_translation_process('Translate4.xml')
 
-    def test_selector_translate_rule(self):
+    def test_Translate5(self):
         self._test_translation_process('Translate5.xml')
 
-    def test_root_selector(self):
+    def test_Translate6(self):
         self._test_translation_process('Translate6.xml')
 
-    def test_last_rule_win(self):
+    def test_Translate7(self):
         self._test_translation_process('Translate7.xml')
 
-    def test_attribute_selectable(self):
+    def test_TranslateGlobal(self):
         self._test_translation_process('TranslateGlobal.xml')
 
-    def test_withintext(self):
+    def test_WithinText1(self):
         self._test_translation_process('WithinText1.xml')
 
-    def test_withintext_linkedrules(self):
+    def test_WithinText2(self):
         self._test_translation_process('WithinText2.xml')
 
     def test_IT_locNote_inline(self):
@@ -129,31 +129,31 @@ class ItstoolTests(unittest.TestCase):
         self._test_pot_generation('IT-locNote-multiples.xml')
 
     # **** custom itst rules ****
-    def test_droprule(self):
+    def test_Droprule(self):
         self._test_translation_process('Droprule.xml')
 
-    def test_attributes1(self):
+    def test_Attributes1(self):
         self._test_translation_process('Attributes1.xml')
 
-    def test_context(self):
+    def test_Context(self):
         self._test_translation_process('Context.xml')
 
-    def test_deep_placeholder(self):
+    def test_Placeholder(self):
         self._test_translation_process('Placeholder.xml')
 
-    def test_bad_file(self):
+    def test_Malformed(self):
         """ Test that a malformed XML generates a proper exception """
         res = self._test_pot_generation('Malformed.xml', expected_status=1)
         #self.assertTrue("libxml2.parserError" in res['errors'])
 
-    def test_bad_translation(self):
+    def test_Translate3_wrong1(self):
         """ Test that bad XML syntax in translation generates a proper exception """
         res = self._test_translation_process('Translate3.xml', expected_status=1,
                                              po_file='Translate3.ll.wrong.po',
                                              options='-s')
         #self.assertTrue("libxml2.parserError" in res['errors'])
 
-    def test_bad_translation(self):
+    def test_Translate3_wrong2(self):
         """ Test that bad XML syntax in translation is handled gracefully """
         res = self._test_translation_process('Translate3.xml',
                                              po_file='Translate3.ll.wrong.po',
