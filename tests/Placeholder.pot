@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2012-05-04 11:30-0400\n"
+"POT-Creation-Date: 2012-05-04 13:39-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -9,13 +9,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. (itstool) path: body/p
-#: tests/Translate7.xml:19
-msgid "For the implementation of ITS, apply the rules in the order:"
+#. (itstool) path: note/p
+#: tests/Placeholder.xml:3
+msgid "This is a note."
 msgstr ""
 
 #. (itstool) path: body/p
-#: tests/Translate7.xml:26
-msgid "<_:ph-1/> The last rule wins."
+#: tests/Placeholder.xml:3
+msgid "This is the first paragraph. It has a note on its final word<_:note-1/>."
 msgstr ""
 

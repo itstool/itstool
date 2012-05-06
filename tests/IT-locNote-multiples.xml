@@ -1,0 +1,19 @@
+<msgList xmlns:its="http://www.w3.org/2005/11/its">
+ <head>
+  <its:rules version="1.0">
+   <its:withinTextRule selector="//inline" withinText="yes"/>
+   <its:locNoteRule selector="//block">
+    <its:locNote>This is the generic block comment</its:locNote>
+   </its:locNoteRule>
+  </its:rules>
+ </head>
+ <body>
+  <block>
+   <block its:locNote="Specific comment #1">This is a block in a block</block>
+   <inline>This is an inline statement</inline>
+  </block>
+  <block its:locNote="Specific comment #2">
+   <block its:locNote="Specific comment #2">This is a block in a block</block>
+  </block>
+ </body>
+</msgList>

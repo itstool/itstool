@@ -89,7 +89,8 @@ class ItstoolTests(unittest.TestCase):
     def test_locnotes_refpointer(self):
         self._test_pot_generation('EX-locNoteRefPointer-attribute-1.xml')
 
-    # FIXME: test EX-locNote-selector-2.xml when parent locNotes will propagate to children
+    def test_EX_locNote_selector_2(self):
+        self._test_pot_generation('EX-locNote-selector-2.xml')
 
     def test_unicode_markup(self):
         self._test_translation_process('Translate1.xml')
@@ -120,6 +121,12 @@ class ItstoolTests(unittest.TestCase):
 
     def test_withintext_linkedrules(self):
         self._test_translation_process('WithinText2.xml')
+
+    def test_IT_locNote_inline(self):
+        self._test_pot_generation('IT-locNote-inline.xml')
+
+    def test_IT_locNote_multiples(self):
+        self._test_pot_generation('IT-locNote-multiples.xml')
 
     # **** custom itst rules ****
     def test_droprule(self):

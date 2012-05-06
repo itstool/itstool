@@ -1,0 +1,15 @@
+<msgList xmlns:its="http://www.w3.org/2005/11/its">
+ <head>
+  <its:rules version="1.0">
+   <its:withinTextRule selector="//span|//em|//a" withinText="yes"/>
+   <its:locNoteRule selector="//a">
+    <its:locNote>This is the inline comment.</its:locNote>
+   </its:locNoteRule>
+  </its:rules>
+ </head>
+ <body>
+  <block its:locNote="This is the block comment">This is some text that
+  contains a <span>span that contains an <em>em that contains an <a>a
+  element</a></em></span>.</block>
+ </body>
+</msgList>

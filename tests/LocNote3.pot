@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2011-06-01 10:03+0200\n"
+"POT-Creation-Date: 2012-05-04 13:29-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -9,21 +9,27 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/LocNote3.xml:5(msg/data)
+#. (itstool) path: msg/data
+#. The variable {0} is the name of the host.
+#: tests/LocNote3.xml:5
 msgid "Host {0} cannot be found."
 msgstr ""
 
-#: tests/LocNote3.xml:8(msg/data)
+#. (itstool) path: msg/data
+#. The variable {0} is the name of the host.
+#: tests/LocNote3.xml:8
 msgid "The connection with {0} has been lost."
 msgstr ""
 
+#. (itstool) path: msg/data
 #. {0} is a filename
-#: tests/LocNote3.xml:11(msg/data)
+#: tests/LocNote3.xml:11
 msgid "{0} not found."
 msgstr ""
 
-#. SEE: myLocNotes.htm#CannotLog
-#: tests/LocNote3.xml:14(msg/data)
+#. (itstool) path: msg/data
+#. (itstool) link: myLocNotes.htm#CannotLog
+#: tests/LocNote3.xml:14
 msgid "Cannot log with this username."
 msgstr ""
 

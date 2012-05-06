@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2011-06-01 09:34+0200\n"
+"POT-Creation-Date: 2012-05-04 10:52-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -9,43 +9,53 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/WithinText2.xml:9(prolog/author)
+#. (itstool) path: prolog/author
+#: tests/WithinText2.xml:9
 msgid "Zebulon Fairfield"
 msgstr ""
 
-#: tests/WithinText2.xml:10(prolog/version)
+#. (itstool) path: prolog/version
+#: tests/WithinText2.xml:10
 msgid "version 12, revision 2 - 2006-08-14"
 msgstr ""
 
-#: tests/WithinText2.xml:11(keywords/kw)
+#. (itstool) path: keywords/kw
+#: tests/WithinText2.xml:11
 msgid "horse"
 msgstr ""
 
-#: tests/WithinText2.xml:11(keywords/kw)
+#. (itstool) path: keywords/kw
+#: tests/WithinText2.xml:11
 msgid "appaloosa"
 msgstr ""
 
-#: tests/WithinText2.xml:12(prolog/storageKey)
+#. (itstool) path: prolog/storageKey
+#: tests/WithinText2.xml:12
 msgid "articles-6D272BA9-3B89CAD8"
 msgstr ""
 
-#: tests/WithinText2.xml:16(section/title)
+#. (itstool) path: section/title
+#: tests/WithinText2.xml:16
 msgid "Appaloosa"
 msgstr ""
 
-#: tests/WithinText2.xml:17(p/fnote)
+#. (itstool) path: p/fnote
+#: tests/WithinText2.xml:17
 msgid "The name comes from \"Palouse horse\" in reference to the Palouse River in Northern Idaho."
 msgstr ""
 
-#: tests/WithinText2.xml:17(section/p)
+#. (itstool) path: section/p
+#: tests/WithinText2.xml:17
 msgid "The Appaloosa<_:fnote-1/> are rugged horses originally breed by the <kw>Nez-Perce</kw> tribe in the US Northwest."
 msgstr ""
 
-#: tests/WithinText2.xml:20(section/p)
+#. (itstool) path: section/p
+#: tests/WithinText2.xml:20
 msgid "They are often characterized by their spotted coats, as shown here: <img src=\"appaloosa.png\" alt=\"Appaloosa horses\"/>"
 msgstr ""
 
-#: tests/WithinText2.xml:23(footer/p)
+#. (itstool) path: footer/p
+#: tests/WithinText2.xml:23
 msgid "Copyright: <em>Zebulon Inc.</em>"
 msgstr ""
 

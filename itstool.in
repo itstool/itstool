@@ -72,7 +72,7 @@ class MessageList (object):
         msg = Message()
         msg.set_context('_')
         msg.add_text('translator-credits')
-        msg.add_comment('Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2')
+        msg.add_comment(Comment('Put one translator per line, in the form NAME <EMAIL>, YEAR1, YEAR2'))
         self._messages.append(msg)
         self._has_credits = True
 
@@ -90,6 +90,8 @@ class MessageList (object):
             if msgdict.has_key(key):
                 for source in msg.get_sources():
                     msgdict[key].add_source(source)
+                for marker in msg.get_markers():
+                    msgdict[key].add_marker(marker)
                 for comment in msg.get_comments():
                     msgdict[key].add_comment(comment)
                 if msg.get_preserve_space():
@@ -113,6 +115,50 @@ class MessageList (object):
             out.write('\n')
 
 
+class Comment (object):
+    def __init__ (self, text):
+        self._text = text
+        assert(text is not None)
+        self._markers = []
+
+    def add_marker (self, marker):
+        self._markers.append(marker)
+
+    def get_markers (self):
+        return self._markers
+
+    def get_text (self):
+        return self._text
+
+    def format (self):
+        ret = u''
+        markers = {}
+        for marker in self._markers:
+            if not markers.has_key(marker):
+                ret += '#. (itstool) comment: ' + marker + '\n'
+                markers[marker] = marker
+        if '\n' in self._text:
+            doadd = False
+            for line in self._text.split('\n'):
+                if line != '':
+                    doadd = True
+                if not doadd:
+                    continue
+                ret += u'#. %s\n' % line
+        else:
+            text = self._text
+            while len(text) > 72:
+                j = text.rfind(' ', 0, 72)
+                if j == -1:
+                    j = text.find(' ')
+                if j == -1:
+                    break
+                ret += u'#. %s\n' % text[:j]
+                text = text[j+1:]
+            ret += '#. %s\n' % text
+        return ret
+
+
 class Message (object):
     def __init__ (self):
         self._message = []
@@ -120,6 +166,7 @@ class Message (object):
         self._ctxt = None
         self._placeholders = []
         self._sources = []
+        self._markers = []
         self._comments = []
         self._preserve = False
 
@@ -201,6 +248,14 @@ class Message (object):
     def get_sources (self):
         return self._sources
 
+    def add_marker (self, marker):
+        if not isinstance(marker, unicode):
+            marker = unicode(marker, 'utf-8')
+        self._markers.append(marker)
+
+    def get_markers (self):
+        return self._markers
+
     def add_comment (self, comment):
         if comment is not None:
             self._comments.append(comment)
@@ -229,28 +284,25 @@ class Message (object):
 
     def format (self):
         ret = u''
-        for i in range(len(self._comments)):
+        markers = {}
+        for marker in self._markers:
+            if not markers.has_key(marker):
+                ret += '#. (itstool) path: ' + marker + '\n'
+                markers[marker] = marker
+        comments = []
+        commentsdict = {}
+        for comment in self._comments:
+            key = comment.get_text()
+            if commentsdict.has_key(key):
+                for marker in comment.get_markers():
+                    commentsdict[key].add_marker(marker)
+            else:
+                comments.append(comment)
+                commentsdict[key] = comment
+        for i in range(len(comments)):
             if i != 0:
                 ret += '#.\n'
-            comment = self._comments[i]
-            if '\n' in comment:
-                doadd = False
-                for line in comment.split('\n'):
-                    if line != '':
-                        doadd = True
-                    if not doadd:
-                        continue
-                    ret += u'#. %s\n' % line
-            else:
-                while len(comment) > 72:
-                    j = comment.rfind(' ', 0, 72)
-                    if j == -1:
-                        j = comment.find(' ')
-                    if j == -1:
-                        break
-                    ret += u'#. %s\n' % comment[:j]
-                    comment = comment[j+1:]
-                ret += '#. %s\n' % comment
+            ret += comments[i].format()
         for source in self._sources:
             ret += u'#: %s\n' % source
         if self._preserve:
@@ -391,11 +443,11 @@ class Document (object):
                     break
             if locnote is None:
                 if rule.hasProp('locNoteRef'):
-                    locnote = 'SEE: ' + re.sub('\s+', ' ', rule.prop('locNoteRef')).strip()
+                    locnote = '(itstool) link: ' + re.sub('\s+', ' ', rule.prop('locNoteRef')).strip()
             if rule.prop('selector') is not None:
                 for node in self._try_xpath_eval(xpath, rule.prop('selector')):
                     if locnote is not None:
-                        self._its_loc_notes[node] = locnote
+                        self._its_loc_notes.setdefault(node, []).append(locnote)
                     else:
                         if rule.hasProp('locNotePointer'):
                             sel = rule.prop('locNotePointer')
@@ -412,7 +464,7 @@ class Document (object):
                         xpath.setContextNode(node)
                         note = self._try_xpath_eval(xpath, sel)
                         if isinstance(note, basestring):
-                            self._its_loc_notes[node] = note
+                            self._its_loc_notes.setdefault(node, []).append(note)
                         else:
                             for note in note:
                                 if self.get_preserve_space(note):
@@ -420,8 +472,8 @@ class Document (object):
                                 else:
                                     cont = re.sub('\s+', ' ', note.content).strip()
                                 if ref:
-                                    cont = 'SEE: ' + cont
-                                self._its_loc_notes[node] = cont
+                                    cont = '(itstool) link: ' + cont
+                                self._its_loc_notes.setdefault(node, []).append(cont)
                                 break
                         xpath.setContextNode(oldnode)
         elif xml_is_ns_name(rule, NS_ITS, 'langRule'):
@@ -761,12 +813,13 @@ class Document (object):
             txt = "external ref='%s' md5='%s'" % (ext[1], filemd5)
             msg.set_context('_')
             msg.add_text(txt)
-            msg.add_source('%s:%i(%s)' % (self._doc.name, ext[0].lineNo(), ext[0].name))
-            msg.add_comment('This is a reference to an external file such as an image or'
-                            ' video. When the file changes, the md5 hash will change to'
-                            ' let you know you need to update your localized copy. The'
-                            ' msgstr is not used at all. Set it to whatever you like'
-                            ' once you have updated your copy of the file.')
+            msg.add_source('%s:%i' % (self._doc.name, ext[0].lineNo()))
+            msg.add_marker(ext[0].name)
+            msg.add_comment(Comment('This is a reference to an external file such as an image or'
+                                    ' video. When the file changes, the md5 hash will change to'
+                                    ' let you know you need to update your localized copy. The'
+                                    ' msgstr is not used at all. Set it to whatever you like'
+                                    ' once you have updated your copy of the file.'))
             self._msgs.add_message(msg, None)
         self._in_translatable = True
         for child in xml_child_iter(self._doc):
@@ -774,7 +827,7 @@ class Document (object):
                 self.generate_message(child, None, comments=comments)
                 break
 
-    def generate_message (self, node, msg, comments=True):
+    def generate_message (self, node, msg, comments=True, path=None):
         if node.type in ('text', 'cdata') and msg is not None:
             msg.add_text(node.content)
             return
@@ -784,6 +837,8 @@ class Document (object):
             return
         if self._itst_drop_nodes.get(node, 'no') == 'yes':
             return
+        if path is None:
+            path = ''
         translate = self.get_its_translate(node)
         if translate is None:
             if self._in_translatable:
@@ -811,7 +866,8 @@ class Document (object):
                     msg.set_context(ctxt)
                 if self.get_preserve_space(node):
                     msg.set_preserve_space()
-                msg.add_source('%s:%i(%s/%s)' % (self._doc.name, node.lineNo(), node.parent.name, node.name))
+                msg.add_source('%s:%i' % (self._doc.name, node.lineNo()))
+                msg.add_marker('%s/%s' % (node.parent.name, node.name))
             else:
                 withinText = True
                 msg.add_start_tag(node)
@@ -821,21 +877,37 @@ class Document (object):
             for attr in xml_attr_iter(node):
                 if self._its_translate_nodes.get(attr, 'no') == 'yes':
                     attr_msg = Message()
-                    attr_msg.add_source('%s:%i(%s/%s@%s)' % (
-                        self._doc.name, node.lineNo(), node.parent.name, node.name, attr.name))
+                    attr_msg.add_source('%s:%i' % (self._doc.name, node.lineNo()))
+                    attr_msg.add_marker('%s/%s@%s' % (node.parent.name, node.name, attr.name))
                     attr_msg.add_text(attr.content)
                     if comments:
-                        attr_msg.add_comment(self.get_its_loc_note(attr))
+                        for locnote in self.get_its_loc_notes(attr):
+                            comment = Comment(locnote)
+                            comment.add_marker ('%s/%s@%s' % (
+                                    node.parent.name, node.name, attr.name))
+                            attr_msg.add_comment(comment)
                     self._msgs.add_message(attr_msg, attr)
 
-
         if comments and msg is not None:
-            msg.add_comment(self.get_its_loc_note(node))
+            cnode = node
+            while cnode is not None:
+                hasnote = False
+                for locnote in self.get_its_loc_notes(cnode):
+                    comment = Comment(locnote)
+                    if withinText:
+                        comment.add_marker('.%s/%s' % (path, cnode.name))
+                    msg.add_comment(comment)
+                    hasnote = True
+                if hasnote or not is_unit:
+                    break
+                cnode = cnode.parent
 
         in_translatable = self._in_translatable
         self._in_translatable = (translate == 'yes')
+        if withinText:
+            path = path + '/' + node.name
         for child in xml_child_iter(node):
-            self.generate_message(child, msg, comments=comments)
+            self.generate_message(child, msg, comments=comments, path=path)
         self._in_translatable = in_translatable
 
         if translate:
@@ -873,17 +945,20 @@ class Document (object):
     def get_its_within_text (self, node):
         return self._its_within_text_nodes.get(node, 'no')
 
-    def get_its_loc_note (self, node):
+    def get_its_loc_notes (self, node):
+        ret = []
         if node.hasNsProp('locNote', NS_ITS):
-            return re.sub('\s+', ' ', node.nsProp('locNote', NS_ITS)).strip()
+            ret.append(re.sub('\s+', ' ', node.nsProp('locNote', NS_ITS)).strip())
         if node.hasNsProp('locNoteRef', NS_ITS):
-            return 'SEE: ' + re.sub('\s+', ' ', node.nsProp('locNoteRef', NS_ITS)).strip()
+            ret.append('(itstool) link: ' + re.sub('\s+', ' ', node.nsProp('locNoteRef', NS_ITS)).strip())
         if xml_is_ns_name(node, NS_ITS, 'span'):
             if node.hasProp('locNote'):
-                return re.sub('\s+', ' ', node.prop('locNote')).strip()
+                ret.append(re.sub('\s+', ' ', node.prop('locNote')).strip())
             if node.hasProp('locNoteRef'):
-                return 'SEE: ' + re.sub('\s+', ' ', node.prop('locNoteRef')).strip()
-        return self._its_loc_notes.get(node, None)
+                ret.append('(itstool) link: ' + re.sub('\s+', ' ', node.prop('locNoteRef')).strip())
+        for locnote in self._its_loc_notes.get(node, []):
+            ret.append(locnote)
+        return ret
 
     @staticmethod
     def _try_xpath_eval (xpath, expr):

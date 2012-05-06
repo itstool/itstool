@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2011-06-01 15:08+0200\n"
+"POT-Creation-Date: 2012-05-04 13:25-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -9,17 +9,20 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/LocNote2.xml:11(body/msg)
+#. (itstool) path: body/msg
+#: tests/LocNote2.xml:11
 msgid "This is a hippoptamus: <_:img-1/>."
 msgstr ""
 
-#: tests/LocNote2.xml:12(body/msg)
+#. (itstool) path: body/msg
+#: tests/LocNote2.xml:12
 msgid "This is an elephant: <_:img-1/>."
 msgstr ""
 
+#. (itstool) path: body/msg
 #. The variable {0} has three possible values: 'printer', 'stacker' and
 #. 'stapler options'.
-#: tests/LocNote2.xml:13(body/msg)
+#: tests/LocNote2.xml:13
 msgid "The {0} has been disabled."
 msgstr ""
 

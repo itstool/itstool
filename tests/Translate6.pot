@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2012-05-04 11:18-0400\n"
+"POT-Creation-Date: 2012-05-04 11:27-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -9,13 +9,28 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. (itstool) path: item/b
+#: tests/Translate6.xml:9
+msgid "Simple Man"
+msgstr ""
+
 #. (itstool) path: info/item
-#: tests/Translate5.xml:9
+#: tests/Translate6.xml:9
 msgid "The Life of a <_:b-1/>"
 msgstr ""
 
+#. (itstool) path: p/span
+#: tests/Translate6.xml:16
+msgid "doppelgänger"
+msgstr ""
+
+#. (itstool) path: p/span
+#: tests/Translate6.xml:17
+msgid "aficionado"
+msgstr ""
+
 #. (itstool) path: content/p
-#: tests/Translate5.xml:15
+#: tests/Translate6.xml:15
 msgid "Everything started when Zebulon discovered that he had a <_:span-1/> who was a serious baseball <_:span-2/>."
 msgstr ""
 

@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2011-06-01 10:31+0200\n"
+"POT-Creation-Date: 2012-05-04 13:40-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -9,13 +9,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. SEE: Comments.html#FileNotFound
-#: tests/EX-locNoteRefPointer-attribute-1.xml:10(string/data)
+#. (itstool) path: string/data
+#. (itstool) link: Comments.html#FileNotFound
+#: tests/EX-locNoteRefPointer-attribute-1.xml:10
 msgid "Cannot find the file {0}."
 msgstr ""
 
-#. SEE: Comments.html#DivByZero
-#: tests/EX-locNoteRefPointer-attribute-1.xml:13(string/data)
+#. (itstool) path: string/data
+#. (itstool) link: Comments.html#DivByZero
+#: tests/EX-locNoteRefPointer-attribute-1.xml:13
 msgid "Invalid parameter."
 msgstr ""
 

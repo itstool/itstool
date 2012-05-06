@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2011-06-01 10:24+0200\n"
+"POT-Creation-Date: 2012-05-04 13:34-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -9,13 +9,15 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. (itstool) path: msg/data
 #. Indicates that the resource file {0} could not be loaded.
-#: tests/EX-locNotePointer-attribute-1.xml:12(msg/data)
+#: tests/EX-locNotePointer-attribute-1.xml:12
 msgid "Cannot find the file {0}."
 msgstr ""
 
+#. (itstool) path: msg/data
 #. A division by 0 was going to be computed.
-#: tests/EX-locNotePointer-attribute-1.xml:16(msg/data)
+#: tests/EX-locNotePointer-attribute-1.xml:16
 msgid "Invalid parameter."
 msgstr ""
 

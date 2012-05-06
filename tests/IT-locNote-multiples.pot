@@ -1,0 +1,28 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2012-05-04 13:43-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. (itstool) path: block/block
+#. Specific comment #1
+#.
+#. This is the generic block comment
+#.
+#. Specific comment #2
+#: tests/IT-locNote-multiples.xml:12
+#: tests/IT-locNote-multiples.xml:16
+msgid "This is a block in a block"
+msgstr ""
+
+#. (itstool) path: body/block
+#. This is the generic block comment
+#: tests/IT-locNote-multiples.xml:11
+msgid "<_:block-1/> <inline>This is an inline statement</inline>"
+msgstr ""
+
