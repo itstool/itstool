@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/Droprule.xml:8(content/p)
+#: tests/IT-dropRule-1.xml:8(content/p)
 msgid "Everything started now."
 msgstr "Tout commença à l'instant."
 

@@ -10,30 +10,30 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. (itstool) path: info/title
-#: tests/Context.xml:8
+#: tests/IT-context-1.xml:8
 msgctxt "[[sort]]"
 msgid "Title"
 msgstr ""
 
 #. (itstool) path: info/title
-#: tests/Context.xml:9
+#: tests/IT-context-1.xml:9
 msgctxt "link"
 msgid "Link title"
 msgstr ""
 
 #. (itstool) path: info/title
-#: tests/Context.xml:10
+#: tests/IT-context-1.xml:10
 msgctxt "link:topic"
 msgid "Topic link title"
 msgstr ""
 
 #. (itstool) path: page/title
-#: tests/Context.xml:12
+#: tests/IT-context-1.xml:12
 msgid "Title"
 msgstr ""
 
 #. (itstool) path: page/p
-#: tests/Context.xml:13
+#: tests/IT-context-1.xml:13
 msgctxt "paragraph"
 msgid "Context is paragraph"
 msgstr ""

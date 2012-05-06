@@ -10,12 +10,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. (itstool) path: note/p
-#: tests/Placeholder.xml:3
+#: tests/IT-placeholder-1.xml:3
 msgid "This is a note."
 msgstr ""
 
 #. (itstool) path: body/p
-#: tests/Placeholder.xml:3
+#: tests/IT-placeholder-1.xml:3
 msgid "This is the first paragraph. It has a note on its final word<_:note-1/>."
 msgstr ""
 

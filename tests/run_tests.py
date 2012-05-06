@@ -129,21 +129,21 @@ class ItstoolTests(unittest.TestCase):
         self._test_pot_generation('IT-locNote-multiples.xml')
 
     # **** custom itst rules ****
-    def test_Droprule(self):
-        self._test_translation_process('Droprule.xml')
+    def test_IT_dropRule_1(self):
+        self._test_translation_process('IT-dropRule-1.xml')
 
-    def test_Attributes1(self):
-        self._test_translation_process('Attributes1.xml')
+    def test_IT_attributes_1(self):
+        self._test_translation_process('IT-attributes-1.xml')
 
-    def test_Context(self):
-        self._test_translation_process('Context.xml')
+    def test_IT_context_1(self):
+        self._test_translation_process('IT-context-1.xml')
 
-    def test_Placeholder(self):
-        self._test_translation_process('Placeholder.xml')
+    def test_IT_placeholder_1(self):
+        self._test_translation_process('IT-placeholder-1.xml')
 
-    def test_Malformed(self):
+    def test_IT_malformed(self):
         """ Test that a malformed XML generates a proper exception """
-        res = self._test_pot_generation('Malformed.xml', expected_status=1)
+        res = self._test_pot_generation('IT-malformed.xml', expected_status=1)
         #self.assertTrue("libxml2.parserError" in res['errors'])
 
     def test_Translate3_wrong1(self):

@@ -10,12 +10,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. (itstool) path: page/code@title
-#: tests/Attributes1.xml:9
+#: tests/IT-attributes-1.xml:9
 msgid "one"
 msgstr ""
 
 #. (itstool) path: code/span@title
-#: tests/Attributes1.xml:9
+#: tests/IT-attributes-1.xml:9
 msgid "two"
 msgstr ""
 

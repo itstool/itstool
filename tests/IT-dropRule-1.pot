@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2011-06-23 16:08-0400\n"
+"POT-Creation-Date: 2012-05-04 11:55-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -9,11 +9,8 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/Attributes1.xml:9(page/code@title)
-msgid "one"
-msgstr "eins"
-
-#: tests/Attributes1.xml:9(code/span@title)
-msgid "two"
-msgstr "zwei"
+#. (itstool) path: content/p
+#: tests/IT-dropRule-1.xml:8
+msgid "Everything started now."
+msgstr ""
 
