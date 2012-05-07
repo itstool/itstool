@@ -83,11 +83,17 @@ class ItstoolTests(unittest.TestCase):
     def test_LocNote4(self):
         self._test_pot_generation('LocNote4.xml')
 
+    def test_EX_locNote_element_1(self):
+        self._test_pot_generation('EX-locNote-element-1.xml')
+
     def test_EX_locNote_selector_2(self):
         self._test_pot_generation('EX-locNote-selector-2.xml')
 
     def test_EX_locNotePointer_attribute_1(self):
         self._test_pot_generation('EX-locNotePointer-attribute-1.xml')
+
+    def test_EX_locNoteRef_attribute_1(self):
+        self._test_pot_generation('EX-locNoteRef-attribute-1.xml')
 
     def test_EX_locNoteRefPointer_attribute_1(self):
         self._test_pot_generation('EX-locNoteRefPointer-attribute-1.xml')
