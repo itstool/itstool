@@ -1,19 +1,25 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2011-05-31 21:45+0200\n"
+"POT-Creation-Date: 2012-05-04 11:18-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/Translate5.xml:9(info/item)
+#. (itstool) path: info/item
+#: tests/Translate5.xml:9
 msgid "The Life of a <_:b-1/>"
 msgstr "La vie d'un <_:b-1/>"
 
-#: tests/Translate5.xml:15(content/p)
-msgid "Everything started when Zebulon discovered that he had a <_:span-1/> who was a serious baseball <_:span-2/>."
-msgstr "Tout commença alors que Zebulon découvrit qu'il avait un <_:span-1/> qui était un <_:span-2/> sérieux de baseball."
-
+#. (itstool) path: content/p
+#: tests/Translate5.xml:15
+msgid ""
+"Everything started when Zebulon discovered that he had a <_:span-1/> who was "
+"a serious baseball <_:span-2/>."
+msgstr ""
+"Tout commença alors que Zebulon découvrit qu'il avait un <_:span-1/> qui "
+"était un <_:span-2/> sérieux de baseball."

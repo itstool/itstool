@@ -1,23 +1,29 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2011-06-01 08:49+0200\n"
+"POT-Creation-Date: 2012-05-04 10:54-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: tests/WithinText1.xml:9(body/p)
-msgid "This is a paragraph with <b>bold</b>, <i>italic</i>, and <u>underlined</u>."
-msgstr "Ceci est un paragraphe avec <b>gras</b>, <i>italique</i> et <u>souligné</u>."
+#. (itstool) path: body/p
+#: tests/WithinText1.xml:9
+msgid ""
+"This is a paragraph with <b>bold</b>, <i>italic</i>, and <u>underlined</u>."
+msgstr ""
+"Ceci est un paragraphe avec <b>gras</b>, <i>italique</i> et <u>souligné</u>."
 
-#: tests/WithinText1.xml:10(p/fn)
+#. (itstool) path: p/fn
+#: tests/WithinText1.xml:10
 msgid "This is the text of the footnote"
 msgstr "Voici le texte d'une note de pied de page"
 
-#: tests/WithinText1.xml:10(body/p)
+#. (itstool) path: body/p
+#: tests/WithinText1.xml:10
 msgid "This is a paragraph with a footnote<_:fn-1/> at the middle."
-msgstr "Voici un paragraphe avec une note de pied de page<_:fn-1/> insérée au milieu."
-
+msgstr ""
+"Voici un paragraphe avec une note de pied de page<_:fn-1/> insérée au milieu."
