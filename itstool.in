@@ -344,6 +344,20 @@ def xml_is_ns_name (node, ns, name):
 def xml_error_catcher(doc, error):
     doc._xml_err += " %s" % error
 
+def fix_node_ns (node, nsdefs):
+    childnsdefs = nsdefs.copy()
+    nsdef = node.nsDefs()
+    while nsdef is not None:
+        nextnsdef = nsdef.next
+        if nsdefs.has_key(nsdef.name) and nsdefs[nsdef.name] == nsdef.content:
+            node.removeNsDef(nsdef.content)
+        else:
+            childnsdefs[nsdef.name] = nsdef.content
+        nsdef = nextnsdef
+    for child in xml_child_iter(node):
+        if child.type == 'element':
+            fix_node_ns(child, childnsdefs)
+
 
 class Document (object):
     def __init__ (self, filename, messages):
@@ -645,6 +659,42 @@ class Document (object):
             for node in xml_child_iter(self._itst_credits[1]):
                 self._append_credits(self._itst_credits[0], node, trdata)
 
+    def join_translations(self, translations, node=None, strict=False):
+        is_root = False
+        if node is None:
+            is_root = True
+            self.generate_messages(comments=False)
+            node = self._doc.getRootElement()
+        if node is None or node.type != 'element':
+            return
+        if ((node.hasNsProp('drop', NS_ITST) and node.nsProp('drop', NS_ITST) == 'yes') or
+            self._itst_drop_nodes.get(node, 'no') == 'yes'):
+            prev = node.prev
+            node.unlinkNode()
+            node.freeNode()
+            if prev.isBlankNode():
+                prev.unlinkNode()
+                prev.freeNode()
+            return
+        msg = self._msgs.get_message_by_node(node)
+        if msg is None:
+            self.translate_attrs(node, node)
+            children = [child for child in xml_child_iter(node)]
+            for child in children:
+                self.join_translations(translations, node=child, strict=strict)
+        else:
+            for lang in sorted(translations.keys(), reverse=True):
+                newnode = self.get_translated(node, translations[lang], strict=strict)
+                if newnode != node:
+                    newnode.setProp('xml:lang', lang)
+                    node.addNextSibling(newnode)
+        if is_root:
+            # Because of the way we create nodes and rewrite the document,
+            # we end up with lots of redundant namespace definitions. We
+            # kill them off in one fell swoop at the end.
+            fix_node_ns(node, {})
+            self._check_errors()
+
     def merge_translations(self, translations, language, node=None, strict=False):
         is_root = False
         if node is None:
@@ -702,19 +752,6 @@ class Document (object):
             # Because of the way we create nodes and rewrite the document,
             # we end up with lots of redundant namespace definitions. We
             # kill them off in one fell swoop at the end.
-            def fix_node_ns (node, nsdefs):
-                childnsdefs = nsdefs.copy()
-                nsdef = node.nsDefs()
-                while nsdef is not None:
-                    nextnsdef = nsdef.next
-                    if nsdefs.has_key(nsdef.name) and nsdefs[nsdef.name] == nsdef.content:
-                        node.removeNsDef(nsdef.content)
-                    else:
-                        childnsdefs[nsdef.name] = nsdef.content
-                    nsdef = nextnsdef
-                for child in xml_child_iter(node):
-                    if child.type == 'element':
-                        fix_node_ns(child, childnsdefs)
             fix_node_ns(node, {})
             self._check_errors()
 
@@ -1009,6 +1046,10 @@ if __name__ == '__main__':
                        default=None,
                        metavar='LANGUAGE',
                        help='explicitly set the language code for output file')
+    options.add_option('-j', '--join',
+                       dest='join',
+                       metavar='FILE',
+                       help='join multiple MO files with the XML file FILE and output XML file')
     options.add_option('-m', '--merge',
                        dest='merge',
                        metavar='FILE',
@@ -1034,7 +1075,7 @@ if __name__ == '__main__':
         print('itstool %s' % VERSION)
         sys.exit(0)
 
-    if opts.merge is None:
+    if opts.merge is None and opts.join is None:
         messages = MessageList()
         for filename in args[1:]:
             doc = Document(filename, messages)
@@ -1052,7 +1093,7 @@ if __name__ == '__main__':
                 sys.stderr.write('Error: Cannot write to file %s\n' % opts.output)
                 sys.exit(1)
         messages.output(out)
-    else:
+    elif opts.merge is not None:
         try:
             translations = gettext.GNUTranslations(open(opts.merge, 'rb'))
         except:
@@ -1077,6 +1118,41 @@ if __name__ == '__main__':
             messages = MessageList()
             doc = Document(filename, messages)
             doc.apply_its_rules()
+            if opts.itsfile is not None:
+                for itsfile in opts.itsfile:
+                    doc.apply_its_file(itsfile)
+            try:
+                doc.merge_translations(translations, opts.lang, strict=opts.strict)
+            except Exception as e:
+                sys.stderr.write('Error: Could not merge translations:\n%s\n' % str(e))
+                sys.exit(1)
+            fout = out
+            if isinstance(fout, basestring):
+                fout = file(os.path.join(fout, os.path.basename(filename)), 'w')
+            fout.write(doc._doc.serialize('utf-8'))
+    elif opts.join is not None:
+        translations = {}
+        for filename in args[1:]:
+            try:
+                thistr = gettext.GNUTranslations(open(filename, 'rb'))
+            except:
+                sys.stderr.write('Error: cannot open mo file %s\n' % filename)
+                sys.exit(1)
+            thistr.add_fallback(NoneTranslations())
+            lang = convert_locale(os.path.splitext(os.path.basename(filename))[0])
+            translations[lang] = thistr
+        if opts.output is None:
+            out = sys.stdout
+        elif os.path.isdir(opts.output):
+            out = file(os.path.join(opts.output, os.path.basename(filename)), 'w')
+        else:
+            out = file(opts.output, 'w')
+        messages = MessageList()
+        doc = Document(opts.join, messages)
+        doc.apply_its_rules()
+        doc.join_translations(translations, strict=opts.strict)
+        out.write(doc._doc.serialize('utf-8'))
+        if False:
             if opts.itsfile is not None:
                 for itsfile in opts.itsfile:
                     doc.apply_its_file(itsfile)
