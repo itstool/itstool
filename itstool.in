@@ -683,11 +683,18 @@ class Document (object):
             for child in children:
                 self.join_translations(translations, node=child, strict=strict)
         else:
+            prevnode = None
+            if node.prev is not None and node.prev.type == 'text':
+                prevtext = node.prev.content
+                if re.sub('\s+', '', prevtext) == '':
+                    prevnode = node.prev
             for lang in sorted(translations.keys(), reverse=True):
                 newnode = self.get_translated(node, translations[lang], strict=strict)
                 if newnode != node:
                     newnode.setProp('xml:lang', lang)
                     node.addNextSibling(newnode)
+                    if prevnode is not None:
+                        node.addNextSibling(prevnode.copyNode(0))
         if is_root:
             # Because of the way we create nodes and rewrite the document,
             # we end up with lots of redundant namespace definitions. We
