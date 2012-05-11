@@ -44,6 +44,30 @@ class ItstoolTests(unittest.TestCase):
             self.assertFilesEqual(os.path.join(TEST_DIR, "test.pot"), os.path.join(TEST_DIR, reference_pot))
         return result
 
+    def _test_translation_join(self, start_file, langs, xml_file=None):
+        start_file_base = os.path.splitext(start_file)[0]
+        self._test_pot_generation(start_file)
+
+        for lang in langs:
+            po_file = '%s.%s.po' % (start_file_base, lang)
+            mo_file = '%s.mo' % lang
+            self.run_command("cd %(dir)s && msgfmt -o %(mo_file)s %(po_file)s" %
+                             {'dir': TEST_DIR, 'mo_file': mo_file, 'po_file': po_file})
+        result = self.run_command("cd %(dir)s && python itstool_test -o%(res)s -j %(src)s %(mo)s" % {
+                'dir': ITSTOOL_DIR,
+                'res': os.path.join(TEST_DIR, 'test.xml'),
+                'src': os.path.join(TEST_DIR, start_file),
+                'mo': ' '.join([os.path.join(TEST_DIR, '%s.mo' % lang) for lang in langs])
+                })
+        if xml_file is None:
+            xml_file = '%s.ll.xml' % start_file_base
+        self.assertFilesEqual(
+            os.path.join(TEST_DIR, 'test.xml'),
+            os.path.join(TEST_DIR, xml_file)
+            )
+        return result
+            
+
     def _test_translation_process(self, start_file, expected_status=0, po_file=None, xml_file=None, options=None):
         start_file_base = os.path.splitext(start_file)[0]
         self._test_pot_generation(start_file)
@@ -151,6 +175,9 @@ class ItstoolTests(unittest.TestCase):
         """ Test that a malformed XML generates a proper exception """
         res = self._test_pot_generation('IT-malformed.xml', expected_status=1)
         #self.assertTrue("libxml2.parserError" in res['errors'])
+
+    def test_IT_join_1(self):
+        res = self._test_translation_join('IT-join-1.xml', ('cs', 'de', 'fr'))
 
     def test_Translate3_wrong1(self):
         """ Test that bad XML syntax in translation generates a proper exception """

@@ -1,0 +1,19 @@
+<catalog xmlns="http://example.com/catalog/"
+         xmlns:cat="http://example.com/catalog/"
+         xmlns:extra="http://example.com/catalog/extra/">
+  <its:rules xmlns:its="http://www.w3.org/2005/11/its" version="1.0">
+    <its:withinTextRule selector="//cat:span" withinText="yes"/>
+  </its:rules>
+  <message>This is a plain message.</message>
+  <cat:message>This message uses a prefix.</cat:message>
+  <extra:alert>This message is in another namespace.</extra:alert>
+  <holder>
+    <message>This message is in a holder element.</message>
+  </holder>
+  <holder>
+    <message>This message has a block <footnote>footnote</footnote>.</message>
+  </holder>
+  <holder>
+    <message>This message has some <span>inline markup</span>.</message>
+  </holder>
+</catalog>

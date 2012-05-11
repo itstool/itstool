@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<catalog xmlns="http://example.com/catalog/" xmlns:cat="http://example.com/catalog/" xmlns:extra="http://example.com/catalog/extra/">
+  <its:rules xmlns:its="http://www.w3.org/2005/11/its" version="1.0">
+    <its:withinTextRule selector="//cat:span" withinText="yes"/>
+  </its:rules>
+  <message>This is a plain message.</message><message xml:lang="cs">To je jednoduchý zpráva.</message><message xml:lang="de">Dies ist eine einfache Nachricht.</message><message xml:lang="fr">Ceci est un message clair.</message>
+  <cat:message>This message uses a prefix.</cat:message><cat:message xml:lang="cs">Tato zpráva ma předpona.</cat:message><cat:message xml:lang="de">Diese Nachricht nutzt einen Präfix.</cat:message><cat:message xml:lang="fr">Ce message utilise un préfixe.</cat:message>
+  <extra:alert>This message is in another namespace.</extra:alert><extra:alert xml:lang="cs">Tato zpráva ma jiný jmenný prostor.</extra:alert><extra:alert xml:lang="de">Diese Nachricht ist in einem anderen Namensraum.</extra:alert><extra:alert xml:lang="fr">Ce message se trouve dans un autre espace de nommage.</extra:alert>
+  <holder>
+    <message>This message is in a holder element.</message><message xml:lang="cs">Tato zpráva je uvnitř okolního prvku.</message><message xml:lang="de">Diese Nachricht ist in einem umgebenden Element.</message><message xml:lang="fr">Ce message est un message porteur.</message>
+  </holder>
+  <holder>
+    <message>This message has a block <footnote>footnote</footnote>.</message><message xml:lang="cs">Tato zpráva ma blok <footnote>Poznámka pod čarou</footnote>.</message><message xml:lang="de">Diese Nachricht hat einen Block <footnote>Fußnote</footnote>.</message><message xml:lang="fr">Ce message à un bloc <footnote>Note de bas de page</footnote>.</message>
+  </holder>
+  <holder>
+    <message>This message has some <span>inline markup</span>.</message><message xml:lang="cs">Tato zpráva ma <span>vložený značky</span>.</message><message xml:lang="de">Diese Nachricht hat <span>eingebettetes Markup</span>.</message><message xml:lang="fr">Ce message à quelque <span>balise en ligne</span>.</message>
+  </holder>
+</catalog>

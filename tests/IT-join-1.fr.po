@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2012-05-08 15:13-0400\n"
+"PO-Revision-Date: 2012-05-08 21:26+0100\n"
+"Last-Translator: Baptiste Mille-Mathias <baptistem@gnome.org>\n"
+"Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+ 
+#. (itstool) path: catalog/message
+#: IT-join-1.xml:7
+msgid "This is a plain message."
+msgstr "Ceci est un message clair."
+ 
+#. (itstool) path: catalog/message
+#: IT-join-1.xml:8
+msgid "This message uses a prefix."
+msgstr "Ce message utilise un préfixe."
+ 
+#. (itstool) path: catalog/alert
+#: IT-join-1.xml:9
+msgid "This message is in another namespace."
+msgstr "Ce message se trouve dans un autre espace de nommage."
+ 
+#. (itstool) path: holder/message
+#: IT-join-1.xml:11
+msgid "This message is in a holder element."
+msgstr "Ce message est un message porteur."
+ 
+#. (itstool) path: message/footnote
+#: IT-join-1.xml:14
+msgid "footnote"
+msgstr "Note de bas de page"
+ 
+#. (itstool) path: holder/message
+#: IT-join-1.xml:14
+msgid "This message has a block <_:footnote-1/>."
+msgstr "Ce message à un bloc <_:footnote-1/>."
+ 
+#. (itstool) path: holder/message
+#: IT-join-1.xml:17
+msgid "This message has some <span>inline markup</span>."
+msgstr "Ce message à quelque <span>balise en ligne</span>."
+

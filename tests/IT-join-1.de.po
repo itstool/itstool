@@ -1,0 +1,46 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2012-05-08 15:13-0400\n"
+"PO-Revision-Date: 2012-05-08 21:22+0200\n"
+"Last-Translator: Andre Klapper <ak-47@gmx.net>\n"
+"Language-Team: German <de@example.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+ 
+#. (itstool) path: catalog/message
+#: IT-join-1.xml:7
+msgid "This is a plain message."
+msgstr "Dies ist eine einfache Nachricht."
+ 
+#. (itstool) path: catalog/message
+#: IT-join-1.xml:8
+msgid "This message uses a prefix."
+msgstr "Diese Nachricht nutzt einen Präfix."
+ 
+#. (itstool) path: catalog/alert
+#: IT-join-1.xml:9
+msgid "This message is in another namespace."
+msgstr "Diese Nachricht ist in einem anderen Namensraum."
+ 
+#. (itstool) path: holder/message
+#: IT-join-1.xml:11
+msgid "This message is in a holder element."
+msgstr "Diese Nachricht ist in einem umgebenden Element."
+ 
+#. (itstool) path: message/footnote
+#: IT-join-1.xml:14
+msgid "footnote"
+msgstr "Fußnote"
+ 
+#. (itstool) path: holder/message
+#: IT-join-1.xml:14
+msgid "This message has a block <_:footnote-1/>."
+msgstr "Diese Nachricht hat einen Block <_:footnote-1/>."
+ 
+#. (itstool) path: holder/message
+#: IT-join-1.xml:17
+msgid "This message has some <span>inline markup</span>."
+msgstr "Diese Nachricht hat <span>eingebettetes Markup</span>."
+
