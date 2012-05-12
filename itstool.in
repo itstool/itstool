@@ -689,7 +689,7 @@ class Document (object):
                 if re.sub('\s+', '', prevtext) == '':
                     prevnode = node.prev
             for lang in sorted(translations.keys(), reverse=True):
-                newnode = self.get_translated(node, translations[lang], strict=strict)
+                newnode = self.get_translated(node, translations[lang], strict=strict, lang=lang)
                 if newnode != node:
                     newnode.setProp('xml:lang', lang)
                     node.addNextSibling(newnode)
@@ -728,7 +728,7 @@ class Document (object):
             for child in children:
                 self.merge_translations(translations, language, node=child, strict=strict)
         else:
-            newnode = self.get_translated(node, translations, strict=strict)
+            newnode = self.get_translated(node, translations, strict=strict, lang=language)
             if newnode != node:
                 self.translate_attrs(node, newnode)
                 node.replaceNode(newnode)
@@ -769,7 +769,7 @@ class Document (object):
             if newcontent:
                 newnode.setProp(attr.name, translations.ugettext(attr.get_content()))
 
-    def get_translated (self, node, translations, strict=False):
+    def get_translated (self, node, translations, strict=False, lang=None):
         msg = self._msgs.get_message_by_node(node)
         if msg is None:
             return node
@@ -809,8 +809,9 @@ class Document (object):
             if strict:
                 raise
             else:
-                sys.stderr.write('Warning: Could not merge translation for msgid:\n%s\n' %
-                                 msgstr.encode('utf-8'))
+                sys.stderr.write('Warning: Could not merge %stranslation for msgid:\n%s\n' % (
+                        (lang + ' ') if lang is not None else '',
+                        msgstr.encode('utf-8')))
                 self._xml_err = ''
                 return node
         def scan_node(node):
@@ -824,7 +825,7 @@ class Document (object):
                         self.merge_translations(translations, None, ph_node, strict=strict)
                         child.replaceNode(ph_node)
                     else:
-                        repl = self.get_translated(ph_node, translations, strict=strict)
+                        repl = self.get_translated(ph_node, translations, strict=strict, lang=lang)
                         child.replaceNode(repl)
                 scan_node(child)
         scan_node(trnode)
