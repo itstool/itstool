@@ -2,7 +2,7 @@
     xmlns:its="http://www.w3.org/2005/11/its"
     xmlns:itst="http://itstool.org/extensions/"
     xmlns:html="http://www.w3.org/1999/xhtml"
-    its:version="1.0">
+    version="1.0">
 
   <itst:match selector="/html:html"/>
 

@@ -386,8 +386,32 @@ class Document (object):
                         hctxt = libxml2.createFileParserCtxt(href)
                         hctxt.replaceEntities(1)
                         hctxt.parseDocument()
-                        self._localrules.append(hctxt.doc().getRootElement())
-                    self._localrules.append(child)
+                        root = hctxt.doc().getRootElement()
+                        version = None
+                        if root.hasNsProp('version', None):
+                            version = root.nsProp('version', None)
+                        else:
+                            sys.stderr.write('Warning: ITS file %s missing version attribute\n' %
+                                             os.path.basename(href))
+                        if version is not None and version != '1.0':
+                            sys.stderr.write('Warning: Skipping ITS file %s with unknown version %s\n' %
+                                             (os.path.basename(href), root.nsProp('version', None)))
+                        else:
+                            self._localrules.append(root)
+                    version = None
+                    if child.hasNsProp('version', None):
+                        version = child.nsProp('version', None)
+                    else:
+                        root = child.doc.getRootElement()
+                        if root.hasNsProp('version', NS_ITS):
+                            version = root.nsProp('version', NS_ITS)
+                        else:
+                            sys.stderr.write('Warning: Local ITS rules missing version attribute\n')
+                    if version is not None and version != '1.0':
+                        sys.stderr.write('Warning: Skipping local ITS rules with unknown version %s\n' %
+                                         version)
+                    else:
+                        self._localrules.append(child)
                 pre_process(child)
         pre_process(self._doc)
         try:
@@ -554,6 +578,16 @@ class Document (object):
         doc = libxml2.parseFile(filename)
         root = doc.getRootElement()
         if not xml_is_ns_name(root, NS_ITS, 'rules'):
+            return
+        version = None
+        if root.hasNsProp('version', None):
+            version = root.nsProp('version', None)
+        else:
+            sys.stderr.write('Warning: ITS file %s missing version attribute\n' %
+                             os.path.basename(filename))
+        if version is not None and version != '1.0':
+            sys.stderr.write('Warning: Skipping ITS file %s with unknown version %s\n' %
+                             (os.path.basename(filename), root.nsProp('version', None)))
             return
         matched = True
         for match in xml_child_iter(root):
