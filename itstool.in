@@ -377,7 +377,7 @@ class Document (object):
         def pre_process (node):
             for child in xml_child_iter(node):
                 if xml_is_ns_name(child, 'http://www.w3.org/2001/XInclude', 'include'):
-                    if child.prop('parse') == 'text':
+                    if child.nsProp('parse', None) == 'text':
                         child.xincludeProcessTree()
                 elif xml_is_ns_name(child, NS_ITS, 'rules'):
                     if child.hasNsProp('href', NS_XLINK):
@@ -439,33 +439,33 @@ class Document (object):
         if rule.type != 'element':
             return
         if xml_is_ns_name(rule, NS_ITS, 'translateRule'):
-            if rule.prop('selector') is not None:
-                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
-                    self._its_translate_nodes[node] = rule.prop('translate')
+            if rule.nsProp('selector', None) is not None:
+                for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
+                    self._its_translate_nodes[node] = rule.nsProp('translate', None)
         elif xml_is_ns_name(rule, NS_ITS, 'withinTextRule'):
-            if rule.prop('selector') is not None:
-                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
-                    self._its_within_text_nodes[node] = rule.prop('withinText')
+            if rule.nsProp('selector', None) is not None:
+                for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
+                    self._its_within_text_nodes[node] = rule.nsProp('withinText', None)
         elif xml_is_ns_name(rule, NS_ITST, 'preserveSpaceRule'):
-            if rule.prop('selector') is not None:
-                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
-                    self._itst_preserve_space_nodes[node] = rule.prop('preserveSpace')
+            if rule.nsProp('selector', None) is not None:
+                for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
+                    self._itst_preserve_space_nodes[node] = rule.nsProp('preserveSpace', None)
         elif xml_is_ns_name(rule, NS_ITST, 'dropRule'):
-            if rule.prop('selector') is not None:
-                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
-                    self._itst_drop_nodes[node] = rule.prop('drop')
+            if rule.nsProp('selector', None) is not None:
+                for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
+                    self._itst_drop_nodes[node] = rule.nsProp('drop', None)
         elif xml_is_ns_name(rule, NS_ITST, 'contextRule'):
-            if rule.prop('selector') is not None:
-                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
-                    if rule.hasProp('context'):
-                        self._itst_contexts[node] = rule.prop('context')
-                    elif rule.hasProp('contextPointer'):
+            if rule.nsProp('selector', None) is not None:
+                for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
+                    if rule.hasNsProp('context', None):
+                        self._itst_contexts[node] = rule.nsProp('context', None)
+                    elif rule.hasNsProp('contextPointer', None):
                         try:
                             oldnode = xpath.contextNode()
                         except:
                             oldnode = None
                         xpath.setContextNode(node)
-                        ctxt = self._try_xpath_eval(xpath, rule.prop('contextPointer'))
+                        ctxt = self._try_xpath_eval(xpath, rule.nsProp('contextPointer', None))
                         if isinstance(ctxt, basestring):
                             self._itst_contexts[node] = ctxt
                         else:
@@ -480,18 +480,18 @@ class Document (object):
                     locnote = re.sub('\s+', ' ', child.content).strip()
                     break
             if locnote is None:
-                if rule.hasProp('locNoteRef'):
-                    locnote = '(itstool) link: ' + re.sub('\s+', ' ', rule.prop('locNoteRef')).strip()
-            if rule.prop('selector') is not None:
-                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
+                if rule.hasNsProp('locNoteRef', None):
+                    locnote = '(itstool) link: ' + re.sub('\s+', ' ', rule.nsProp('locNoteRef', None)).strip()
+            if rule.nsProp('selector', None) is not None:
+                for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
                     if locnote is not None:
                         self._its_loc_notes.setdefault(node, []).append(locnote)
                     else:
-                        if rule.hasProp('locNotePointer'):
-                            sel = rule.prop('locNotePointer')
+                        if rule.hasNsProp('locNotePointer', None):
+                            sel = rule.nsProp('locNotePointer', None)
                             ref = False
-                        elif rule.hasProp('locNoteRefPointer'):
-                            sel = rule.prop('locNoteRefPointer')
+                        elif rule.hasNsProp('locNoteRefPointer', None):
+                            sel = rule.nsProp('locNoteRefPointer', None)
                             ref = True
                         else:
                             continue
@@ -515,37 +515,37 @@ class Document (object):
                                 break
                         xpath.setContextNode(oldnode)
         elif xml_is_ns_name(rule, NS_ITS, 'langRule'):
-            if rule.prop('selector') is not None and rule.prop('langPointer') is not None:
-                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
+            if rule.nsProp('selector', None) is not None and rule.nsProp('langPointer', None) is not None:
+                for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
                     try:
                         oldnode = xpath.contextNode()
                     except:
                         oldnode = None
                     xpath.setContextNode(node)
-                    res = self._try_xpath_eval(xpath, rule.prop('langPointer'))
+                    res = self._try_xpath_eval(xpath, rule.nsProp('langPointer', None))
                     if len(res) > 0:
                         self._its_lang[node] = res[0].content
                     # We need to construct language attributes, not just read
                     # language information. Technically, langPointer could be
                     # any XPath expression. But if it looks like an attribute
                     # accessor, just use the attribute name.
-                    if rule.prop('langPointer')[0] == '@':
-                        self._itst_lang_attr[node] = rule.prop('langPointer')[1:]
+                    if rule.nsProp('langPointer', None)[0] == '@':
+                        self._itst_lang_attr[node] = rule.nsProp('langPointer', None)[1:]
                     xpath.setContextNode(oldnode)
         elif xml_is_ns_name(rule, NS_ITST, 'credits'):
-            if rule.prop('appendTo') is not None:
-                for node in self._try_xpath_eval(xpath, rule.prop('appendTo')):
+            if rule.nsProp('appendTo', None) is not None:
+                for node in self._try_xpath_eval(xpath, rule.nsProp('appendTo', None)):
                     self._itst_credits = (node, rule)
                     break
         elif xml_is_ns_name(rule, NS_ITST, 'externalRefRule'):
-            if rule.prop('selector') is not None and rule.prop('refPointer') is not None:
-                for node in self._try_xpath_eval(xpath, rule.prop('selector')):
+            if rule.nsProp('selector', None) is not None and rule.nsProp('refPointer', None) is not None:
+                for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
                     try:
                         oldnode = xpath.contextNode()
                     except:
                         oldnode = None
                     xpath.setContextNode(node)
-                    res = self._try_xpath_eval(xpath, rule.prop('refPointer'))
+                    res = self._try_xpath_eval(xpath, rule.nsProp('refPointer', None))
                     if len(res) > 0:
                         self._itst_externals.append((node, res[0].content))
                     xpath.setContextNode(oldnode)
@@ -605,8 +605,8 @@ class Document (object):
                                 xpath.xpathRegisterNs(nsdef.name, nsdef.content)
                         nsdef = nsdef.next
                     par = par.parent
-                if match.hasProp('selector'):
-                    if len(self._try_xpath_eval(xpath, match.prop('selector'))) > 0:
+                if match.hasNsProp('selector', None):
+                    if len(self._try_xpath_eval(xpath, match.nsProp('selector', None))) > 0:
                         matched = True
                         break
         if matched == False:
@@ -650,13 +650,13 @@ class Document (object):
 
     def _append_credits(self, parent, node, trdata):
         if xml_is_ns_name(node, NS_ITST, 'for-each'):
-            select = node.prop('select')
+            select = node.nsProp('select', None)
             if select == 'years':
                 for year in trdata[2].split(','):
                     for child in xml_child_iter(node):
                         self._append_credits(parent, child, trdata + (year.strip(),))
         elif xml_is_ns_name(node, NS_ITST, 'value-of'):
-            select = node.prop('select')
+            select = node.nsProp('select', None)
             val = None
             if select == 'name':
                 val = trdata[0]
@@ -1015,8 +1015,8 @@ class Document (object):
         if node.hasNsProp('translate', NS_ITS):
             return node.nsProp('translate', NS_ITS)
         if xml_is_ns_name(node, NS_ITS, 'span'):
-            if node.hasProp('translate'):
-                return node.prop('translate')
+            if node.hasNsProp('translate', None):
+                return node.nsProp('translate', None)
         if self._its_translate_nodes.has_key(node):
             return self._its_translate_nodes[node]
         return None
@@ -1031,10 +1031,10 @@ class Document (object):
         if node.hasNsProp('locNoteRef', NS_ITS):
             ret.append('(itstool) link: ' + re.sub('\s+', ' ', node.nsProp('locNoteRef', NS_ITS)).strip())
         if xml_is_ns_name(node, NS_ITS, 'span'):
-            if node.hasProp('locNote'):
-                ret.append(re.sub('\s+', ' ', node.prop('locNote')).strip())
-            if node.hasProp('locNoteRef'):
-                ret.append('(itstool) link: ' + re.sub('\s+', ' ', node.prop('locNoteRef')).strip())
+            if node.hasNsProp('locNote', None):
+                ret.append(re.sub('\s+', ' ', node.nsProp('locNote', None)).strip())
+            if node.hasNsProp('locNoteRef', None):
+                ret.append('(itstool) link: ' + re.sub('\s+', ' ', node.nsProp('locNoteRef', None)).strip())
         for locnote in self._its_loc_notes.get(node, []):
             ret.append(locnote)
         return ret
