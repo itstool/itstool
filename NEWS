@@ -1,3 +1,9 @@
+1.1.3
+=====
+* Handle UTF-8 in attribute values
+* Don't output non-translatable external ref messages
+* Better error handling
+
 1.1.2
 =====
 * Better handling of XML errors in PO files
