@@ -30,10 +30,11 @@ class ItstoolTests(unittest.TestCase):
         result = self.run_command("diff -u %s %s %s" % (options, f1, f2))
         self.assertEqual(result['output'], "", result['output'])
 
-    def _test_pot_generation(self, start_file, reference_pot=None, expected_status=0):
+    def _test_pot_generation(self, start_file, reference_pot=None, expected_status=0, options=None):
         start_file_base = os.path.splitext(start_file)[0]
-        result = self.run_command("cd %(dir)s && python itstool_test -o %(out)s %(in)s" % {
+        result = self.run_command("cd %(dir)s && python itstool_test %(opt)s -o %(out)s %(in)s" % {
             'dir' : ITSTOOL_DIR,
+            'opt' : (options or ''),
             'out' : os.path.join('tests', "test.pot"),
             'in'  : os.path.join('tests', start_file),
         }, expected_status)
@@ -70,7 +71,7 @@ class ItstoolTests(unittest.TestCase):
 
     def _test_translation_process(self, start_file, expected_status=0, po_file=None, xml_file=None, options=None):
         start_file_base = os.path.splitext(start_file)[0]
-        self._test_pot_generation(start_file)
+        self._test_pot_generation(start_file, options=options)
 
         # Compile mo and merge
         if po_file is None:
@@ -175,6 +176,18 @@ class ItstoolTests(unittest.TestCase):
         """ Test that a malformed XML generates a proper exception """
         res = self._test_pot_generation('IT-malformed.xml', expected_status=1)
         #self.assertTrue("libxml2.parserError" in res['errors'])
+
+    def test_IT_malformed(self):
+        """ Test that parsing XML requiring external DTD generates exception """
+        res = self._test_pot_generation('IT-uses-external-dtds.xml', expected_status=1)
+
+    def test_IT_malformed(self):
+        """ Test that parsing XML requiring external DTD generates exception """
+        res = self._test_pot_generation('IT-uses-external-dtds.xml', expected_status=0,
+                                        options='--load-dtd')
+
+    def test_IT_translate_with_external_dtds(self):
+        self._test_translation_process('IT-uses-external-dtds.xml', options='--load-dtd')
 
     def test_IT_join_1(self):
         res = self._test_translation_join('IT-join-1.xml', ('cs', 'de', 'fr'))
