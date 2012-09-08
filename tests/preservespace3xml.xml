@@ -1,0 +1,12 @@
+<book
+  xmlns:its="http://www.w3.org/2005/11/its" >
+ <info>
+   <its:rules xmlns:its="http://www.w3.org/2005/11/its" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" xlink:type="simple" xlink:href="preservespace3XmlRule.xml"/>
+ </info>
+ <verse>
+ ’Twas brillig, and the slithy toves
+  Did gyre and gimble in the wabe;
+ All mimsy were the borogoves,
+  And the mome raths outgrabe.
+ </verse>
+</book>

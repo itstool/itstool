@@ -393,7 +393,7 @@ class Document (object):
                         else:
                             sys.stderr.write('Warning: ITS file %s missing version attribute\n' %
                                              os.path.basename(href))
-                        if version is not None and version != '1.0':
+                        if version is not None and version not in ('1.0', '2.0'):
                             sys.stderr.write('Warning: Skipping ITS file %s with unknown version %s\n' %
                                              (os.path.basename(href), root.nsProp('version', None)))
                         else:
@@ -407,7 +407,7 @@ class Document (object):
                             version = root.nsProp('version', NS_ITS)
                         else:
                             sys.stderr.write('Warning: Local ITS rules missing version attribute\n')
-                    if version is not None and version != '1.0':
+                    if version is not None and version not in ('1.0', '2.0'):
                         sys.stderr.write('Warning: Skipping local ITS rules with unknown version %s\n' %
                                          version)
                     else:
@@ -423,7 +423,7 @@ class Document (object):
         self._its_translate_nodes = {}
         self._its_within_text_nodes = {}
         self._its_loc_notes = {}
-        self._itst_preserve_space_nodes = {}
+        self._its_preserve_space_nodes = {}
         self._itst_drop_nodes = {}
         self._itst_contexts = {}
         self._its_lang = {}
@@ -449,7 +449,13 @@ class Document (object):
         elif xml_is_ns_name(rule, NS_ITST, 'preserveSpaceRule'):
             if rule.nsProp('selector', None) is not None:
                 for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
-                    self._itst_preserve_space_nodes[node] = rule.nsProp('preserveSpace', None)
+                    val = rule.nsProp('preserveSpace', None)
+                    if val == 'yes':
+                        self._its_preserve_space_nodes[node] = 'preserve'
+        elif xml_is_ns_name(rule, NS_ITS, 'preserveSpaceRule'):
+            if rule.nsProp('selector', None) is not None:
+                for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
+                    self._its_preserve_space_nodes[node] = rule.nsProp('space', None)
         elif xml_is_ns_name(rule, NS_ITST, 'dropRule'):
             if rule.nsProp('selector', None) is not None:
                 for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
@@ -585,7 +591,7 @@ class Document (object):
         else:
             sys.stderr.write('Warning: ITS file %s missing version attribute\n' %
                              os.path.basename(filename))
-        if version is not None and version != '1.0':
+        if version is not None and version not in ('1.0', '2.0'):
             sys.stderr.write('Warning: Skipping ITS file %s with unknown version %s\n' %
                              (os.path.basename(filename), root.nsProp('version', None)))
             return
@@ -1006,8 +1012,8 @@ class Document (object):
             return True
         else:
             while node.type == 'element':
-                if self._itst_preserve_space_nodes.has_key(node):
-                    return (self._itst_preserve_space_nodes[node] == 'yes')
+                if self._its_preserve_space_nodes.has_key(node):
+                    return (self._its_preserve_space_nodes[node] == 'preserve')
                 node = node.parent
         return False
 

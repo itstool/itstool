@@ -122,6 +122,18 @@ class ItstoolTests(unittest.TestCase):
     def test_EX_locNoteRefPointer_attribute_1(self):
         self._test_pot_generation('EX-locNoteRefPointer-attribute-1.xml')
 
+    def test_PreserveSpace1(self):
+        self._test_pot_generation('preservespace1xml.xml')
+
+    def test_PreserveSpace2(self):
+        self._test_pot_generation('preservespace2xml.xml')
+
+    def test_PreserveSpace3(self):
+        self._test_pot_generation('preservespace3xml.xml')
+
+    def test_PreserveSpace4(self):
+        self._test_pot_generation('preservespace4xml.xml')
+
     def test_Translate1(self):
         self._test_translation_process('Translate1.xml')
 
