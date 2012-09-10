@@ -344,7 +344,7 @@ def xml_get_node_path(node):
     # when necessary for disambiguation. For various reasons,
     # we prefer always using indexes.
     name = node.name
-    if node.ns() is not None:
+    if node.ns() is not None and node.ns().name is not None:
         name = node.ns().name + ':' + name
     if node.type == 'attribute':
         name = '@' + name
@@ -1065,20 +1065,23 @@ class Document (object):
             ret.append(locnote)
         return ret
 
-    def output_test_data(self, category, node=None):
+    def output_test_data(self, category, out, node=None):
+        if category not in ('translate', 'withinText'):
+            sys.stderr.write('Error: Unrecognized category %s\n' % category)
+            sys.exit(1)
         if node is None:
             node = self._doc.getRootElement()
         compval = ''
         if category == 'translate':
             compval = 'its:translate="%s"' % self.get_its_translate(node)
         elif category == 'withinText':
-            pass
-        print '%s\t%s' % (xml_get_node_path(node), compval)
+            compval = 'its:withinText="%s"' % self.get_its_within_text(node)
+        out.write('%s\t%s\n' % (xml_get_node_path(node), compval))
         for child in xml_attr_iter(node):
-            self.output_test_data(category, child)
+            self.output_test_data(category, out, child)
         for child in xml_child_iter(node):
             if child.type == 'element':
-                self.output_test_data(category, child)
+                self.output_test_data(category, out, child)
 
     @staticmethod
     def _try_xpath_eval (xpath, expr):
@@ -1148,10 +1151,10 @@ if __name__ == '__main__':
                        default=False,
                        help='Exit with error when PO files contain broken XML')
     options.add_option('-t', '--test',
-                       action='store_true',
                        dest='test',
-                       default=False,
-                       help='generate conformance test output')
+                       default=None,
+                       metavar='CATEGORY',
+                       help='generate conformance test output for CATEGORY')
     options.add_option('-v', '--version',
                        action='store_true',
                        dest='version',
@@ -1171,7 +1174,7 @@ if __name__ == '__main__':
             if opts.itsfile is not None:
                 for itsfile in opts.itsfile:
                     doc.apply_its_file(itsfile)
-            if not opts.test:
+            if opts.test is None:
                 doc.generate_messages()
         if opts.output is None or opts.output == '-':
             out = sys.stdout
@@ -1181,8 +1184,8 @@ if __name__ == '__main__':
             except:
                 sys.stderr.write('Error: Cannot write to file %s\n' % opts.output)
                 sys.exit(1)
-        if opts.test:
-            doc.output_test_data('translate')
+        if opts.test is not None:
+            doc.output_test_data(opts.test, out)
         else:
             messages.output(out)
     elif opts.merge is not None:
