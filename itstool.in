@@ -209,17 +209,15 @@ class Message (object):
         if len(self._message) == 0 or not(isinstance(self._message[-1], basestring)):
             self._message.append('')
         self._message[-1] += ('<%s' % node.name)
-        if node.properties is not None:
-            for prop in node.properties:
-                if prop.type == 'attribute':
-                    name = prop.name
-                    if prop.ns() is not None:
-                        name = prop.ns().name + ':' + name
-                    atval = prop.content
-                    if not isinstance(atval, unicode):
-                        atval = unicode(atval, 'utf-8')
-                    atval = atval.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
-                    self._message += " %s=\"%s\"" % (name, atval)
+        for prop in xml_attr_iter(node):
+            name = prop.name
+            if prop.ns() is not None:
+                name = prop.ns().name + ':' + name
+            atval = prop.content
+            if not isinstance(atval, unicode):
+                atval = unicode(atval, 'utf-8')
+            atval = atval.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+            self._message += " %s=\"%s\"" % (name, atval)
         if node.children is not None:
             self._message[-1] += '>'
         else:
@@ -340,6 +338,34 @@ def xml_is_ns_name (node, ns, name):
     if node.type != 'element':
         return False
     return node.name == name and node.ns() is not None and node.ns().content == ns
+
+def xml_get_node_path(node):
+    # The built-in nodePath() method only does numeric indexes
+    # when necessary for disambiguation. For various reasons,
+    # we prefer always using indexes.
+    name = node.name
+    if node.ns() is not None:
+        name = node.ns().name + ':' + name
+    if node.type == 'attribute':
+        name = '@' + name
+    name = '/' + name
+    if node.type == 'element' and node.parent.type == 'element':
+        count = 1
+        prev = node.previousElementSibling()
+        while prev is not None:
+            if prev.name == node.name:
+                if prev.ns() is None:
+                    if node.ns() is None:
+                        count += 1
+                else:
+                    if node.ns() is not None:
+                        if prev.ns().name == node.ns().name:
+                            count += 1
+            prev = prev.previousElementSibling()
+        name = '%s[%i]' % (name, count)
+    if node.parent.type == 'element':
+        name = xml_get_node_path(node.parent) + name
+    return name
 
 def xml_error_catcher(doc, error):
     doc._xml_err += " %s" % error
@@ -880,11 +906,7 @@ class Document (object):
         for ext in self._itst_externals:
             translate = None
             node = ext[0]
-            while node != None:
-                translate = self.get_its_translate(node)
-                if translate is not None:
-                    break
-                node = node.parent
+            translate = self.get_its_translate(node)
             if translate == 'no':
                 continue
             msg = Message()
@@ -906,7 +928,6 @@ class Document (object):
                                     ' msgstr is not used at all. Set it to whatever you like'
                                     ' once you have updated your copy of the file.'))
             self._msgs.add_message(msg, None)
-        self._in_translatable = True
         for child in xml_child_iter(self._doc):
             if child.type == 'element':
                 self.generate_message(child, None, comments=comments)
@@ -925,11 +946,6 @@ class Document (object):
         if path is None:
             path = ''
         translate = self.get_its_translate(node)
-        if translate is None:
-            if self._in_translatable:
-                translate = 'yes'
-            else:
-                translate = 'no'
         withinText = False
         if translate == 'no':
             if msg is not None:
@@ -987,13 +1003,10 @@ class Document (object):
                     break
                 cnode = cnode.parent
 
-        in_translatable = self._in_translatable
-        self._in_translatable = (translate == 'yes')
         if withinText:
             path = path + '/' + node.name
         for child in xml_child_iter(node):
             self.generate_message(child, msg, comments=comments, path=path)
-        self._in_translatable = in_translatable
 
         if translate:
             if is_unit and not msg.is_empty():
@@ -1018,14 +1031,21 @@ class Document (object):
         return False
 
     def get_its_translate (self, node):
+        val = None
         if node.hasNsProp('translate', NS_ITS):
-            return node.nsProp('translate', NS_ITS)
-        if xml_is_ns_name(node, NS_ITS, 'span'):
+            val = node.nsProp('translate', NS_ITS)
+        elif xml_is_ns_name(node, NS_ITS, 'span'):
             if node.hasNsProp('translate', None):
-                return node.nsProp('translate', None)
-        if self._its_translate_nodes.has_key(node):
-            return self._its_translate_nodes[node]
-        return None
+                val = node.nsProp('translate', None)
+        elif self._its_translate_nodes.has_key(node):
+            val = self._its_translate_nodes[node]
+        if val is not None:
+            return val
+        if node.type == 'attribute':
+            return 'no'
+        if node.parent.type == 'element':
+            return self.get_its_translate(node.parent)
+        return 'yes'
 
     def get_its_within_text (self, node):
         return self._its_within_text_nodes.get(node, 'no')
@@ -1044,6 +1064,21 @@ class Document (object):
         for locnote in self._its_loc_notes.get(node, []):
             ret.append(locnote)
         return ret
+
+    def output_test_data(self, category, node=None):
+        if node is None:
+            node = self._doc.getRootElement()
+        compval = ''
+        if category == 'translate':
+            compval = 'its:translate="%s"' % self.get_its_translate(node)
+        elif category == 'withinText':
+            pass
+        print '%s\t%s' % (xml_get_node_path(node), compval)
+        for child in xml_attr_iter(node):
+            self.output_test_data(category, child)
+        for child in xml_child_iter(node):
+            if child.type == 'element':
+                self.output_test_data(category, child)
 
     @staticmethod
     def _try_xpath_eval (xpath, expr):
@@ -1112,6 +1147,11 @@ if __name__ == '__main__':
                        dest='strict',
                        default=False,
                        help='Exit with error when PO files contain broken XML')
+    options.add_option('-t', '--test',
+                       action='store_true',
+                       dest='test',
+                       default=False,
+                       help='generate conformance test output')
     options.add_option('-v', '--version',
                        action='store_true',
                        dest='version',
@@ -1131,7 +1171,8 @@ if __name__ == '__main__':
             if opts.itsfile is not None:
                 for itsfile in opts.itsfile:
                     doc.apply_its_file(itsfile)
-            doc.generate_messages()
+            if not opts.test:
+                doc.generate_messages()
         if opts.output is None or opts.output == '-':
             out = sys.stdout
         else:
@@ -1140,7 +1181,10 @@ if __name__ == '__main__':
             except:
                 sys.stderr.write('Error: Cannot write to file %s\n' % opts.output)
                 sys.exit(1)
-        messages.output(out)
+        if opts.test:
+            doc.output_test_data('translate')
+        else:
+            messages.output(out)
     elif opts.merge is not None:
         try:
             translations = gettext.GNUTranslations(open(opts.merge, 'rb'))
