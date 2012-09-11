@@ -96,6 +96,13 @@ class MessageList (object):
                     msgdict[key].add_comment(comment)
                 if msg.get_preserve_space():
                     msgdict[key].set_preserve_space()
+                if msg.get_locale_filter() is not None:
+                    locale = msgdict[key].get_locale_filter()
+                    if locale is not None:
+                        msgdict[key].set_locale_filter('%s, %s' % (locale, msg.get_locale_filter()))
+                    else:
+                        msgdict[key].set_locale_filter(msg.get_locale_filter())
+                
             else:
                 msgs.append(msg)
                 msgdict[key] = msg
@@ -167,6 +174,7 @@ class Message (object):
         self._placeholders = []
         self._sources = []
         self._markers = []
+        self._locale_filter = None
         self._comments = []
         self._preserve = False
 
@@ -280,6 +288,12 @@ class Message (object):
     def set_preserve_space (self, preserve=True):
         self._preserve = preserve
 
+    def get_locale_filter(self):
+        return self._locale_filter
+
+    def set_locale_filter(self, locale):
+        self._locale_filter = locale
+
     def format (self):
         ret = u''
         markers = {}
@@ -287,6 +301,8 @@ class Message (object):
             if not markers.has_key(marker):
                 ret += '#. (itstool) path: ' + marker + '\n'
                 markers[marker] = marker
+        if self._locale_filter is not None:
+            ret += '#. (itstool) locale filter: ' + self._locale_filter + '\n'
         comments = []
         commentsdict = {}
         for comment in self._comments:
@@ -448,6 +464,8 @@ class Document (object):
         self._msgs = messages
         self._its_translate_nodes = {}
         self._its_within_text_nodes = {}
+        self._its_locale_filters = {}
+
         self._its_loc_notes = {}
         self._its_preserve_space_nodes = {}
         self._itst_drop_nodes = {}
@@ -482,6 +500,10 @@ class Document (object):
             if rule.nsProp('selector', None) is not None:
                 for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
                     self._its_preserve_space_nodes[node] = rule.nsProp('space', None)
+        elif xml_is_ns_name(rule, NS_ITS, 'localeFilterRule'):
+            if rule.nsProp('selector', None) is not None:
+                for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
+                    self._its_locale_filters[node] = rule.nsProp('localeFilterList', None)
         elif xml_is_ns_name(rule, NS_ITST, 'dropRule'):
             if rule.nsProp('selector', None) is not None:
                 for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
@@ -582,28 +604,29 @@ class Document (object):
                         self._itst_externals.append((node, res[0].content))
                     xpath.setContextNode(oldnode)
 
-    def apply_its_rules (self):
-        dirs = []
-        ddir = os.getenv('XDG_DATA_HOME', '')
-        if ddir == '':
-            ddir = os.path.join(os.path.expanduser('~'), '.local', 'share')
-        dirs.append(ddir)
-        ddir = os.getenv('XDG_DATA_DIRS', '')
-        if ddir == '':
-            if DATADIR not in ('/usr/local/share', '/usr/share'):
-                ddir += DATADIR + ':'
-            ddir += '/usr/local/share:/usr/share'
-        dirs.extend(ddir.split(':'))
-        ddone = {}
-        for ddir in dirs:
-            itsdir = os.path.join(ddir, 'itstool', 'its')
-            if not os.path.exists(itsdir):
-                continue
-            for dfile in os.listdir(itsdir):
-                if dfile.endswith('.its'):
-                    if not ddone.get(dfile, False):
-                        self.apply_its_file(os.path.join(itsdir, dfile))
-                        ddone[dfile] = True
+    def apply_its_rules (self, builtins):
+        if builtins:
+            dirs = []
+            ddir = os.getenv('XDG_DATA_HOME', '')
+            if ddir == '':
+                ddir = os.path.join(os.path.expanduser('~'), '.local', 'share')
+            dirs.append(ddir)
+            ddir = os.getenv('XDG_DATA_DIRS', '')
+            if ddir == '':
+                if DATADIR not in ('/usr/local/share', '/usr/share'):
+                    ddir += DATADIR + ':'
+                ddir += '/usr/local/share:/usr/share'
+            dirs.extend(ddir.split(':'))
+            ddone = {}
+            for ddir in dirs:
+                itsdir = os.path.join(ddir, 'itstool', 'its')
+                if not os.path.exists(itsdir):
+                    continue
+                for dfile in os.listdir(itsdir):
+                    if dfile.endswith('.its'):
+                        if not ddone.get(dfile, False):
+                            self.apply_its_file(os.path.join(itsdir, dfile))
+                            ddone[dfile] = True
         self.apply_local_its_rules()
 
     def apply_its_file (self, filename):
@@ -733,8 +756,7 @@ class Document (object):
             node = self._doc.getRootElement()
         if node is None or node.type != 'element':
             return
-        if ((node.hasNsProp('drop', NS_ITST) and node.nsProp('drop', NS_ITST) == 'yes') or
-            self._itst_drop_nodes.get(node, 'no') == 'yes'):
+        if self.get_itst_drop(node) == 'yes':
             prev = node.prev
             node.unlinkNode()
             node.freeNode()
@@ -755,6 +777,9 @@ class Document (object):
                 if re.sub('\s+', '', prevtext) == '':
                     prevnode = node.prev
             for lang in sorted(translations.keys(), reverse=True):
+                locale = self.get_its_locale_filter(node)
+                if not match_locale_list(locale, lang):
+                    continue
                 newnode = self.get_translated(node, translations[lang], strict=strict, lang=lang)
                 if newnode != node:
                     newnode.setProp('xml:lang', lang)
@@ -776,8 +801,11 @@ class Document (object):
             node = self._doc.getRootElement()
         if node is None or node.type != 'element':
             return
-        if ((node.hasNsProp('drop', NS_ITST) and node.nsProp('drop', NS_ITST) == 'yes') or
-            self._itst_drop_nodes.get(node, 'no') == 'yes'):
+        locale = self.get_its_locale_filter(node)
+        if locale != '*':
+            if not match_locale_list(locale, language):
+                locale = ''
+        if self.get_itst_drop(node) == 'yes' or locale == '':
             prev = node.prev
             node.unlinkNode()
             node.freeNode()
@@ -943,6 +971,8 @@ class Document (object):
             return
         if self._itst_drop_nodes.get(node, 'no') == 'yes':
             return
+        if self.get_its_locale_filter(node) == '':
+            return
         if path is None:
             path = ''
         translate = self.get_its_translate(node)
@@ -967,6 +997,8 @@ class Document (object):
                     msg.set_context(ctxt)
                 if self.get_preserve_space(node):
                     msg.set_preserve_space()
+                if self.get_its_locale_filter(node) != '*':
+                    msg.set_locale_filter(self.get_its_locale_filter(node))
                 msg.add_source('%s:%i' % (self._doc.name, node.lineNo()))
                 msg.add_marker('%s/%s' % (node.parent.name, node.name))
             else:
@@ -1030,12 +1062,11 @@ class Document (object):
                 node = node.parent
         return False
 
-    def get_its_translate (self, node):
+    def get_its_translate(self, node):
         val = None
         if node.hasNsProp('translate', NS_ITS):
             val = node.nsProp('translate', NS_ITS)
-        elif xml_is_ns_name(node, NS_ITS, 'span'):
-            if node.hasNsProp('translate', None):
+        elif xml_is_ns_name(node, NS_ITS, 'span') and node.hasNsProp('translate', None):
                 val = node.nsProp('translate', None)
         elif self._its_translate_nodes.has_key(node):
             val = self._its_translate_nodes[node]
@@ -1047,10 +1078,28 @@ class Document (object):
             return self.get_its_translate(node.parent)
         return 'yes'
 
-    def get_its_within_text (self, node):
+    def get_its_within_text(self, node):
         return self._its_within_text_nodes.get(node, 'no')
 
-    def get_its_loc_notes (self, node):
+    def get_its_locale_filter(self, node):
+        if node.hasNsProp('localeFilterList', NS_ITS):
+            return node.nsProp('localeFilterList', NS_ITS)
+        if xml_is_ns_name(node, NS_ITS, 'span') and node.hasNsProp('localeFilterList', None):
+            return node.nsProp('localeFilterList', None)
+        if self._its_locale_filters.has_key(node):
+            return self._its_locale_filters[node]
+        if node.parent.type == 'element':
+            return self.get_its_locale_filter(node.parent)
+        return '*'
+
+    def get_itst_drop(self, node):
+        if node.hasNsProp('drop', NS_ITST) and node.nsProp('drop', NS_ITST) == 'yes':
+            return 'yes'
+        if self._itst_drop_nodes.get(node, 'no') == 'yes':
+            return 'yes'
+        return 'no'
+
+    def get_its_loc_notes(self, node):
         ret = []
         if node.hasNsProp('locNote', NS_ITS):
             ret.append(re.sub('\s+', ' ', node.nsProp('locNote', NS_ITS)).strip())
@@ -1066,9 +1115,6 @@ class Document (object):
         return ret
 
     def output_test_data(self, category, out, node=None):
-        if category not in ('translate', 'withinText'):
-            sys.stderr.write('Error: Unrecognized category %s\n' % category)
-            sys.exit(1)
         if node is None:
             node = self._doc.getRootElement()
         compval = ''
@@ -1076,6 +1122,11 @@ class Document (object):
             compval = 'its:translate="%s"' % self.get_its_translate(node)
         elif category == 'withinText':
             compval = 'its:withinText="%s"' % self.get_its_within_text(node)
+        elif category == 'localeFilterList':
+            compval = 'its:localeFilterList="%s"' % self.get_its_locale_filter(node)
+        else:
+            sys.stderr.write('Error: Unrecognized category %s\n' % category)
+            sys.exit(1)
         out.write('%s\t%s\n' % (xml_get_node_path(node), compval))
         for child in xml_attr_iter(node):
             self.output_test_data(category, out, child)
@@ -1091,6 +1142,37 @@ class Document (object):
             sys.stderr.write('Warning: Invalid XPath: %s\n' % expr)
             return []
 
+def match_locale_list(extranges, locale):
+    if extranges.strip() == '':
+        return False
+    for extrange in [extrange.strip() for extrange in extranges.split(',')]:
+        if match_locale(extrange, locale):
+            return True
+    return False
+
+def match_locale(extrange, locale):
+    # Extended filtering for extended language ranges as
+    # defined by RFC4647, part of BCP47.
+    # http://tools.ietf.org/html/rfc4647#section-3.3.2
+    rangelist = [x.lower() for x in extrange.split('-')]
+    localelist = [x.lower() for x in locale.split('-')]
+    if rangelist[0] not in ('*', localelist[0]):
+        return False
+    rangei = localei = 0
+    while rangei < len(rangelist):
+        if rangelist[rangei] == '*':
+            rangei += 1
+            continue
+        if localei >= len(localelist):
+            return False
+        if rangelist[rangei] in ('*', localelist[localei]):
+            rangei += 1
+            localei += 1
+            continue
+        if len(localelist[localei]) == 1:
+            return False
+        localei += 1
+    return True
 
 _locale_pattern = re.compile('([a-zA-Z0-9-]+)(_[A-Za-z0-9]+)?(@[A-Za-z0-9]+)?(\.[A-Za-z0-9]+)?')
 def convert_locale (locale):
@@ -1140,6 +1222,11 @@ if __name__ == '__main__':
                        dest='merge',
                        metavar='FILE',
                        help='merge from a PO or MO file FILE and output XML files')
+    options.add_option('-n', '--no-builtins',
+                       action='store_true',
+                       dest='nobuiltins',
+                       default=False,
+                       help='do not apply the built-in ITS rules')
     options.add_option('-o', '--output',
                        dest='output',
                        default=None,
@@ -1170,7 +1257,7 @@ if __name__ == '__main__':
         messages = MessageList()
         for filename in args[1:]:
             doc = Document(filename, messages)
-            doc.apply_its_rules()
+            doc.apply_its_rules(not(opts.nobuiltins))
             if opts.itsfile is not None:
                 for itsfile in opts.itsfile:
                     doc.apply_its_file(itsfile)
@@ -1212,7 +1299,7 @@ if __name__ == '__main__':
         for filename in args[1:]:
             messages = MessageList()
             doc = Document(filename, messages)
-            doc.apply_its_rules()
+            doc.apply_its_rules(not(opts.nobuiltins))
             if opts.itsfile is not None:
                 for itsfile in opts.itsfile:
                     doc.apply_its_file(itsfile)
@@ -1244,7 +1331,7 @@ if __name__ == '__main__':
             out = file(opts.output, 'w')
         messages = MessageList()
         doc = Document(opts.join, messages)
-        doc.apply_its_rules()
+        doc.apply_its_rules(not(opts.nobuiltins))
         doc.join_translations(translations, strict=opts.strict)
         out.write(doc._doc.serialize('utf-8'))
         if False:

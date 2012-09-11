@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book xmlns:its="http://www.w3.org/2005/11/its" its:version="2.0">
+ <info>
+  <its:rules version="2.0">
+   <its:localeFilterRule selector="//legalnotice[@role='Canada']" localeFilterList="en-CA, fr-CA"/>
+   <its:localeFilterRule selector="//legalnotice[@role='Switzerland']" localeFilterList="*-CH"/>
+   <its:localeFilterRule selector="//remark" localeFilterList=""/>
+  </its:rules>
+  <legalnotice role="Canada">
+   <para>This legal notice is only for Canadian locales.</para>
+   <para xml:lang="fr-CA">Cet avis juridique est seulement pour les locales canadiennes.</para>
+  </legalnotice>
+  <legalnotice role="Switzerland">
+   <para>This legal notice is only for Swiss locales.</para>
+   <para xml:lang="fr-CH">Cet avis juridique est seulement pour les locales suisses.</para>
+  </legalnotice>
+  <remark>
+   This remark appears in no translations.
+  </remark>
+ </info>
+</book>

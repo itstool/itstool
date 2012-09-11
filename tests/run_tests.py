@@ -32,7 +32,7 @@ class ItstoolTests(unittest.TestCase):
 
     def _test_pot_generation(self, start_file, reference_pot=None, expected_status=0):
         start_file_base = os.path.splitext(start_file)[0]
-        result = self.run_command("cd %(dir)s && python itstool_test -o %(out)s %(in)s" % {
+        result = self.run_command("cd %(dir)s && python itstool_test -n -o %(out)s %(in)s" % {
             'dir' : ITSTOOL_DIR,
             'out' : os.path.join('tests', "test.pot"),
             'in'  : os.path.join('tests', start_file),
@@ -53,14 +53,14 @@ class ItstoolTests(unittest.TestCase):
             mo_file = '%s.mo' % lang
             self.run_command("cd %(dir)s && msgfmt -o %(mo_file)s %(po_file)s" %
                              {'dir': TEST_DIR, 'mo_file': mo_file, 'po_file': po_file})
-        result = self.run_command("cd %(dir)s && python itstool_test -o%(res)s -j %(src)s %(mo)s" % {
+        result = self.run_command("cd %(dir)s && python itstool_test -n -o%(res)s -j %(src)s %(mo)s" % {
                 'dir': ITSTOOL_DIR,
                 'res': os.path.join(TEST_DIR, 'test.xml'),
                 'src': os.path.join(TEST_DIR, start_file),
                 'mo': ' '.join([os.path.join(TEST_DIR, '%s.mo' % lang) for lang in langs])
                 })
         if xml_file is None:
-            xml_file = '%s.ll.xml' % start_file_base
+            xml_file = '%s.joined.xml' % start_file_base
         self.assertFilesEqual(
             os.path.join(TEST_DIR, 'test.xml'),
             os.path.join(TEST_DIR, xml_file)
@@ -68,29 +68,27 @@ class ItstoolTests(unittest.TestCase):
         return result
             
 
-    def _test_translation_process(self, start_file, expected_status=0, po_file=None, xml_file=None, options=None):
+    def _test_translation_process(self, start_file, expected_status=0, outputs=None, options=None):
         start_file_base = os.path.splitext(start_file)[0]
         self._test_pot_generation(start_file)
 
-        # Compile mo and merge
-        if po_file is None:
-            po_file = "%s.ll.po" % start_file_base
-        self.run_command("cd %(dir)s && msgfmt -o test.mo %(po_file)s" % {'dir': TEST_DIR, 'po_file': po_file}) 
-        result = self.run_command("cd %(dir)s && python itstool_test %(opt)s -m %(mo)s -o %(res)s %(src)s" % {
-            'dir': ITSTOOL_DIR,
-            'opt': (options or ''),
-            'mo' : os.path.join(TEST_DIR, "test.mo"),
-            'res': os.path.join(TEST_DIR, "test.xml"),
-            'src': os.path.join(TEST_DIR, start_file),
-        }, expected_status)
-        if xml_file is None:
-            xml_file = "%s.ll.xml" % start_file_base
-        if (expected_status == 0):
-            self.assertFilesEqual(
-                os.path.join(TEST_DIR, "test.xml"),
-                os.path.join(TEST_DIR, xml_file)
-            )
-        return result
+        if outputs is None:
+            outputs = [("%s.ll.po" % start_file_base, "%s.ll.xml" % start_file_base, 'll')]
+        for po_file, xml_file, lang in outputs:
+            self.run_command("cd %(dir)s && msgfmt -o test.mo %(po_file)s" % {'dir': TEST_DIR, 'po_file': po_file}) 
+            self.run_command("cd %(dir)s && python itstool_test -n %(opt)s -l %(lc)s -m %(mo)s -o %(res)s %(src)s" % {
+                    'dir': ITSTOOL_DIR,
+                    'opt': (options or ''),
+                    'lc' : lang,
+                    'mo' : os.path.join(TEST_DIR, "test.mo"),
+                    'res': os.path.join(TEST_DIR, "test.xml"),
+                    'src': os.path.join(TEST_DIR, start_file),
+                    }, expected_status)
+            if (expected_status == 0):
+                self.assertFilesEqual(
+                    os.path.join(TEST_DIR, "test.xml"),
+                    os.path.join(TEST_DIR, xml_file)
+                    )
 
 
     def test_LocNote1(self):
@@ -158,6 +156,22 @@ class ItstoolTests(unittest.TestCase):
     def test_TranslateGlobal(self):
         self._test_translation_process('TranslateGlobal.xml')
 
+    def test_Locale1(self):
+        self._test_translation_process('LocaleFilter/Locale1Xml.xml',
+                                       outputs=[('LocaleFilter/Locale1Xml.fr_FR.po',
+                                                 'LocaleFilter/Locale1Xml.fr_FR.xml',
+                                                 'fr-FR'),
+                                                ('LocaleFilter/Locale1Xml.fr_CA.po',
+                                                 'LocaleFilter/Locale1Xml.fr_CA.xml',
+                                                 'fr-CA'),
+                                                ('LocaleFilter/Locale1Xml.fr_CH.po',
+                                                 'LocaleFilter/Locale1Xml.fr_CH.xml',
+                                                 'fr-CH')])
+
+    def test_Locale1_join(self):
+        self._test_translation_join('LocaleFilter/Locale1Xml.xml',
+                                    ('fr_FR', 'fr_CA', 'fr_CH'))
+
     def test_WithinText1(self):
         self._test_translation_process('WithinText1.xml')
 
@@ -189,20 +203,21 @@ class ItstoolTests(unittest.TestCase):
         #self.assertTrue("libxml2.parserError" in res['errors'])
 
     def test_IT_join_1(self):
-        res = self._test_translation_join('IT-join-1.xml', ('cs', 'de', 'fr'))
+        self._test_translation_join('IT-join-1.xml', ('cs', 'de', 'fr'))
 
     def test_Translate3_wrong1(self):
         """ Test that bad XML syntax in translation generates a proper exception """
-        res = self._test_translation_process('Translate3.xml', expected_status=1,
-                                             po_file='Translate3.ll.wrong.po',
-                                             options='-s')
+        self._test_translation_process('Translate3.xml', expected_status=1,
+                                       outputs=[('Translate3.ll.wrong.po', None, 'll')],
+                                       options='-s')
         #self.assertTrue("libxml2.parserError" in res['errors'])
 
     def test_Translate3_wrong2(self):
         """ Test that bad XML syntax in translation is handled gracefully """
-        res = self._test_translation_process('Translate3.xml',
-                                             po_file='Translate3.ll.wrong.po',
-                                             xml_file='Translate3.ll.wrong.xml')
+        self._test_translation_process('Translate3.xml',
+                                       outputs=[('Translate3.ll.wrong.po',
+                                                 'Translate3.ll.wrong.xml',
+                                                 'll')])
 
 
 class ITSTestRunner(unittest.TextTestRunner):
