@@ -9,6 +9,26 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. (itstool) path: locNoteRule/locNote
+#: tests/LocNote1.xml:5
+msgid "This text will be displayed over the image."
+msgstr ""
+
+#. (itstool) path: locNoteRule/locNote
+#: tests/LocNote1.xml:8
+msgid "Do not translate the word \"Chobe\""
+msgstr ""
+
+#. (itstool) path: locNote/code
+#: tests/LocNote1.xml:11
+msgid "{0}"
+msgstr ""
+
+#. (itstool) path: locNoteRule/locNote
+#: tests/LocNote1.xml:11
+msgid "The variable <_:code-1/> has three possible values: 'printer', 'stacker' and 'stapler options'."
+msgstr ""
+
 #. (itstool) path: body/msg
 #: tests/LocNote1.xml:17
 msgid "This is a hippoptamus: <_:img-1/>."

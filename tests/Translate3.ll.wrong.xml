@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<book xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:its="http://www.w3.org/2005/11/its" xsi:noNamespaceSchemaLocation="EX-ways-to-use-its-5.xsd" its:version="1.0" lang="test">
+<book xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:its="http://www.w3.org/2005/11/its" xsi:noNamespaceSchemaLocation="EX-ways-to-use-its-5.xsd" its:version="1.0">
  <head>
   <title>La vie d'un simple homme</title>
  </head>

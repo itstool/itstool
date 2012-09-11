@@ -9,6 +9,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. (itstool) path: locNoteRule/locNote
+#: tests/LocNote2.xml:6
+msgid "Do not translate the word \"Chobe\""
+msgstr ""
+
 #. (itstool) path: body/msg
 #: tests/LocNote2.xml:11
 msgid "This is a hippoptamus: <_:img-1/>."

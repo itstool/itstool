@@ -9,6 +9,11 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
+#. (itstool) path: locNoteRule/locNote
+#: tests/IT-locNote-multiples.xml:6
+msgid "This is the generic block comment"
+msgstr ""
+
 #. (itstool) path: block/block
 #. Specific comment #1
 #.
