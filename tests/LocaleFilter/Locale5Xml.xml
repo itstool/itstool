@@ -1,0 +1,13 @@
+<book xmlns:its="http://www.w3.org/2005/11/its">
+<info>
+<its:span localeFilterList="en-CA, fr-CA">
+<para>This legal notice is only for Canadian locales.</para>
+</its:span>
+<its:span localeFilterList="*-CH">
+<para>This legal notice is only for Swiss locales.</para>
+</its:span>
+<its:span localeFilterList="">
+<remark>This remark appears in no translations.</remark>
+</its:span>
+</info>
+</book>

@@ -1,0 +1,16 @@
+<book
+  xmlns:its="http://www.w3.org/2005/11/its" 
+  its:version="2.0">
+ <info>
+ <its:rules xmlns:xlink="http://www.w3.org/1999/xlink" version="1.0" xlink:type="simple" xlink:href="Locale3Rule.xml"/>
+  <legalnotice role="Canada">
+   <para>This legal notice is only for Canadian locales.</para>
+  </legalnotice>
+  <legalnotice role="Switzerland">
+   <para>This legal notice is only for Swiss locales.</para>
+  </legalnotice>
+  <remark>
+   This remark appears in no translations.
+  </remark>
+ </info>
+</book>

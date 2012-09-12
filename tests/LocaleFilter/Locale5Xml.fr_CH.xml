@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book xmlns:its="http://www.w3.org/2005/11/its">
+<info>
+<its:span localeFilterList="*-CH">
+<para>Cet avis juridique est seulement pour les locales suisses.</para>
+</its:span>
+</info>
+</book>

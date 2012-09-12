@@ -168,8 +168,72 @@ class ItstoolTests(unittest.TestCase):
                                                  'LocaleFilter/Locale1Xml.fr_CH.xml',
                                                  'fr-CH')])
 
+    def test_Locale2(self):
+        self._test_translation_process('LocaleFilter/Locale2Xml.xml',
+                                       outputs=[('LocaleFilter/Locale2Xml.fr_FR.po',
+                                                 'LocaleFilter/Locale2Xml.fr_FR.xml',
+                                                 'fr-FR'),
+                                                ('LocaleFilter/Locale2Xml.fr_CA.po',
+                                                 'LocaleFilter/Locale2Xml.fr_CA.xml',
+                                                 'fr-CA'),
+                                                ('LocaleFilter/Locale2Xml.fr_CH.po',
+                                                 'LocaleFilter/Locale2Xml.fr_CH.xml',
+                                                 'fr-CH')])
+
+    def test_Locale3(self):
+        self._test_translation_process('LocaleFilter/Locale3Xml.xml',
+                                       outputs=[('LocaleFilter/Locale3Xml.fr_FR.po',
+                                                 'LocaleFilter/Locale3Xml.fr_FR.xml',
+                                                 'fr-FR'),
+                                                ('LocaleFilter/Locale3Xml.fr_CA.po',
+                                                 'LocaleFilter/Locale3Xml.fr_CA.xml',
+                                                 'fr-CA'),
+                                                ('LocaleFilter/Locale3Xml.fr_CH.po',
+                                                 'LocaleFilter/Locale3Xml.fr_CH.xml',
+                                                 'fr-CH')])
+
+    def test_Locale4(self):
+        self._test_translation_process('LocaleFilter/Locale4Xml.xml',
+                                       outputs=[('LocaleFilter/Locale4Xml.fr_FR.po',
+                                                 'LocaleFilter/Locale4Xml.fr_FR.xml',
+                                                 'fr-FR'),
+                                                ('LocaleFilter/Locale4Xml.fr_CA.po',
+                                                 'LocaleFilter/Locale4Xml.fr_CA.xml',
+                                                 'fr-CA'),
+                                                ('LocaleFilter/Locale4Xml.fr_CH.po',
+                                                 'LocaleFilter/Locale4Xml.fr_CH.xml',
+                                                 'fr-CH')])
+
+    def test_Locale5(self):
+        self._test_translation_process('LocaleFilter/Locale5Xml.xml',
+                                       outputs=[('LocaleFilter/Locale5Xml.fr_FR.po',
+                                                 'LocaleFilter/Locale5Xml.fr_FR.xml',
+                                                 'fr-FR'),
+                                                ('LocaleFilter/Locale5Xml.fr_CA.po',
+                                                 'LocaleFilter/Locale5Xml.fr_CA.xml',
+                                                 'fr-CA'),
+                                                ('LocaleFilter/Locale5Xml.fr_CH.po',
+                                                 'LocaleFilter/Locale5Xml.fr_CH.xml',
+                                                 'fr-CH')])
+
     def test_Locale1_join(self):
         self._test_translation_join('LocaleFilter/Locale1Xml.xml',
+                                    ('fr_FR', 'fr_CA', 'fr_CH'))
+
+    def test_Locale2_join(self):
+        self._test_translation_join('LocaleFilter/Locale2Xml.xml',
+                                    ('fr_FR', 'fr_CA', 'fr_CH'))
+
+    def test_Locale3_join(self):
+        self._test_translation_join('LocaleFilter/Locale3Xml.xml',
+                                    ('fr_FR', 'fr_CA', 'fr_CH'))
+
+    def test_Locale4_join(self):
+        self._test_translation_join('LocaleFilter/Locale4Xml.xml',
+                                    ('fr_FR', 'fr_CA', 'fr_CH'))
+
+    def test_Locale5_join(self):
+        self._test_translation_join('LocaleFilter/Locale5Xml.xml',
                                     ('fr_FR', 'fr_CA', 'fr_CH'))
 
     def test_WithinText1(self):

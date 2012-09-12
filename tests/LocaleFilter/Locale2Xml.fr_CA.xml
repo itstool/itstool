@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book xmlns:its="http://www.w3.org/2005/11/its">
+ <info>
+  <legalnotice its:localeFilterList="en-CA, fr-CA">
+   <para>Cet avis juridique est seulement pour les locales canadiennes.</para>
+  </legalnotice>
+ </info>
+</book>
