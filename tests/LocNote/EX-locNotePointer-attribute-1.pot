@@ -11,13 +11,13 @@ msgstr ""
 
 #. (itstool) path: msg/data
 #. Indicates that the resource file {0} could not be loaded.
-#: tests/EX-locNotePointer-attribute-1.xml:12
+#: tests/LocNote/EX-locNotePointer-attribute-1.xml:12
 msgid "Cannot find the file {0}."
 msgstr ""
 
 #. (itstool) path: msg/data
 #. A division by 0 was going to be computed.
-#: tests/EX-locNotePointer-attribute-1.xml:16
+#: tests/LocNote/EX-locNotePointer-attribute-1.xml:16
 msgid "Invalid parameter."
 msgstr ""
 

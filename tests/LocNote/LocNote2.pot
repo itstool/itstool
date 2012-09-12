@@ -10,24 +10,24 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. (itstool) path: locNoteRule/locNote
-#: tests/LocNote2.xml:6
+#: tests/LocNote/LocNote2.xml:6
 msgid "Do not translate the word \"Chobe\""
 msgstr ""
 
 #. (itstool) path: body/msg
-#: tests/LocNote2.xml:11
+#: tests/LocNote/LocNote2.xml:11
 msgid "This is a hippoptamus: <_:img-1/>."
 msgstr ""
 
 #. (itstool) path: body/msg
-#: tests/LocNote2.xml:12
+#: tests/LocNote/LocNote2.xml:12
 msgid "This is an elephant: <_:img-1/>."
 msgstr ""
 
 #. (itstool) path: body/msg
 #. The variable {0} has three possible values: 'printer', 'stacker' and
 #. 'stapler options'.
-#: tests/LocNote2.xml:13
+#: tests/LocNote/LocNote2.xml:13
 msgid "The {0} has been disabled."
 msgstr ""
 

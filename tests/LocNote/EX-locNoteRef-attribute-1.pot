@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2012-05-06 20:07-0400\n"
+"POT-Creation-Date: 2012-05-06 20:09-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -10,9 +10,8 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. (itstool) path: body/msg
-#. The variable {0} has three possible values: 'printer', 'stacker' and
-#. 'stapler options'.
-#: tests/EX-locNote-element-1.xml:12
-msgid "The {0} has been disabled."
+#. (itstool) link: ErrorsInfo.html/#NotFound
+#: tests/LocNote/EX-locNoteRef-attribute-1.xml:10
+msgid "Cannot find {0} on {1}."
 msgstr ""
 

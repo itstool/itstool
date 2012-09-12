@@ -93,32 +93,32 @@ class ItstoolTests(unittest.TestCase):
 
     def test_LocNote1(self):
         # FIXME: only the third note appears currently, as notes on subnodes don't propagate to parent nodes
-        self._test_pot_generation('LocNote1.xml')
+        self._test_pot_generation('LocNote/LocNote1.xml')
 
     def test_LocNote2(self):
         # FIXME: only the third note appears currently, as notes on subnodes don't propagate to parent nodes
-        self._test_pot_generation('LocNote2.xml')
+        self._test_pot_generation('LocNote/LocNote2.xml')
 
     def test_LocNote3(self):
-        self._test_pot_generation('LocNote3.xml')
+        self._test_pot_generation('LocNote/LocNote3.xml')
 
     def test_LocNote4(self):
-        self._test_pot_generation('LocNote4.xml')
+        self._test_pot_generation('LocNote/LocNote4.xml')
 
     def test_EX_locNote_element_1(self):
-        self._test_pot_generation('EX-locNote-element-1.xml')
+        self._test_pot_generation('LocNote/EX-locNote-element-1.xml')
 
     def test_EX_locNote_selector_2(self):
-        self._test_pot_generation('EX-locNote-selector-2.xml')
+        self._test_pot_generation('LocNote/EX-locNote-selector-2.xml')
 
     def test_EX_locNotePointer_attribute_1(self):
-        self._test_pot_generation('EX-locNotePointer-attribute-1.xml')
+        self._test_pot_generation('LocNote/EX-locNotePointer-attribute-1.xml')
 
     def test_EX_locNoteRef_attribute_1(self):
-        self._test_pot_generation('EX-locNoteRef-attribute-1.xml')
+        self._test_pot_generation('LocNote/EX-locNoteRef-attribute-1.xml')
 
     def test_EX_locNoteRefPointer_attribute_1(self):
-        self._test_pot_generation('EX-locNoteRefPointer-attribute-1.xml')
+        self._test_pot_generation('LocNote/EX-locNoteRefPointer-attribute-1.xml')
 
     def test_PreserveSpace1(self):
         self._test_pot_generation('preservespace1xml.xml')
@@ -133,28 +133,28 @@ class ItstoolTests(unittest.TestCase):
         self._test_pot_generation('preservespace4xml.xml')
 
     def test_Translate1(self):
-        self._test_translation_process('Translate1.xml')
+        self._test_translation_process('Translate/Translate1.xml')
 
     def test_Translate2(self):
-        self._test_translation_process('Translate2.xml')
+        self._test_translation_process('Translate/Translate2.xml')
 
     def test_Translate3(self):
-        self._test_translation_process('Translate3.xml')
+        self._test_translation_process('Translate/Translate3.xml')
 
     def test_Translate4(self):
-        self._test_translation_process('Translate4.xml')
+        self._test_translation_process('Translate/Translate4.xml')
 
     def test_Translate5(self):
-        self._test_translation_process('Translate5.xml')
+        self._test_translation_process('Translate/Translate5.xml')
 
     def test_Translate6(self):
-        self._test_translation_process('Translate6.xml')
+        self._test_translation_process('Translate/Translate6.xml')
 
     def test_Translate7(self):
-        self._test_translation_process('Translate7.xml')
+        self._test_translation_process('Translate/Translate7.xml')
 
     def test_TranslateGlobal(self):
-        self._test_translation_process('TranslateGlobal.xml')
+        self._test_translation_process('Translate/TranslateGlobal.xml')
 
     def test_Locale1(self):
         self._test_translation_process('LocaleFilter/Locale1Xml.xml',
@@ -271,16 +271,16 @@ class ItstoolTests(unittest.TestCase):
 
     def test_Translate3_wrong1(self):
         """ Test that bad XML syntax in translation generates a proper exception """
-        self._test_translation_process('Translate3.xml', expected_status=1,
-                                       outputs=[('Translate3.ll.wrong.po', None, 'll')],
+        self._test_translation_process('Translate/Translate3.xml', expected_status=1,
+                                       outputs=[('Translate/Translate3.ll.wrong.po', None, 'll')],
                                        options='-s')
         #self.assertTrue("libxml2.parserError" in res['errors'])
 
     def test_Translate3_wrong2(self):
         """ Test that bad XML syntax in translation is handled gracefully """
-        self._test_translation_process('Translate3.xml',
-                                       outputs=[('Translate3.ll.wrong.po',
-                                                 'Translate3.ll.wrong.xml',
+        self._test_translation_process('Translate/Translate3.xml',
+                                       outputs=[('Translate/Translate3.ll.wrong.po',
+                                                 'Translate/Translate3.ll.wrong.xml',
                                                  'll')])
 
 

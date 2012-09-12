@@ -11,12 +11,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. (itstool) path: head/title
-#: tests/Translate3.xml:6
+#: tests/Translate/Translate3.xml:6
 msgid "The Life of a Simple Man"
 msgstr "La vie d'un simple homme"
 
 #. (itstool) path: body/p
-#: tests/Translate3.xml:9
+#: tests/Translate/Translate3.xml:9
 msgid ""
 "Everything started when Zebulon discovered that he had a <_:span-1/> who was "
 "a serious baseball <_:span-2/>."

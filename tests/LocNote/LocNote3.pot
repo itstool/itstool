@@ -11,25 +11,25 @@ msgstr ""
 
 #. (itstool) path: msg/data
 #. The variable {0} is the name of the host.
-#: tests/LocNote3.xml:5
+#: tests/LocNote/LocNote3.xml:5
 msgid "Host {0} cannot be found."
 msgstr ""
 
 #. (itstool) path: msg/data
 #. The variable {0} is the name of the host.
-#: tests/LocNote3.xml:8
+#: tests/LocNote/LocNote3.xml:8
 msgid "The connection with {0} has been lost."
 msgstr ""
 
 #. (itstool) path: msg/data
 #. {0} is a filename
-#: tests/LocNote3.xml:11
+#: tests/LocNote/LocNote3.xml:11
 msgid "{0} not found."
 msgstr ""
 
 #. (itstool) path: msg/data
 #. (itstool) link: myLocNotes.htm#CannotLog
-#: tests/LocNote3.xml:14
+#: tests/LocNote/LocNote3.xml:14
 msgid "Cannot log with this username."
 msgstr ""
 

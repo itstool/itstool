@@ -10,37 +10,37 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. (itstool) path: body/par
-#: tests/Translate1.xml:15
+#: tests/Translate/Translate1.xml:15
 msgid "Text with an image: <img alt=\"Image description\" src=\"img.png\"/>."
 msgstr ""
 
 #. (itstool) path: body/par@title
-#: tests/Translate1.xml:16
+#: tests/Translate/Translate1.xml:16
 msgid "Text"
 msgstr ""
 
 #. (itstool) path: body/par
-#: tests/Translate1.xml:16
+#: tests/Translate/Translate1.xml:16
 msgid "This is the first paragraph. It has some <_:verbatim-1/>."
 msgstr ""
 
 #. (itstool) path: 封面/汇集
-#: tests/Translate1.xml:21
+#: tests/Translate/Translate1.xml:21
 msgid "The Lord of the Rings"
 msgstr ""
 
 #. (itstool) path: 封面/标题
-#: tests/Translate1.xml:22
+#: tests/Translate/Translate1.xml:22
 msgid "The Return of the King"
 msgstr ""
 
 #. (itstool) path: 章节/头注
-#: tests/Translate1.xml:26
+#: tests/Translate/Translate1.xml:26
 msgid "Minas Tirith"
 msgstr ""
 
 #. (itstool) path: 章节/段落识别
-#: tests/Translate1.xml:27
+#: tests/Translate/Translate1.xml:27
 msgid "<_:姓名-1/> looked out from the shelter of <_:姓名-2/>'s cloak."
 msgstr ""
 

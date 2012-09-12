@@ -11,7 +11,7 @@ msgstr ""
 
 #. (itstool) path: data/value
 #. Keep the leading space!
-#: tests/EX-locNote-selector-2.xml:5
+#: tests/LocNote/EX-locNote-selector-2.xml:5
 #, no-wrap
 msgid ""
 " Variant {0} = {1} ({2})"
@@ -20,7 +20,7 @@ msgstr ""
 #. (itstool) path: value/span
 #. %1\$s is the original text's date in the format YYYY-MM-DD HH:MM always
 #. in GMT
-#: tests/EX-locNote-selector-2.xml:8
+#: tests/LocNote/EX-locNote-selector-2.xml:8
 #, no-wrap
 msgid ""
 "%1\\$s"
@@ -29,7 +29,7 @@ msgstr ""
 #. (itstool) path: data/value
 #. %1\$s is the original text's date in the format YYYY-MM-DD HH:MM always
 #. in GMT
-#: tests/EX-locNote-selector-2.xml:8
+#: tests/LocNote/EX-locNote-selector-2.xml:8
 #, no-wrap
 msgid ""
 "Translated from English content dated <_:span-1/> GMT."

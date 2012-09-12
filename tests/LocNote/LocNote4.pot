@@ -11,25 +11,25 @@ msgstr ""
 
 #. (itstool) path: span/span
 #. (itstool) link: http://en.wikipedia.org/wiki/Doppelganger
-#: tests/LocNote4.xml:5
+#: tests/LocNote/LocNote4.xml:5
 msgid "doppelgänger"
 msgstr ""
 
 #. (itstool) path: span/b
 #. If possible keep the non-English terms in the translated version too
-#: tests/LocNote4.xml:6
+#: tests/LocNote/LocNote4.xml:6
 msgid "serious"
 msgstr ""
 
 #. (itstool) path: span/span
 #. (itstool) link: http://en.wikipedia.org/wiki/Aficionado
-#: tests/LocNote4.xml:6
+#: tests/LocNote/LocNote4.xml:6
 msgid "aficionado"
 msgstr ""
 
 #. (itstool) path: p/span
 #. If possible keep the non-English terms in the translated version too
-#: tests/LocNote4.xml:4
+#: tests/LocNote/LocNote4.xml:4
 msgid "Everything started when Zebulon discovered that he had a <_:span-1/> who was a <_:b-2/> baseball <_:span-3/>."
 msgstr ""
 

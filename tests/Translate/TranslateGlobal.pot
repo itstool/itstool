@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2012-05-04 10:48-0400\n"
+"POT-Creation-Date: 2012-05-04 11:34-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -10,12 +10,17 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. (itstool) path: body/par@title
-#: tests/Translate2.xml:8
+#: tests/Translate/TranslateGlobal.xml:10
 msgid "Text"
 msgstr ""
 
 #. (itstool) path: body/par
-#: tests/Translate2.xml:8
+#: tests/Translate/TranslateGlobal.xml:10
 msgid "This is the first paragraph. It has some <_:code-1/>."
+msgstr ""
+
+#. (itstool) path: body/par
+#: tests/Translate/TranslateGlobal.xml:11
+msgid "Some additional text."
 msgstr ""
 

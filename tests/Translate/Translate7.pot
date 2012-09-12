@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
-"POT-Creation-Date: 2012-05-04 11:00-0400\n"
+"POT-Creation-Date: 2012-05-04 11:30-0400\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -9,13 +9,13 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. (itstool) path: head/title
-#: tests/Translate3.xml:6
-msgid "The Life of a Simple Man"
+#. (itstool) path: body/p
+#: tests/Translate/Translate7.xml:19
+msgid "For the implementation of ITS, apply the rules in the order:"
 msgstr ""
 
 #. (itstool) path: body/p
-#: tests/Translate3.xml:9
-msgid "Everything started when Zebulon discovered that he had a <_:span-1/> who was a serious baseball <_:span-2/>."
+#: tests/Translate/Translate7.xml:26
+msgid "<_:ph-1/> The last rule wins."
 msgstr ""
 

@@ -11,13 +11,13 @@ msgstr ""
 
 #. (itstool) path: string/data
 #. (itstool) link: Comments.html#FileNotFound
-#: tests/EX-locNoteRefPointer-attribute-1.xml:10
+#: tests/LocNote/EX-locNoteRefPointer-attribute-1.xml:10
 msgid "Cannot find the file {0}."
 msgstr ""
 
 #. (itstool) path: string/data
 #. (itstool) link: Comments.html#DivByZero
-#: tests/EX-locNoteRefPointer-attribute-1.xml:13
+#: tests/LocNote/EX-locNoteRefPointer-attribute-1.xml:13
 msgid "Invalid parameter."
 msgstr ""
 
