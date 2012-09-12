@@ -1128,8 +1128,8 @@ class Document (object):
             sys.stderr.write('Error: Unrecognized category %s\n' % category)
             sys.exit(1)
         out.write('%s\t%s\n' % (xml_get_node_path(node), compval))
-        for child in xml_attr_iter(node):
-            self.output_test_data(category, out, child)
+        for attr in sorted(xml_attr_iter(node), lambda x, y: cmp(str(x), str(y))):
+            self.output_test_data(category, out, attr)
         for child in xml_child_iter(node):
             if child.type == 'element':
                 self.output_test_data(category, out, child)
