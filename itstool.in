@@ -1141,6 +1141,8 @@ class Document (object):
             compval = 'its:withinText="%s"' % self.get_its_within_text(node)
         elif category == 'localeFilterList':
             compval = 'its:localeFilterList="%s"' % self.get_its_locale_filter(node)
+        elif category == 'externalResourceRefPointer':
+            compval = 'its:externalResourceRefPointer="%s"' % self._its_externals.get(node, '')
         else:
             sys.stderr.write('Error: Unrecognized category %s\n' % category)
             sys.exit(1)
