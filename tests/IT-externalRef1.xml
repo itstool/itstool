@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<doc xmlns:its="http://www.w3.org/2005/11/its" xmlns:itst="http://itstool.org/extensions/">
+ <its:rules version="1.0">
+  <itst:externalRefRule selector="//external" refPointer="@src"/>
+ </its:rules>
+ <p>This is a test of the externalRefRule extension.</p>
+ <external src="IT-externalRef1.txt"/>
+ <external its:translate="no" src="devnull"/>
+ <p>This has been a test.</p>
+</doc>

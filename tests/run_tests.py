@@ -242,6 +242,9 @@ class ItstoolTests(unittest.TestCase):
     def test_WithinText2(self):
         self._test_translation_process('WithinText2.xml')
 
+    def test_IT_externalRef1(self):
+        self._test_translation_process('IT-externalRef1.xml')
+
     def test_IT_locNote_inline(self):
         self._test_pot_generation('IT-locNote-inline.xml')
 
