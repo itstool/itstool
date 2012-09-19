@@ -9,7 +9,12 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. (itstool) path: external
+#. (itstool) path: doc/p
+#: tests/IT-externalRef1.xml:6
+msgid "This is a test of the externalRefRule extension."
+msgstr "Ceci est un test de l'extension externalRefRule."
+
+#. (itstool) path: doc/external
 #. This is a reference to an external file such as an image or video. When
 #. the file changes, the md5 hash will change to let you know you need to
 #. update your localized copy. The msgstr is not used at all. Set it to
@@ -18,11 +23,6 @@ msgstr ""
 msgctxt "_"
 msgid "external ref='IT-externalRef1.txt' md5='9cb75ee59c2c7a70be17c5887517a34b'"
 msgstr "external ref='IT-externalRef1.txt' md5='9cb75ee59c2c7a70be17c5887517a34b'"
-
-#. (itstool) path: doc/p
-#: tests/IT-externalRef1.xml:6
-msgid "This is a test of the externalRefRule extension."
-msgstr "Ceci est un test de l'extension externalRefRule."
 
 #. (itstool) path: doc/p
 #: tests/IT-externalRef1.xml:9

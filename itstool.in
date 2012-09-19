@@ -474,7 +474,6 @@ class Document (object):
         self._itst_lang_attr = {}
         self._itst_credits = None
         self._its_externals = {}
-        self._itst_externals = []
 
     def _check_errors(self):
         if self._xml_err:
@@ -592,9 +591,13 @@ class Document (object):
                 for node in self._try_xpath_eval(xpath, rule.nsProp('appendTo', None)):
                     self._itst_credits = (node, rule)
                     break
-        elif xml_is_ns_name(rule, NS_ITS, 'externalResourceRefRule'):
+        elif (xml_is_ns_name(rule, NS_ITS, 'externalResourceRefRule') or
+              xml_is_ns_name(rule, NS_ITST, 'externalRefRule')):
             sel = rule.nsProp('selector', None)
-            ptr = rule.nsProp('externalResourceRefPointer', None)
+            if xml_is_ns_name(rule, NS_ITS, 'externalResourceRefRule'):
+                ptr = rule.nsProp('externalResourceRefPointer', None)
+            else:
+                ptr = rule.nsProp('refPointer', None)
             if sel is not None and ptr is not None:
                 for node in self._try_xpath_eval(xpath, sel):
                     try:
@@ -605,18 +608,6 @@ class Document (object):
                     res = self._try_xpath_eval(xpath, ptr)
                     if len(res) > 0:
                         self._its_externals[node] = res[0].content
-                    xpath.setContextNode(oldnode)
-        elif xml_is_ns_name(rule, NS_ITST, 'externalRefRule'):
-            if rule.nsProp('selector', None) is not None and rule.nsProp('refPointer', None) is not None:
-                for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
-                    try:
-                        oldnode = xpath.contextNode()
-                    except:
-                        oldnode = None
-                    xpath.setContextNode(node)
-                    res = self._try_xpath_eval(xpath, rule.nsProp('refPointer', None))
-                    if len(res) > 0:
-                        self._itst_externals.append((node, res[0].content))
                     xpath.setContextNode(oldnode)
 
     def apply_its_rules (self, builtins):
@@ -946,31 +937,6 @@ class Document (object):
     def generate_messages(self, comments=True):
         if self._itst_credits is not None:
             self._msgs.add_credits()
-        for ext in self._itst_externals:
-            translate = None
-            node = ext[0]
-            translate = self.get_its_translate(node)
-            if translate == 'no':
-                continue
-            msg = Message()
-            try:
-                fullfile = os.path.join(os.path.dirname(self._filename), ext[1])
-                filefp = open(fullfile)
-                filemd5 = hashlib.md5(filefp.read()).hexdigest()
-                filefp.close()
-            except:
-                filemd5 = '__failed__'
-            txt = "external ref='%s' md5='%s'" % (ext[1], filemd5)
-            msg.set_context('_')
-            msg.add_text(txt)
-            msg.add_source('%s:%i' % (self._doc.name, ext[0].lineNo()))
-            msg.add_marker(ext[0].name)
-            msg.add_comment(Comment('This is a reference to an external file such as an image or'
-                                    ' video. When the file changes, the md5 hash will change to'
-                                    ' let you know you need to update your localized copy. The'
-                                    ' msgstr is not used at all. Set it to whatever you like'
-                                    ' once you have updated your copy of the file.'))
-            self._msgs.add_message(msg, None)
         for child in xml_child_iter(self._doc):
             if child.type == 'element':
                 self.generate_message(child, None, comments=comments)
