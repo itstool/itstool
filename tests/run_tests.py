@@ -156,6 +156,24 @@ class ItstoolTests(unittest.TestCase):
     def test_TranslateGlobal(self):
         self._test_translation_process('Translate/TranslateGlobal.xml')
 
+    def test_ExternalResource1(self):
+        self._test_pot_generation('ExternalResource/ExternalResource1Xml.xml')
+
+    def test_ExternalResource2(self):
+        self._test_pot_generation('ExternalResource/ExternalResource2Xml.xml')
+
+    def test_ExternalResource3(self):
+        self._test_pot_generation('ExternalResource/ExternalResource3Xml.xml')
+
+    def test_ExternalResource1Attr(self):
+        self._test_pot_generation('ExternalResource/Attr/ExternalResource1AttrXml.xml')
+
+    def test_ExternalResource2Attr(self):
+        self._test_pot_generation('ExternalResource/Attr/ExternalResource2AttrXml.xml')
+
+    def test_ExternalResource3Attr(self):
+        self._test_pot_generation('ExternalResource/Attr/ExternalResource3AttrXml.xml')
+
     def test_Locale1(self):
         self._test_translation_process('LocaleFilter/Locale1Xml.xml',
                                        outputs=[('LocaleFilter/Locale1Xml.fr_FR.po',
