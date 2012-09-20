@@ -282,6 +282,9 @@ class ItstoolTests(unittest.TestCase):
     def test_IT_placeholder_1(self):
         self._test_translation_process('IT-placeholder-1.xml')
 
+    def test_IT_prefixes_1(self):
+        self._test_translation_process('IT-prefixes-1.xml')
+
     def test_IT_malformed(self):
         """ Test that a malformed XML generates a proper exception """
         res = self._test_pot_generation('IT-malformed.xml', expected_status=1)

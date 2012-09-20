@@ -216,7 +216,10 @@ class Message (object):
     def add_start_tag (self, node):
         if len(self._message) == 0 or not(isinstance(self._message[-1], basestring)):
             self._message.append('')
-        self._message[-1] += ('<%s' % node.name)
+        if node.ns() is not None and node.ns().name is not None:
+            self._message[-1] += ('<%s:%s' % (node.ns().name, node.name))
+        else:
+            self._message[-1] += ('<%s' % node.name)
         for prop in xml_attr_iter(node):
             name = prop.name
             if prop.ns() is not None:
@@ -235,7 +238,10 @@ class Message (object):
         if node.children is not None:
             if len(self._message) == 0 or not(isinstance(self._message[-1], basestring)):
                 self._message.append('')
-            self._message[-1] += (u'</%s>' % unicode(node.name, 'utf-8'))
+            if node.ns() is not None and node.ns().name is not None:
+                self._message[-1] += ('</%s:%s>' % (node.ns().name, node.name))
+            else:
+                self._message[-1] += ('</%s>' % node.name)
 
     def is_empty (self):
         return self._empty
