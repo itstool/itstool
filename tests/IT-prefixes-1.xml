@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/"
+      xmlns:mal="http://projectmallard.org/1.0/"
+      xmlns:its="http://www.w3.org/2005/11/its"
+      xmlns:tt="http://www.w3.org/ns/ttml">
+  <p>This is a test of namespace <its:span>prefixes</its:span></p>
+  <media type="video" src="movie.avi">
+    <tt:tt>
+      <tt:body>
+        <tt:div begin="1s" end="6s">
+          <tt:p>Drag <tt:span>pieces</tt:span> from the right to the left.</tt:p>
+        </tt:div>
+        <tt:div begin="6s" end="14s">
+          <tt:p>Hold down <mal:key>Ctrl</mal:key>.</tt:p>
+        </tt:div>
+      </tt:body>
+    </tt:tt>
+  </media>
+</page>

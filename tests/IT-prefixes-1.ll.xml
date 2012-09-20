@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<page xmlns="http://projectmallard.org/1.0/" xmlns:mal="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:tt="http://www.w3.org/ns/ttml" xml:lang="test">
+  <p>Ceci est un test de <its:span>préfixes</its:span> d'espace de noms.</p>
+  <media type="video" src="movie.avi">
+    <tt:tt>
+      <tt:body>
+        <tt:div begin="1s" end="6s">
+          <tt:p>Faites glisser des <tt:span>pièces</tt:span> de la gauche vers la droite.</tt:p>
+        </tt:div>
+        <tt:div begin="6s" end="14s">
+          <tt:p>Maintenez la touche <mal:key>Ctrl</mal:key>.</tt:p>
+        </tt:div>
+      </tt:body>
+    </tt:tt>
+  </media>
+</page>
