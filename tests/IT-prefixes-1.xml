@@ -3,6 +3,11 @@
       xmlns:mal="http://projectmallard.org/1.0/"
       xmlns:its="http://www.w3.org/2005/11/its"
       xmlns:tt="http://www.w3.org/ns/ttml">
+  <info>
+    <its:rules version="1.0">
+      <its:withinTextRule selector="//mal:p//* | //tt:p//*" withinText="yes"/>
+    </its:rules>
+  </info>
   <p>This is a test of namespace <its:span>prefixes</its:span></p>
   <media type="video" src="movie.avi">
     <tt:tt>

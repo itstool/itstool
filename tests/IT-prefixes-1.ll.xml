@@ -1,5 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<page xmlns="http://projectmallard.org/1.0/" xmlns:mal="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:tt="http://www.w3.org/ns/ttml" xml:lang="test">
+<page xmlns="http://projectmallard.org/1.0/" xmlns:mal="http://projectmallard.org/1.0/" xmlns:its="http://www.w3.org/2005/11/its" xmlns:tt="http://www.w3.org/ns/ttml">
+  <info>
+    <its:rules version="1.0">
+      <its:withinTextRule selector="//mal:p//* | //tt:p//*" withinText="yes"/>
+    </its:rules>
+  </info>
   <p>Ceci est un test de <its:span>préfixes</its:span> d'espace de noms.</p>
   <media type="video" src="movie.avi">
     <tt:tt>

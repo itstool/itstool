@@ -9,28 +9,18 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. (itstool) path: media
-#. This is a reference to an external file such as an image or video. When
-#. the file changes, the md5 hash will change to let you know you need to
-#. update your localized copy. The msgstr is not used at all. Set it to
-#. whatever you like once you have updated your copy of the file.
-#: tests/IT-prefixes-1.xml:7
-msgctxt "_"
-msgid "external ref='movie.avi' md5='__failed__'"
-msgstr ""
-
 #. (itstool) path: page/p
-#: tests/IT-prefixes-1.xml:6
+#: tests/IT-prefixes-1.xml:11
 msgid "This is a test of namespace <its:span>prefixes</its:span>"
 msgstr ""
 
 #. (itstool) path: div/p
-#: tests/IT-prefixes-1.xml:11
+#: tests/IT-prefixes-1.xml:16
 msgid "Drag <tt:span>pieces</tt:span> from the right to the left."
 msgstr ""
 
 #. (itstool) path: div/p
-#: tests/IT-prefixes-1.xml:14
+#: tests/IT-prefixes-1.xml:19
 msgid "Hold down <mal:key>Ctrl</mal:key>."
 msgstr ""
 
