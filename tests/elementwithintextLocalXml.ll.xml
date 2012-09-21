@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<text xmlns:its="http://www.w3.org/2005/11/its" its:version="2.0">
+ <body>
+  <par>Texte en <bold its:withinText="yes">gras</bold>.</par>
+ </body>
+</text>

@@ -1090,7 +1090,7 @@ class Document (object):
         if node.hasNsProp('translate', NS_ITS):
             val = node.nsProp('translate', NS_ITS)
         elif xml_is_ns_name(node, NS_ITS, 'span') and node.hasNsProp('translate', None):
-                val = node.nsProp('translate', None)
+            val = node.nsProp('translate', None)
         elif self._its_translate_nodes.has_key(node):
             val = self._its_translate_nodes[node]
         if val is not None:
@@ -1102,7 +1102,15 @@ class Document (object):
         return 'yes'
 
     def get_its_within_text(self, node):
-        return self._its_within_text_nodes.get(node, 'no')
+        if node.hasNsProp('withinText', NS_ITS):
+            val = node.nsProp('withinText', NS_ITS)
+        elif xml_is_ns_name(node, NS_ITS, 'span') and node.hasNsProp('withinText', None):
+            val = node.nsProp('withinText', None)
+        else:
+            return self._its_within_text_nodes.get(node, 'no')
+        if val in ('yes', 'nested'):
+            return val
+        return 'no'
 
     def get_its_locale_filter(self, node):
         if node.hasNsProp('localeFilterList', NS_ITS):

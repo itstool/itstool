@@ -1,0 +1,16 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2012-09-21 09:34-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. (itstool) path: body/par
+#: tests/elementwithintextLocalXml.xml:5
+msgid "Text with <bold its:withinText=\"yes\">bold</bold>."
+msgstr "Texte en <bold its:withinText=\"yes\">gras</bold>."
+

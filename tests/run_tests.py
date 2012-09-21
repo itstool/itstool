@@ -254,6 +254,12 @@ class ItstoolTests(unittest.TestCase):
         self._test_translation_join('LocaleFilter/Locale5Xml.xml',
                                     ('fr_FR', 'fr_CA', 'fr_CH'))
 
+    def test_elementwithintextlocalitsSpanXml(self):
+        self._test_translation_process('elementwithintextlocalitsSpanXml.xml')
+
+    def test_elementwithintextLocalXml(self):
+        self._test_translation_process('elementwithintextLocalXml.xml')
+
     def test_WithinText1(self):
         self._test_translation_process('WithinText1.xml')
 
