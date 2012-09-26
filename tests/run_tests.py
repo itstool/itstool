@@ -174,6 +174,15 @@ class ItstoolTests(unittest.TestCase):
     def test_ExternalResource3Attr(self):
         self._test_pot_generation('ExternalResource/Attr/ExternalResource3AttrXml.xml')
 
+    def test_IdValue1(self):
+        self._test_pot_generation('IdValue/idvalue1xml.xml')
+
+    def test_IdValue2(self):
+        self._test_pot_generation('IdValue/idvalue2xml.xml')
+
+    def test_IdValue3(self):
+        self._test_pot_generation('IdValue/idvalue3xml.xml')
+
     def test_Locale1(self):
         self._test_translation_process('LocaleFilter/Locale1Xml.xml',
                                        outputs=[('LocaleFilter/Locale1Xml.fr_FR.po',
