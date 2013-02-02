@@ -1,0 +1,4 @@
+/book	space="default"
+/book/@its:version	space="default"
+/book/verse[1]	space="preserve"
+/book/verse[1]/@xml:space	space="preserve"

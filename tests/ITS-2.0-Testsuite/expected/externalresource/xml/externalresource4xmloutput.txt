@@ -1,0 +1,19 @@
+/doc
+/doc/its:rules[1]
+/doc/its:rules[1]/@version
+/doc/its:rules[1]/its:param[1]
+/doc/its:rules[1]/its:param[1]/@name
+/doc/its:rules[1]/its:externalResourceRefRule[1]
+/doc/its:rules[1]/its:externalResourceRefRule[1]/@externalResourceRefPointer
+/doc/its:rules[1]/its:externalResourceRefRule[1]/@selector
+/doc/dbk:mediaobject[1]
+/doc/dbk:mediaobject[1]/dbk:videoobject[1]
+/doc/dbk:mediaobject[1]/dbk:videoobject[1]/dbk:videodata[1]
+/doc/dbk:mediaobject[1]/dbk:videoobject[1]/dbk:videodata[1]/@fileref
+/doc/dbk:mediaobject[1]/dbk:imageobject[1]
+/doc/dbk:mediaobject[1]/dbk:imageobject[1]/dbk:imagedata[1]	externalResourceRef="movie-frame.gif"
+/doc/dbk:mediaobject[1]/dbk:imageobject[1]/dbk:imagedata[1]/@fileref
+/doc/dbk:mediaobject[1]/dbk:textobject[1]
+/doc/dbk:mediaobject[1]/dbk:textobject[1]/dbk:para[1]
+/doc/dbk:mediaobject[1]/dbk:textobject[1]/dbk:warning[1]
+/doc/dbk:mediaobject[1]/dbk:textobject[1]/dbk:warning[1]/dbk:para[1]

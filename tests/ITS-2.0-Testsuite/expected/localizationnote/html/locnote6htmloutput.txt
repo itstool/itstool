@@ -1,0 +1,21 @@
+/html
+/html/head[1]
+/html/head[1]/meta[1]
+/html/head[1]/meta[1]/@charset
+/html/head[1]/title[1]
+/html/head[1]/link[1]
+/html/head[1]/link[1]/@href
+/html/head[1]/link[1]/@rel
+/html/body[1]
+/html/body[1]/span[1]
+/html/body[1]/span[1]/@id
+/html/body[1]/span[1]/img[1]
+/html/body[1]/span[1]/img[1]/@alt	locNote="Do not translate the word "Chobe""	locNoteType="alert"
+/html/body[1]/span[1]/img[1]/@src
+/html/body[1]/span[2]
+/html/body[1]/span[2]/@id
+/html/body[1]/span[2]/img[1]
+/html/body[1]/span[2]/img[1]/@alt	locNote="This text will be displayed over the image."	locNoteType="description"
+/html/body[1]/span[2]/img[1]/@src
+/html/body[1]/span[3]	locNote="The variable {0} has three possible values: 'printer', 'stacker' and 'stapler options'."	locNoteType="alert"
+/html/body[1]/span[3]/@id

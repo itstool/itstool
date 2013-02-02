@@ -1,0 +1,8 @@
+/book	space="default"
+/book/@its:version	space="default"
+/book/its:rules[1]	space="default"
+/book/its:rules[1]/@version	space="default"
+/book/its:rules[1]/@xlink:href	space="default"
+/book/its:rules[1]/@xlink:type	space="default"
+/book/verse[1]	space="preserve"
+/book/verse[1]/@id	space="preserve"

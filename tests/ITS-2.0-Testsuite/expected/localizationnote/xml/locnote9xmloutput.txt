@@ -1,0 +1,11 @@
+/Doc
+/Doc/@its:version
+/Doc/body[1]
+/Doc/body[1]/p[1]
+/Doc/body[1]/p[1]/its:span[1]	locNote="If possible keep the non-English terms in the translated version too"	locNoteType="description"
+/Doc/body[1]/p[1]/its:span[1]/@locNote
+/Doc/body[1]/p[1]/its:span[1]/its:span[1]	locNoteRef="http://en.wikipedia.org/wiki/Doppelganger"	locNoteType="description"
+/Doc/body[1]/p[1]/its:span[1]/its:span[1]/@locNoteRef
+/Doc/body[1]/p[1]/its:span[1]/b[1]	locNote="If possible keep the non-English terms in the translated version too"	locNoteType="description"
+/Doc/body[1]/p[1]/its:span[1]/its:span[2]	locNoteRef="http://en.wikipedia.org/wiki/Aficionado"	locNoteType="description"
+/Doc/body[1]/p[1]/its:span[1]/its:span[2]/@locNoteRef

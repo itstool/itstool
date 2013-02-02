@@ -1,0 +1,15 @@
+/text	withinText="no"
+/text/@its:version
+/text/prolog[1]	withinText="no"
+/text/prolog[1]/its:span[1]	withinText="no"
+/text/prolog[1]/its:span[1]/@withinText
+/text/prolog[1]/its:span[2]	withinText="no"
+/text/prolog[1]/its:span[2]/@withinText
+/text/prolog[1]/its:span[3]	withinText="no"
+/text/prolog[1]/its:span[3]/@withinText
+/text/body[1]	withinText="no"
+/text/body[1]/p[1]	withinText="no"
+/text/body[1]/p[1]/its:span[1]	withinText="yes"
+/text/body[1]/p[1]/its:span[1]/@withinText
+/text/body[1]/p[1]/its:span[2]	withinText="yes"
+/text/body[1]/p[1]/its:span[2]/@withinText

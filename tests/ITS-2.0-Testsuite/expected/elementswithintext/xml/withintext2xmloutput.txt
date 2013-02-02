@@ -1,0 +1,28 @@
+/myDocument	withinText="no"
+/myDocument/@xml:lang
+/myDocument/prolog[1]	withinText="no"
+/myDocument/prolog[1]/its:rules[1]	withinText="no"
+/myDocument/prolog[1]/its:rules[1]/@version
+/myDocument/prolog[1]/its:rules[1]/@xlink:href
+/myDocument/prolog[1]/its:rules[1]/its:withinTextRule[1]	withinText="no"
+/myDocument/prolog[1]/its:rules[1]/its:withinTextRule[1]/@selector
+/myDocument/prolog[1]/its:rules[1]/its:withinTextRule[1]/@withinText
+/myDocument/prolog[1]/author[1]	withinText="no"
+/myDocument/prolog[1]/version[1]	withinText="no"
+/myDocument/prolog[1]/keywords[1]	withinText="no"
+/myDocument/prolog[1]/keywords[1]/kw[1]	withinText="no"
+/myDocument/prolog[1]/keywords[1]/kw[2]	withinText="no"
+/myDocument/prolog[1]/storageKey[1]	withinText="no"
+/myDocument/content[1]	withinText="no"
+/myDocument/content[1]/section[1]	withinText="no"
+/myDocument/content[1]/section[1]/title[1]	withinText="no"
+/myDocument/content[1]/section[1]/p[1]	withinText="no"
+/myDocument/content[1]/section[1]/p[1]/fnote[1]	withinText="nested"
+/myDocument/content[1]/section[1]/p[1]/kw[1]	withinText="yes"
+/myDocument/content[1]/section[1]/p[2]	withinText="no"
+/myDocument/content[1]/section[1]/p[2]/img[1]	withinText="yes"
+/myDocument/content[1]/section[1]/p[2]/img[1]/@alt
+/myDocument/content[1]/section[1]/p[2]/img[1]/@src
+/myDocument/content[1]/footer[1]	withinText="no"
+/myDocument/content[1]/footer[1]/p[1]	withinText="no"
+/myDocument/content[1]/footer[1]/p[1]/em[1]	withinText="yes"

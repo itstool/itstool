@@ -1,0 +1,20 @@
+/Res
+/Res/@its:version
+/Res/body[1]	locNote="The variable {0} is the name of the host."	locNoteType="description"
+/Res/body[1]/@its:locNote
+/Res/body[1]/msg[1]	locNote="The variable {0} is the name of the host."	locNoteType="description"
+/Res/body[1]/msg[1]/@id
+/Res/body[1]/msg[1]/data[1]	locNote="The variable {0} is the name of the host."	locNoteType="description"
+/Res/body[1]/msg[2]	locNote="The variable {0} is the name of the host."	locNoteType="description"
+/Res/body[1]/msg[2]/@id
+/Res/body[1]/msg[2]/data[1]	locNote="The variable {0} is the name of the host."	locNoteType="description"
+/Res/body[1]/msg[3]	locNote="The variable {0} is the name of the host."	locNoteType="description"
+/Res/body[1]/msg[3]/@id
+/Res/body[1]/msg[3]/data[1]	locNote="{0} is a filename"	locNoteType="alert"
+/Res/body[1]/msg[3]/data[1]/@its:locNote
+/Res/body[1]/msg[3]/data[1]/@its:locNoteType
+/Res/body[1]/msg[4]	locNote="The variable {0} is the name of the host."	locNoteType="description"
+/Res/body[1]/msg[4]/@id
+/Res/body[1]/msg[4]/data[1]	locNoteRef="myLocNotes.htm#CannotLog"	locNoteType="alert"
+/Res/body[1]/msg[4]/data[1]/@its:locNoteRef
+/Res/body[1]/msg[4]/data[1]/@its:locNoteType

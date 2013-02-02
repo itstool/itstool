@@ -1,0 +1,11 @@
+/html
+/html/@lang
+/html/head[1]
+/html/head[1]/meta[1]
+/html/head[1]/meta[1]/@charset
+/html/head[1]/title[1]
+/html/body[1]
+/html/body[1]/p[1]
+/html/body[1]/p[1]/span[1]	locNote="Check with terminology engineer"	locNoteType="alert"
+/html/body[1]/p[1]/span[1]/@its-loc-note
+/html/body[1]/p[1]/span[1]/@its-loc-note-type

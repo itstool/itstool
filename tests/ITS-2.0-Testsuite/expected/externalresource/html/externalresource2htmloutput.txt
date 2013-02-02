@@ -1,0 +1,21 @@
+/html
+/html/@lang
+/html/head[1]
+/html/head[1]/meta[1]
+/html/head[1]/meta[1]/@charset
+/html/head[1]/link[1]
+/html/head[1]/link[1]/@href
+/html/head[1]/link[1]/@rel
+/html/head[1]/title[1]
+/html/body[1]
+/html/body[1]/span[1]
+/html/body[1]/span[1]/@id
+/html/body[1]/span[1]/video[1]	externalResourceRef="video-image.png"
+/html/body[1]/span[1]/video[1]/@height
+/html/body[1]/span[1]/video[1]/@poster
+/html/body[1]/span[1]/video[1]/@src
+/html/body[1]/span[1]/video[1]/@width
+/html/body[1]/span[1]/video[1]/p[1]
+/html/body[1]/span[1]/video[1]/p[1]/code[1]
+/html/body[1]/span[1]/video[1]/p[1]/a[1]
+/html/body[1]/span[1]/video[1]/p[1]/a[1]/@href

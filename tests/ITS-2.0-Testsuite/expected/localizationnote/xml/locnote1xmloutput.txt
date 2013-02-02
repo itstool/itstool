@@ -1,0 +1,12 @@
+/myRes
+/myRes/head[1]
+/myRes/head[1]/its:rules[1]
+/myRes/head[1]/its:rules[1]/@its:translate
+/myRes/head[1]/its:rules[1]/@version
+/myRes/head[1]/its:rules[1]/its:locNoteRule[1]
+/myRes/head[1]/its:rules[1]/its:locNoteRule[1]/@locNoteType
+/myRes/head[1]/its:rules[1]/its:locNoteRule[1]/@selector
+/myRes/head[1]/its:rules[1]/its:locNoteRule[1]/its:locNote[1]
+/myRes/body[1]
+/myRes/body[1]/msg[1]	locNote="The variable {0} has three possible values: 'printer', 'stacker' and 'stapler options'."	locNoteType="alert"
+/myRes/body[1]/msg[1]/@id

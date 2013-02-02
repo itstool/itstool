@@ -1,0 +1,15 @@
+/text	withinText="no"
+/text/@its:version
+/text/prolog[1]	withinText="no"
+/text/prolog[1]/title[1]	withinText="no"
+/text/prolog[1]/title[1]/@its:withinText
+/text/prolog[1]/author[1]	withinText="no"
+/text/prolog[1]/author[1]/@its:withinText
+/text/prolog[1]/keywords[1]	withinText="no"
+/text/prolog[1]/keywords[1]/@its:withinText
+/text/body[1]	withinText="no"
+/text/body[1]/p[1]	withinText="no"
+/text/body[1]/p[1]/title[1]	withinText="yes"
+/text/body[1]/p[1]/title[1]/@its:withinText
+/text/body[1]/p[1]/author[1]	withinText="yes"
+/text/body[1]/p[1]/author[1]/@its:withinText

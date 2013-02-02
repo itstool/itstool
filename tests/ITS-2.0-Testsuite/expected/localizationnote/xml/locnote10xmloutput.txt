@@ -1,0 +1,31 @@
+/msgList
+/msgList/head[1]
+/msgList/head[1]/its:rules[1]
+/msgList/head[1]/its:rules[1]/@version
+/msgList/head[1]/its:rules[1]/its:param[1]
+/msgList/head[1]/its:rules[1]/its:param[1]/@name
+/msgList/head[1]/its:rules[1]/its:locNoteRule[1]
+/msgList/head[1]/its:rules[1]/its:locNoteRule[1]/@locNoteType
+/msgList/head[1]/its:rules[1]/its:locNoteRule[1]/@selector
+/msgList/head[1]/its:rules[1]/its:locNoteRule[1]/its:locNote[1]
+/msgList/head[1]/its:rules[1]/its:locNoteRule[2]
+/msgList/head[1]/its:rules[1]/its:locNoteRule[2]/@locNoteType
+/msgList/head[1]/its:rules[1]/its:locNoteRule[2]/@selector
+/msgList/head[1]/its:rules[1]/its:locNoteRule[2]/its:locNote[1]
+/msgList/head[1]/its:rules[1]/its:locNoteRule[3]
+/msgList/head[1]/its:rules[1]/its:locNoteRule[3]/@locNoteType
+/msgList/head[1]/its:rules[1]/its:locNoteRule[3]/@selector
+/msgList/head[1]/its:rules[1]/its:locNoteRule[3]/its:locNote[1]
+/msgList/body[1]
+/msgList/body[1]/msg[1]
+/msgList/body[1]/msg[1]/@id
+/msgList/body[1]/msg[1]/img[1]
+/msgList/body[1]/msg[1]/img[1]/@alt	locNote="Do not translate the word "Chobe""	locNoteType="alert"
+/msgList/body[1]/msg[1]/img[1]/@src
+/msgList/body[1]/msg[2]
+/msgList/body[1]/msg[2]/@id
+/msgList/body[1]/msg[2]/img[1]
+/msgList/body[1]/msg[2]/img[1]/@alt	locNote="This text will be displayed over the image."	locNoteType="description"
+/msgList/body[1]/msg[2]/img[1]/@src
+/msgList/body[1]/msg[3]	locNote="The variable {0} has three possible values: 'printer', 'stacker' and 'stapler options'."	locNoteType="alert"
+/msgList/body[1]/msg[3]/@id

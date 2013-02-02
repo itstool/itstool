@@ -1,0 +1,20 @@
+/Res
+/Res/prolog[1]
+/Res/prolog[1]/its:rules[1]
+/Res/prolog[1]/its:rules[1]/@version
+/Res/prolog[1]/its:rules[1]/its:translateRule[1]
+/Res/prolog[1]/its:rules[1]/its:translateRule[1]/@selector
+/Res/prolog[1]/its:rules[1]/its:translateRule[1]/@translate
+/Res/prolog[1]/its:rules[1]/its:locNoteRule[1]
+/Res/prolog[1]/its:rules[1]/its:locNoteRule[1]/@locNotePointer
+/Res/prolog[1]/its:rules[1]/its:locNoteRule[1]/@locNoteType
+/Res/prolog[1]/its:rules[1]/its:locNoteRule[1]/@selector
+/Res/body[1]
+/Res/body[1]/msg[1]
+/Res/body[1]/msg[1]/@id
+/Res/body[1]/msg[1]/notes[1]
+/Res/body[1]/msg[1]/data[1]	locNote="Indicates that the resource file {0} could not be loaded."	locNoteType="description"
+/Res/body[1]/msg[2]
+/Res/body[1]/msg[2]/@id
+/Res/body[1]/msg[2]/notes[1]
+/Res/body[1]/msg[2]/data[1]	locNote="A division by 0 was going to be computed."	locNoteType="description"

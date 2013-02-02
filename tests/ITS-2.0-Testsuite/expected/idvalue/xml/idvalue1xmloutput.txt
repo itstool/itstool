@@ -1,0 +1,18 @@
+/resource
+/resource/its:rules[1]
+/resource/its:rules[1]/@version
+/resource/its:rules[1]/its:idValueRule[1]
+/resource/its:rules[1]/its:idValueRule[1]/@idValue
+/resource/its:rules[1]/its:idValueRule[1]/@selector
+/resource/webform[1]
+/resource/webform[1]/entry[1]
+/resource/webform[1]/entry[1]/@name
+/resource/webform[1]/entry[1]/text[1]	idValue="btn.OK"
+/resource/webform[1]/entry[1]/pos[1]
+/resource/webform[1]/entry[1]/trig[1]
+/resource/webform[2]
+/resource/webform[2]/entry[1]
+/resource/webform[2]/entry[1]/@name
+/resource/webform[2]/entry[1]/text[1]	idValue="btn.CANCEL"
+/resource/webform[2]/entry[1]/pos[1]
+/resource/webform[2]/entry[1]/trig[1]

@@ -1,0 +1,13 @@
+/doc	withinText="no"
+/doc/head[1]	withinText="no"
+/doc/head[1]/its:rules[1]	withinText="no"
+/doc/head[1]/its:rules[1]/@version
+/doc/head[1]/its:rules[1]/@xlink:href
+/doc/body[1]	withinText="no"
+/doc/body[1]/p[1]	withinText="no"
+/doc/body[1]/p[1]/b[1]	withinText="yes"
+/doc/body[1]/p[1]/i[1]	withinText="yes"
+/doc/body[1]/p[1]/u[1]	withinText="yes"
+/doc/body[1]/p[2]	withinText="no"
+/doc/body[1]/p[2]/fn[1]	withinText="nested"
+/doc/body[1]/p[2]/fn[1]/@id

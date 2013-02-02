@@ -540,7 +540,7 @@ class Document (object):
                     if isinstance(idvalue, basestring):
                         self._its_id_values[node] = idvalue
                     else:
-                        for val in idvalues:
+                        for val in idvalue:
                             self._its_id_values[node] = val.content
                             break
                     xpath.setContextNode(oldnode)
@@ -1194,19 +1194,36 @@ class Document (object):
             node = self._doc.getRootElement()
         compval = ''
         if category == 'translate':
-            compval = 'its:translate="%s"' % self.get_its_translate(node)
+            compval = 'translate="%s"' % self.get_its_translate(node)
         elif category == 'withinText':
-            compval = 'its:withinText="%s"' % self.get_its_within_text(node)
+            if node.type != 'attribute':
+                compval = 'withinText="%s"' % self.get_its_within_text(node)
         elif category == 'localeFilterList':
-            compval = 'its:localeFilterList="%s"' % self.get_its_locale_filter(node)
-        elif category == 'externalResourceRefPointer':
-            compval = 'its:externalResourceRefPointer="%s"' % self._its_externals.get(node, '')
+            compval = 'localeFilterList="%s"' % self.get_its_locale_filter(node)
+        elif category == 'locNote':
+            val = self.get_its_loc_notes(node)
+            if len(val) > 0:
+                compval = 'locNote="%s"' % val[0]
+        elif category == 'externalResourceRef':
+            val = self._its_externals.get(node, '')
+            if val != '':
+                compval = 'externalResourceRef="%s"' % val
         elif category == 'idValue':
-            compval = 'its:idValue="%s"' % (self.get_its_id_value(node) or '')
+            val = self.get_its_id_value(node)
+            if val is not None:
+                compval = 'idValue="%s"' % val
+        elif category == 'preserveSpace':
+            if self.get_preserve_space(node):
+                compval = 'space="preserve"'
+            else:
+                compval = 'space="default"'
         else:
             sys.stderr.write('Error: Unrecognized category %s\n' % category)
             sys.exit(1)
-        out.write('%s\t%s\n' % (xml_get_node_path(node), compval))
+        if compval != '':
+            out.write('%s\t%s\r\n' % (xml_get_node_path(node), compval))
+        else:
+            out.write('%s\r\n' % (xml_get_node_path(node)))
         for attr in sorted(xml_attr_iter(node), lambda x, y: cmp(str(x), str(y))):
             self.output_test_data(category, out, attr)
         for child in xml_child_iter(node):

@@ -1,0 +1,14 @@
+/resource
+/resource/its:rules[1]
+/resource/its:rules[1]/@version
+/resource/its:rules[1]/@xlink:href
+/resource/entry[1]	idValue="btn.OK"
+/resource/entry[1]/@name
+/resource/entry[1]/text[1]
+/resource/entry[1]/pos[1]
+/resource/entry[1]/trig[1]
+/resource/entry[2]	idValue="btn.CANCEL"
+/resource/entry[2]/@name
+/resource/entry[2]/text[1]
+/resource/entry[2]/pos[1]
+/resource/entry[2]/trig[1]

@@ -1,0 +1,6 @@
+/file
+/file/res[1]	idValue="btnAgain"
+/file/res[1]/@name
+/file/res[1]/@xml:id
+/file/res[2]
+/file/res[2]/@name

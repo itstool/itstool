@@ -1,0 +1,19 @@
+/html
+/html/@lang
+/html/head[1]
+/html/head[1]/meta[1]
+/html/head[1]/meta[1]/@charset
+/html/head[1]/link[1]
+/html/head[1]/link[1]/@href
+/html/head[1]/link[1]/@rel
+/html/head[1]/title[1]
+/html/body[1]
+/html/body[1]/video[1]
+/html/body[1]/video[1]/@height
+/html/body[1]/video[1]/@poster	externalResourceRef="video-image.png"
+/html/body[1]/video[1]/@src	externalResourceRef="http://www.example.com/video/v2.mp"
+/html/body[1]/video[1]/@width
+/html/body[1]/video[1]/p[1]
+/html/body[1]/video[1]/p[1]/code[1]
+/html/body[1]/video[1]/p[1]/a[1]
+/html/body[1]/video[1]/p[1]/a[1]/@href

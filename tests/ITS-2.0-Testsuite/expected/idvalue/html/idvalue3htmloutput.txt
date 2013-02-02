@@ -1,0 +1,14 @@
+/html
+/html/head[1]
+/html/head[1]/script[1]
+/html/head[1]/script[1]/@type
+/html/head[1]/meta[1]
+/html/head[1]/meta[1]/@charset
+/html/head[1]/title[1]
+/html/body[1]
+/html/body[1]/p[1]	idValue="settingsMissing"
+/html/body[1]/p[1]/@id
+/html/body[1]/p[1]/b[1]	idValue="text"
+/html/body[1]/p[1]/b[1]/@id
+/html/body[1]/p[1]/var[1]	idValue="desc"
+/html/body[1]/p[1]/var[1]/@id

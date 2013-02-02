@@ -1,0 +1,4 @@
+/book	space="default"
+/book/@its:version	space="default"
+/book/its:span[1]	space="preserve"
+/book/its:span[1]/@xml:space	space="preserve"
