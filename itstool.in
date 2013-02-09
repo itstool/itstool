@@ -1060,7 +1060,7 @@ class Document (object):
         self.generate_external_resource_message(node)
         for attr in xml_attr_iter(node):
             self.generate_external_resource_message(attr)
-            idvalue = self.get_its_id_value(node)
+            idvalue = self.get_its_id_value(attr)
             if idvalue is not None:
                 basename = os.path.basename(self._filename)
                 msg.add_id_value(basename + '#' + idvalue)
