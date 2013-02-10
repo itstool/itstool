@@ -11,13 +11,8 @@ translate/translate/translate
 "
 
 exclude="
-locnote1xml
-locnote2xml
-locnote3xml
-locnote4xml
 locnote5xml
 locnote6xml
-locnote7xml
 locnote8xml
 locnote9xml
 

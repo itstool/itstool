@@ -127,7 +127,7 @@ class MessageList (object):
 
 class Comment (object):
     def __init__ (self, text):
-        self._text = text
+        self._text = str(text)
         assert(text is not None)
         self._markers = []
 
@@ -419,6 +419,26 @@ def fix_node_ns (node, nsdefs):
             fix_node_ns(child, childnsdefs)
 
 
+class LocNote (object):
+    def __init__(self, locnote=None, locnoteref=None, locnotetype=None, space=False):
+        self.locnote = locnote
+        self.locnoteref = locnoteref
+        self.locnotetype = locnotetype
+        if self.locnotetype != 'alert':
+            self.locnotetype = 'description'
+        self._preserve_space=space
+
+    def __repr__(self):
+        if self.locnote is not None:
+            if self._preserve_space:
+                return self.locnote
+            else:
+                return re.sub('\s+', ' ', self.locnote).strip()
+        elif self.locnoteref is not None:
+            return '(itstool) link: ' + re.sub('\s+', ' ', self.locnoteref).strip()
+        return ''
+
+
 class Document (object):
     def __init__ (self, filename, messages):
         self._xml_err = ''
@@ -566,13 +586,14 @@ class Document (object):
                         xpath.setContextNode(oldnode)
         elif xml_is_ns_name(rule, NS_ITS, 'locNoteRule'):
             locnote = None
+            notetype = rule.nsProp('locNoteType', None)
             for child in xml_child_iter(rule):
                 if xml_is_ns_name(child, NS_ITS, 'locNote'):
-                    locnote = re.sub('\s+', ' ', child.content).strip()
+                    locnote = LocNote(locnote=child.content, locnotetype=notetype)
                     break
             if locnote is None:
                 if rule.hasNsProp('locNoteRef', None):
-                    locnote = '(itstool) link: ' + re.sub('\s+', ' ', rule.nsProp('locNoteRef', None)).strip()
+                    locnote = LocNote(locnoteref=rule.nsProp('locNoteRef', None), locnotetype=notetype)
             if rule.nsProp('selector', None) is not None:
                 for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
                     if locnote is not None:
@@ -593,16 +614,19 @@ class Document (object):
                         xpath.setContextNode(node)
                         note = self._try_xpath_eval(xpath, sel)
                         if isinstance(note, basestring):
-                            self._its_loc_notes.setdefault(node, []).append(note)
+                            if ref:
+                                nodenote = LocNote(locnoteref=note, locnotetype=notetype)
+                            else:
+                                nodenote = LocNote(locnote=note, locnotetype=notetype)
+                            self._its_loc_notes.setdefault(node, []).append(nodenote)
                         else:
                             for note in note:
-                                if self.get_preserve_space(note):
-                                    cont = note.content
-                                else:
-                                    cont = re.sub('\s+', ' ', note.content).strip()
                                 if ref:
-                                    cont = '(itstool) link: ' + cont
-                                self._its_loc_notes.setdefault(node, []).append(cont)
+                                    nodenote = LocNote(locnoteref=note.content, locnotetype=notetype)
+                                else:
+                                    nodenote = LocNote(locnote=note.content, locnotetype=notetype,
+                                                      space=self.get_preserve_space(note))
+                                self._its_loc_notes.setdefault(node, []).append(nodenote)
                                 break
                         xpath.setContextNode(oldnode)
         elif xml_is_ns_name(rule, NS_ITS, 'langRule'):
@@ -1176,15 +1200,19 @@ class Document (object):
 
     def get_its_loc_notes(self, node):
         ret = []
-        if node.hasNsProp('locNote', NS_ITS):
-            ret.append(re.sub('\s+', ' ', node.nsProp('locNote', NS_ITS)).strip())
-        if node.hasNsProp('locNoteRef', NS_ITS):
-            ret.append('(itstool) link: ' + re.sub('\s+', ' ', node.nsProp('locNoteRef', NS_ITS)).strip())
+        if node.hasNsProp('locNote', NS_ITS) or node.hasNsProp('locNoteRef', NS_ITS) or node.hasNsProp('locNoteType', NS_ITS):
+            notetype = node.nsProp('locNoteType', NS_ITS)
+            if node.hasNsProp('locNote', NS_ITS):
+                ret.append(LocNote(locnote=node.nsProp('locNote', NS_ITS), locnotetype=notetype))
+            elif node.hasNsProp('locNoteRef', NS_ITS):
+                ret.append(LocNote(locnoteref=node.nsProp('locNoteRef', NS_ITS), locnotetype=notetype))
         if xml_is_ns_name(node, NS_ITS, 'span'):
-            if node.hasNsProp('locNote', None):
-                ret.append(re.sub('\s+', ' ', node.nsProp('locNote', None)).strip())
-            if node.hasNsProp('locNoteRef', None):
-                ret.append('(itstool) link: ' + re.sub('\s+', ' ', node.nsProp('locNoteRef', None)).strip())
+            if node.hasNsProp('locNote', None) or node.hasNsProp('locNoteRef', None) or node.hasNsProp('locNoteType', None):
+                notetype = node.nsProp('locNoteType', None)
+                if node.hasNsProp('locNote', None):
+                    ret.append(LocNote(locnote=node.nsProp('locNote', None), locnotetype=notetype))
+                elif node.hasNsProp('locNoteRef', None):
+                    ret.append(LocNote(locnoteref=node.nsProp('locNoteRef', None), locnotetype=notetype))
         for locnote in self._its_loc_notes.get(node, []):
             ret.append(locnote)
         return ret
@@ -1203,7 +1231,10 @@ class Document (object):
         elif category == 'locNote':
             val = self.get_its_loc_notes(node)
             if len(val) > 0:
-                compval = 'locNote="%s"' % val[0]
+                if val[0].locnote is not None:
+                    compval = 'locNote="%s"\tlocNoteType="%s"' % (str(val[0]), val[0].locnotetype)
+                elif val[0].locnoteref is not None:
+                    compval = 'locNoteRef="%s"\tlocNoteType="%s"' % (val[0].locnoteref, val[0].locnotetype)
         elif category == 'externalResourceRef':
             val = self._its_externals.get(node, '')
             if val != '':
