@@ -1071,7 +1071,7 @@ class Document (object):
             cnode = node
             while cnode is not None:
                 hasnote = False
-                for locnote in self.get_its_loc_notes(cnode):
+                for locnote in self.get_its_loc_notes(cnode, inherit=(not withinText)):
                     comment = Comment(locnote)
                     if withinText:
                         comment.add_marker('.%s/%s' % (path, cnode.name))
@@ -1198,7 +1198,7 @@ class Document (object):
             return node.nsProp('id', NS_XML)
         return self._its_id_values.get(node, None)
 
-    def get_its_loc_notes(self, node):
+    def get_its_loc_notes(self, node, inherit=True):
         ret = []
         if node.hasNsProp('locNote', NS_ITS) or node.hasNsProp('locNoteRef', NS_ITS) or node.hasNsProp('locNoteType', NS_ITS):
             notetype = node.nsProp('locNoteType', NS_ITS)
@@ -1206,15 +1206,18 @@ class Document (object):
                 ret.append(LocNote(locnote=node.nsProp('locNote', NS_ITS), locnotetype=notetype))
             elif node.hasNsProp('locNoteRef', NS_ITS):
                 ret.append(LocNote(locnoteref=node.nsProp('locNoteRef', NS_ITS), locnotetype=notetype))
-        if xml_is_ns_name(node, NS_ITS, 'span'):
+        elif  xml_is_ns_name(node, NS_ITS, 'span'):
             if node.hasNsProp('locNote', None) or node.hasNsProp('locNoteRef', None) or node.hasNsProp('locNoteType', None):
                 notetype = node.nsProp('locNoteType', None)
                 if node.hasNsProp('locNote', None):
                     ret.append(LocNote(locnote=node.nsProp('locNote', None), locnotetype=notetype))
                 elif node.hasNsProp('locNoteRef', None):
                     ret.append(LocNote(locnoteref=node.nsProp('locNoteRef', None), locnotetype=notetype))
-        for locnote in self._its_loc_notes.get(node, []):
+        for locnote in reversed(self._its_loc_notes.get(node, [])):
             ret.append(locnote)
+        if (len(ret) == 0 and inherit and
+            node.type != 'attribute' and node.parent is not None and node.parent.type == 'element'):
+            return self.get_its_loc_notes(node.parent)
         return ret
 
     def output_test_data(self, category, out, node=None):

@@ -11,11 +11,6 @@ translate/translate/translate
 "
 
 exclude="
-locnote5xml
-locnote6xml
-locnote8xml
-locnote9xml
-
 externalresource4xml
 externalresource5xml
 idvalue4xml
