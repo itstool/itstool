@@ -10,6 +10,16 @@ DATADIR=`(
 )`
 AC_SUBST([DATADIR])
 
+py_module=libxml2
+AC_MSG_CHECKING(for python module $py_module)
+echo "import $py_module" | python - &>/dev/null
+if test $? -ne 0; then
+	AC_MSG_RESULT(not found)
+	AC_MSG_ERROR(Python module $py_module is needed to run this package)
+else
+	AC_MSG_RESULT(found)
+fi
+
 AC_CONFIG_FILES([
 Makefile
 itstool
