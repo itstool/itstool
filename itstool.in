@@ -192,6 +192,10 @@ class Message (object):
         if re.sub('\s+', ' ', text).strip() != '':
             self._empty = False
 
+    def add_entity_ref (self, name):
+        self._message.append('&' + name + ';')
+        self._empty = False
+
     def add_placeholder (self, node):
         holder = Message.Placeholder(node)
         self._placeholders.append(holder)
@@ -368,7 +372,7 @@ def fix_node_ns (node, nsdefs):
 
 
 class Document (object):
-    def __init__ (self, filename, messages, load_dtd=False):
+    def __init__ (self, filename, messages, load_dtd=False, keep_entities=False):
         self._xml_err = ''
         libxml2.registerErrorHandler(xml_error_catcher, self)
         try:
@@ -377,9 +381,14 @@ class Document (object):
             sys.stderr.write('Error: cannot open XML file %s\n' % filename)
             sys.exit(1)
         ctxt.lineNumbers(1)
+        self._load_dtd = load_dtd
+        self._keep_entities = keep_entities
         if load_dtd:
             ctxt.loadSubset(1)
-        ctxt.replaceEntities(1)
+        if keep_entities:
+            ctxt.replaceEntities(0)
+        else:
+            ctxt.replaceEntities(1)
         ctxt.parseDocument()
         self._filename = filename
         self._doc = ctxt.doc()
@@ -836,7 +845,11 @@ class Document (object):
                 nsdef = nsdef.next
         reg_ns(node, nss)
         nss['_'] = NS_BLANK
-        blurb = '<' + node.name
+        try:
+            blurb = node.doc.intSubset().serialize('utf-8')
+        except:
+            blurb = ''
+        blurb += '<' + node.name
         for nsname in nss.keys():
             if nsname is None:
                 blurb += ' xmlns="%s"' % nss[nsname]
@@ -844,6 +857,8 @@ class Document (object):
                 blurb += ' xmlns:%s="%s"' % (nsname, nss[nsname])
         blurb += '>%s</%s>' % (trans.encode('utf-8'), node.name)
         ctxt = libxml2.createDocParserCtxt(blurb)
+        if self._load_dtd:
+            ctxt.loadSubset(1)
         ctxt.replaceEntities(0)
         ctxt.parseDocument()
         trnode = ctxt.doc().getRootElement()
@@ -920,6 +935,8 @@ class Document (object):
         if node.type in ('text', 'cdata') and msg is not None:
             msg.add_text(node.content)
             return
+        if node.type == 'entity_ref':
+            msg.add_entity_ref(node.name);
         if node.type != 'element':
             return
         if node.hasNsProp('drop', NS_ITST) and node.nsProp('drop', NS_ITST) == 'yes':
@@ -1121,6 +1138,11 @@ if __name__ == '__main__':
                        dest='load_dtd',
                        default=False,
                        help='Load external DTDs used by input XML')
+    options.add_option('-k', '--keep-entities',
+                       action='store_true',
+                       dest='keep_entities',
+                       default=False,
+                       help='Keep entity reference unexpanded')
     options.add_option('-v', '--version',
                        action='store_true',
                        dest='version',
@@ -1135,7 +1157,7 @@ if __name__ == '__main__':
     if opts.merge is None and opts.join is None:
         messages = MessageList()
         for filename in args[1:]:
-            doc = Document(filename, messages, opts.load_dtd)
+            doc = Document(filename, messages, load_dtd=opts.load_dtd, keep_entities=opts.keep_entities)
             doc.apply_its_rules()
             if opts.itsfile is not None:
                 for itsfile in opts.itsfile:
@@ -1173,7 +1195,7 @@ if __name__ == '__main__':
             sys.exit(1)
         for filename in args[1:]:
             messages = MessageList()
-            doc = Document(filename, messages, load_dtd=opts.load_dtd)
+            doc = Document(filename, messages, load_dtd=opts.load_dtd, keep_entities=opts.keep_entities)
             doc.apply_its_rules()
             if opts.itsfile is not None:
                 for itsfile in opts.itsfile:

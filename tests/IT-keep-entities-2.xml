@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE test [
+<!ENTITY first "hello">
+<!ENTITY second SYSTEM "world.xml">
+]>
+<test>
+  <p>&first;</p>
+  <p>&second;</p>
+</test>

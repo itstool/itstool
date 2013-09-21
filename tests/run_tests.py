@@ -38,6 +38,9 @@ class ItstoolTests(unittest.TestCase):
             'out' : os.path.join('tests', "test.pot"),
             'in'  : os.path.join('tests', start_file),
         }, expected_status)
+        # If we expected a failure, don't keep checking stuff
+        if expected_status != 0:
+            return result
         # If a reference pot file is present, test the output with this file
         if reference_pot is None:
             reference_pot = start_file_base + ".pot"
@@ -180,17 +183,22 @@ class ItstoolTests(unittest.TestCase):
         res = self._test_pot_generation('IT-malformed.xml', expected_status=1)
         #self.assertTrue("libxml2.parserError" in res['errors'])
 
-    def test_IT_malformed(self):
+    def test_IT_translate_with_external_dtds_malformed(self):
         """ Test that parsing XML requiring external DTD generates exception """
         res = self._test_pot_generation('IT-uses-external-dtds.xml', expected_status=1)
 
-    def test_IT_malformed(self):
-        """ Test that parsing XML requiring external DTD generates exception """
-        res = self._test_pot_generation('IT-uses-external-dtds.xml', expected_status=0,
-                                        options='--load-dtd')
-
     def test_IT_translate_with_external_dtds(self):
         self._test_translation_process('IT-uses-external-dtds.xml', options='--load-dtd')
+
+    # FIXME: It would be nice to be able to do this without loading the
+    # external subset, but libxml2 seems to verify entity references even
+    # if it doesn't do substitution.
+    def test_IT_keep_entities_1(self):
+        self._test_translation_process('IT-keep-entities-1.xml',
+                                       options='--load-dtd --keep-entities')
+
+    def test_IT_keep_entities_2(self):
+        self._test_translation_process('IT-keep-entities-2.xml', options='--keep-entities')
 
     def test_IT_join_1(self):
         res = self._test_translation_join('IT-join-1.xml', ('cs', 'de', 'fr'))
