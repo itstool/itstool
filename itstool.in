@@ -209,9 +209,10 @@ class Message (object):
         if len(self._message) == 0 or not(isinstance(self._message[-1], basestring)):
             self._message.append('')
         if node.ns() is not None and node.ns().name is not None:
-            self._message[-1] += ('<%s:%s' % (node.ns().name, node.name))
+            self._message[-1] += (u'<%s:%s' % (unicode(node.ns().name, 'utf-8'),
+                                               unicode(node.name, 'utf-8')))
         else:
-            self._message[-1] += ('<%s' % node.name)
+            self._message[-1] += (u'<%s' % unicode(node.name, 'utf-8'))
         if node.properties is not None:
             for prop in node.properties:
                 if prop.type == 'attribute':
@@ -233,9 +234,10 @@ class Message (object):
             if len(self._message) == 0 or not(isinstance(self._message[-1], basestring)):
                 self._message.append('')
             if node.ns() is not None and node.ns().name is not None:
-                self._message[-1] += ('</%s:%s>' % (node.ns().name, node.name))
+                self._message[-1] += (u'</%s:%s>' % (unicode(node.ns().name, 'utf-8'),
+                                                     unicode(node.name, 'utf-8')))
             else:
-                self._message[-1] += ('</%s>' % node.name)
+                self._message[-1] += (u'</%s>' % unicode(node.name, 'utf-8'))
 
     def is_empty (self):
         return self._empty
