@@ -5,17 +5,19 @@
 /html/head[1]/link[1]	withinText="no"
 /html/head[1]/link[1]/@href
 /html/head[1]/link[1]/@rel
+/html/head[1]/title[1]	withinText="no"
 /html/body[1]	withinText="no"
 /html/body[1]/section[1]	withinText="no"
-/html/body[1]/section[1]/title[1]	withinText="no"
+/html/body[1]/section[1]/@itemscope
 /html/body[1]/section[1]/span[1]	withinText="no"
-/html/body[1]/section[1]/span[1]/@itemref
-/html/body[1]/section[1]/span[2]	withinText="no"
-/html/body[1]/section[1]/span[2]/@itemref
+/html/body[1]/section[1]/span[1]/@itemprop
+/html/body[1]/section[1]/span[2]	withinText="yes"
+/html/body[1]/section[1]/span[2]/@itemprop
 /html/body[1]/p[1]	withinText="no"
+/html/body[1]/p[1]/@itemscope
 /html/body[1]/p[1]/cite[1]	withinText="nested"
 /html/body[1]/p[1]/span[1]	withinText="yes"
-/html/body[1]/p[1]/span[1]/@itemref
+/html/body[1]/p[1]/span[1]/@itemprop
 /html/body[1]/p[2]	withinText="no"
 /html/body[1]/p[2]/img[1]	withinText="yes"
 /html/body[1]/p[2]/img[1]/@alt

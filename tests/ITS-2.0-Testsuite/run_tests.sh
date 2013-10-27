@@ -24,6 +24,14 @@ translate9xml
 translate10xml
 withintext5xml
 withintext6xml
+
+locale1xml
+locale2xml
+locale3xml
+locale4xml
+locale5xml
+locale6xml
+locale8xml
 "
 
 for datum in $testdata; do

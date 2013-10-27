@@ -10,6 +10,7 @@
 /html/body[1]/span[1]	translate="yes"
 /html/body[1]/span[1]/@translate	translate="no"
 /html/body[1]/section[1]	translate="no"
+/html/body[1]/section[1]/@title	translate="no"
 /html/body[1]/section[1]/p[1]	translate="yes"
 /html/body[1]/section[1]/p[1]/span[1]	translate="no"
 /html/body[1]/section[1]/p[1]/span[2]	translate="no"
