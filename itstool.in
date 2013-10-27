@@ -625,7 +625,7 @@ class Document (object):
                                     nodenote = LocNote(locnoteref=note.content, locnotetype=notetype)
                                 else:
                                     nodenote = LocNote(locnote=note.content, locnotetype=notetype,
-                                                      space=self.get_preserve_space(note))
+                                                       space=self.get_preserve_space(note))
                                 self._its_loc_notes.setdefault(node, []).append(nodenote)
                                 break
                         xpath.setContextNode(oldnode)
@@ -1139,13 +1139,12 @@ class Document (object):
         return len([child for child in xml_child_iter(node) if child.type=='element'])
 
     def get_preserve_space (self, node):
-        if node.getSpacePreserve() == 1:
-            return True
-        else:
-            while node.type == 'element':
-                if self._its_preserve_space_nodes.has_key(node):
-                    return (self._its_preserve_space_nodes[node] == 'preserve')
-                node = node.parent
+        while node.type in ('attribute', 'element'):
+            if node.getSpacePreserve() == 1:
+                return True
+            if self._its_preserve_space_nodes.has_key(node):
+                return (self._its_preserve_space_nodes[node] == 'preserve')
+            node = node.parent
         return False
 
     def get_its_translate(self, node):
