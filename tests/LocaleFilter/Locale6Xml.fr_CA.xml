@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<book xmlns:its="http://www.w3.org/2005/11/its" its:version="2.0">
+ <info>
+  <its:rules version="2.0">
+   <its:localeFilterRule selector="//legalnotice[@role='Canada']" localeFilterList="*-CA"/>
+   <its:localeFilterRule selector="//legalnotice[@role='nonCanada']" localeFilterList="*-CA" localeFilterType="exclude"/>
+   <its:localeFilterRule selector="//remark" localeFilterList="*" localeFilterType="exclude"/>
+  </its:rules>
+  <legalnotice role="Canada">
+   <para>Cet avis juridique est seulement pour les locales canadiennes.</para>
+  </legalnotice>
+ </info>
+</book>

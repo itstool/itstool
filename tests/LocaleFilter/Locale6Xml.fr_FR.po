@@ -10,14 +10,13 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #. (itstool) path: legalnotice/para
-#. (itstool) include locale: en-CA, fr-CA
-#: tests/LocaleFilter/Locale1Xml.xml:11
+#. (itstool) include locale: *-CA
+#: tests/LocaleFilter/Locale6Xml.xml:11
 msgid "This legal notice is only for Canadian locales."
-msgstr ""
+msgstr "Cet avis juridique est seulement pour les locales canadiennes."
 
 #. (itstool) path: legalnotice/para
-#. (itstool) include locale: *-CH
-#: tests/LocaleFilter/Locale1Xml.xml:14
-msgid "This legal notice is only for Swiss locales."
-msgstr ""
-
+#. (itstool) exclude locale: *-CA
+#: tests/LocaleFilter/Locale6Xml.xml:14
+msgid "This legal notice is only for non-Canadian locales."
+msgstr "Cet avis juridique est seulement pour les locales non-canadiens."

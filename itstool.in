@@ -320,7 +320,7 @@ class Message (object):
         for idvalue in self._id_values:
             ret += '#. (itstool) id: ' + idvalue + '\n'
         if self._locale_filter is not None:
-            ret += '#. (itstool) locale filter: ' + self._locale_filter + '\n'
+            ret += '#. (itstool) ' + self._locale_filter[1] + ' locale: ' + self._locale_filter[0] + '\n'
         comments = []
         commentsdict = {}
         for comment in self._comments:
@@ -547,8 +547,16 @@ class Document (object):
                     self._its_preserve_space_nodes[node] = rule.nsProp('space', None)
         elif xml_is_ns_name(rule, NS_ITS, 'localeFilterRule'):
             if rule.nsProp('selector', None) is not None:
+                if rule.hasNsProp('localeFilterList', None):
+                    lst = rule.nsProp('localeFilterList', None)
+                else:
+                    lst = '*'
+                if rule.hasNsProp('localeFilterType', None):
+                    typ = rule.nsProp('localeFilterType', None)
+                else:
+                    typ = 'include'
                 for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
-                    self._its_locale_filters[node] = rule.nsProp('localeFilterList', None)
+                    self._its_locale_filters[node] = (lst, typ)
         elif xml_is_ns_name(rule, NS_ITST, 'dropRule'):
             if rule.nsProp('selector', None) is not None:
                 for node in self._try_xpath_eval(xpath, rule.nsProp('selector', None)):
@@ -855,7 +863,8 @@ class Document (object):
                     prevnode = node.prev
             for lang in sorted(translations.keys(), reverse=True):
                 locale = self.get_its_locale_filter(node)
-                if not match_locale_list(locale, lang):
+                lmatch = match_locale_list(locale[0], lang)
+                if (locale[1] == 'include' and not lmatch) or (locale[1] == 'exclude' and lmatch):
                     continue
                 newnode = self.get_translated(node, translations[lang], strict=strict, lang=lang)
                 if newnode != node:
@@ -878,11 +887,16 @@ class Document (object):
             node = self._doc.getRootElement()
         if node is None or node.type != 'element':
             return
+        drop = False
         locale = self.get_its_locale_filter(node)
-        if locale != '*':
-            if not match_locale_list(locale, language):
-                locale = ''
-        if self.get_itst_drop(node) == 'yes' or locale == '':
+        if locale[1] == 'include':
+            if locale[0] != '*':
+                if not match_locale_list(locale[0], language):
+                    drop = True
+        elif locale[1] == 'exclude':
+            if match_locale_list(locale[0], language):
+                drop = True
+        if self.get_itst_drop(node) == 'yes' or drop:
             prev = node.prev
             node.unlinkNode()
             node.freeNode()
@@ -1023,7 +1037,8 @@ class Document (object):
             return
         if self._itst_drop_nodes.get(node, 'no') == 'yes':
             return
-        if self.get_its_locale_filter(node) == '':
+        locfil = self.get_its_locale_filter(node)
+        if locfil == ('', 'include') or locfil == ('*', 'exclude'):
             return
         if path is None:
             path = ''
@@ -1053,7 +1068,7 @@ class Document (object):
                     msg.add_id_value(basename + '#' + idvalue)
                 if self.get_preserve_space(node):
                     msg.set_preserve_space()
-                if self.get_its_locale_filter(node) != '*':
+                if self.get_its_locale_filter(node) != ('*', 'include'):
                     msg.set_locale_filter(self.get_its_locale_filter(node))
                 msg.add_source('%s:%i' % (self._doc.name, node.lineNo()))
                 msg.add_marker('%s/%s' % (node.parent.name, node.name))
@@ -1185,15 +1200,32 @@ class Document (object):
         return 'no'
 
     def get_its_locale_filter(self, node):
-        if node.hasNsProp('localeFilterList', NS_ITS):
-            return node.nsProp('localeFilterList', NS_ITS)
-        if xml_is_ns_name(node, NS_ITS, 'span') and node.hasNsProp('localeFilterList', None):
-            return node.nsProp('localeFilterList', None)
+        if node.hasNsProp('localeFilterList', NS_ITS) or node.hasNsProp('localeFilterType', NS_ITS):
+            if node.hasNsProp('localeFilterList', NS_ITS):
+                lst = node.nsProp('localeFilterList', NS_ITS)
+            else:
+                lst = '*'
+            if node.hasNsProp('localeFilterType', NS_ITS):
+                typ = node.nsProp('localeFilterType', NS_ITS)
+            else:
+                typ = 'include'
+            return (lst, typ)
+        if (xml_is_ns_name(node, NS_ITS, 'span') and 
+            (node.hasNsProp('localeFilterList', None) or node.hasNsProp('localeFilterType', None))):
+            if node.hasNsProp('localeFilterList', None):
+                lst = node.nsProp('localeFilterList', None)
+            else:
+                lst = '*'
+            if node.hasNsProp('localeFilterType', None):
+                typ = node.nsProp('localeFilterType', None)
+            else:
+                typ = 'include'
+            return (lst, typ)
         if self._its_locale_filters.has_key(node):
             return self._its_locale_filters[node]
         if node.parent.type == 'element':
             return self.get_its_locale_filter(node.parent)
-        return '*'
+        return ('*', 'include')
 
     def get_itst_drop(self, node):
         if node.hasNsProp('drop', NS_ITST) and node.nsProp('drop', NS_ITST) == 'yes':
@@ -1238,8 +1270,8 @@ class Document (object):
         elif category == 'withinText':
             if node.type != 'attribute':
                 compval = 'withinText="%s"' % self.get_its_within_text(node)
-        elif category == 'localeFilterList':
-            compval = 'localeFilterList="%s"' % self.get_its_locale_filter(node)
+        elif category == 'localeFilter':
+            compval = 'localeFilterList="%s"\tlocaleFilterType="%s"' % self.get_its_locale_filter(node)
         elif category == 'locNote':
             val = self.get_its_loc_notes(node)
             if len(val) > 0:

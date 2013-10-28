@@ -4,20 +4,10 @@ testdata="
 elementswithintext/withintext/withinText
 externalresource/externalresource/externalResourceRef
 idvalue/idvalue/idValue
-localefilter/locale/localeFilterList
+localefilter/locale/localeFilter
 localizationnote/locnote/locNote
 preservespace/preservespace/preserveSpace
 translate/translate/translate
-"
-exclude="
-locale1xml
-locale2xml
-locale3xml
-locale4xml
-locale5xml
-locale6xml
-locale7xml
-locale8xml
 "
 
 for datum in $testdata; do
@@ -29,9 +19,9 @@ for datum in $testdata; do
         for testfile in `ls ${testpre}*${format}.${format}`; do
             testnum=`basename ${testfile:${#testpre}} ${format}.${format}`
             skip=0
-            for ex in $exclude; do
-                if [ "$testbase$testnum$format" = "$ex" ]; then skip=1; break; fi;
-            done
+            #for ex in $exclude; do
+            #    if [ "$testbase$testnum$format" = "$ex" ]; then skip=1; break; fi;
+            #done
             if [ "$skip" = "0" ]; then
                 expected="expected/$testdir/$format/$testbase$testnum${format}output.txt"
                 realout="realout/$testdir/$format/$testbase$testnum${format}output.txt"

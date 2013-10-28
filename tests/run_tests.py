@@ -243,6 +243,18 @@ class ItstoolTests(unittest.TestCase):
                                                  'LocaleFilter/Locale5Xml.fr_CH.xml',
                                                  'fr-CH')])
 
+    def test_Locale6(self):
+        self._test_translation_process('LocaleFilter/Locale6Xml.xml',
+                                       outputs=[('LocaleFilter/Locale6Xml.fr_FR.po',
+                                                 'LocaleFilter/Locale6Xml.fr_FR.xml',
+                                                 'fr-FR'),
+                                                ('LocaleFilter/Locale6Xml.fr_CA.po',
+                                                 'LocaleFilter/Locale6Xml.fr_CA.xml',
+                                                 'fr-CA'),
+                                                ('LocaleFilter/Locale6Xml.fr_CH.po',
+                                                 'LocaleFilter/Locale6Xml.fr_CH.xml',
+                                                 'fr-CH')])
+
     def test_Locale1_join(self):
         self._test_translation_join('LocaleFilter/Locale1Xml.xml',
                                     ('fr_FR', 'fr_CA', 'fr_CH'))
@@ -261,6 +273,10 @@ class ItstoolTests(unittest.TestCase):
 
     def test_Locale5_join(self):
         self._test_translation_join('LocaleFilter/Locale5Xml.xml',
+                                    ('fr_FR', 'fr_CA', 'fr_CH'))
+
+    def test_Locale6_join(self):
+        self._test_translation_join('LocaleFilter/Locale6Xml.xml',
                                     ('fr_FR', 'fr_CA', 'fr_CH'))
 
     def test_elementwithintextlocalitsSpanXml(self):
