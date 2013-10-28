@@ -517,6 +517,13 @@ class Document (object):
         if self._xml_err:
             raise libxml2.parserError(self._xml_err)
 
+    def register_its_params(self, xpath, rules):
+        for child in xml_child_iter(rules):
+            if xml_is_ns_name(child, NS_ITS, 'param'):
+                name = child.nsProp('name', None)
+                value = child.getContent()
+                xpath.xpathRegisterVariable(name, None, value)
+
     def apply_its_rule(self, rule, xpath):
         if rule.type != 'element':
             return
@@ -746,6 +753,7 @@ class Document (object):
                             xpath.xpathRegisterNs(nsdef.name, nsdef.content)
                     nsdef = nsdef.next
                 par = par.parent
+            self.register_its_params(xpath, root)
             self.apply_its_rule(rule, xpath)
 
     def apply_local_its_rules (self):
@@ -760,12 +768,14 @@ class Document (object):
                     nsdef = nsdef.next
             xpath = self._doc.xpathNewContext()
             reg_ns(xpath, rules)
+            self.register_its_params(xpath, rules)
             for rule in xml_child_iter(rules):
                 if rule.type != 'element':
                     continue
                 if rule.nsDefs() is not None:
-                    rule_xpath = self._doc.xpathNewContent()
+                    rule_xpath = self._doc.xpathNewContext()
                     reg_ns(rule_xpath, rule)
+                    self.register_its_params(rule_xpath, rules)
                 else:
                     rule_xpath = xpath
                 self.apply_its_rule(rule, rule_xpath)
