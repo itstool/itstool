@@ -9,7 +9,7 @@
   <its:translateRule translate="no" selector="//html:script"/>
   <its:translateRule translate="no" selector="//html:style"/>
 
-  <itst:preserveSpaceRule preserveSpace="yes" selector="//html:pre"/>
+  <its:preserveSpaceRule space="preserve" selector="//html:pre"/>
 
   <its:withinTextRule withinText="yes" selector="//html:a"/>
   <its:withinTextRule withinText="yes" selector="//html:abbr"/>
@@ -43,4 +43,7 @@
   <its:withinTextRule withinText="yes" selector="//html:tt"/>
   <its:withinTextRule withinText="yes" selector="//html:u"/>
   <its:withinTextRule withinText="yes" selector="//html:var"/>
+
+  <its:externalResourceRefRule externalResourceRefPointer="@src"
+                               selector="//html:img | //html:audio | //html:video"/>
 </its:rules>
