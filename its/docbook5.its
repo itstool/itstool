@@ -1,0 +1,201 @@
+<its:rules
+    xmlns:its="http://www.w3.org/2005/11/its"
+    xmlns:itst="http://itstool.org/extensions/"
+    xmlns:db="http://docbook.org/ns/docbook"
+    version="2.0">
+
+  <itst:match selector="/db:*"/>
+
+  <its:langRule selector="//db:*" langPointer="@xml:lang"/>
+
+  <itst:credits appendTo="/db:*/db:info">
+    <db:othercredit class="translator">
+      <db:personname>
+        <db:firstname><itst:value-of select="name"/></db:firstname>
+      </db:personname>
+      <db:email><itst:value-of select="email"/></db:email>
+    </db:othercredit>
+    <db:copyright>
+      <itst:for-each select="years">
+        <db:year><itst:value-of select="year"/></db:year>
+      </itst:for-each>
+      <db:holder><itst:value-of select="name"/></db:holder>
+    </db:copyright>
+  </itst:credits>
+
+  <!-- Inline by default, might be overridden -->
+  <its:withinTextRule withinText="yes" selector="//db:abbrev"/>
+  <its:withinTextRule withinText="yes" selector="//db:accel"/>
+  <its:withinTextRule withinText="yes" selector="//db:acronym"/>
+  <its:withinTextRule withinText="yes" selector="//db:affiliation"/>
+  <its:withinTextRule withinText="yes" selector="//db:alt"/>
+  <its:withinTextRule withinText="yes" selector="//db:anchor"/>
+  <its:withinTextRule withinText="yes" selector="//db:application"/>
+  <its:withinTextRule withinText="yes" selector="//db:arg"/>
+  <its:withinTextRule withinText="yes" selector="//db:audiodata"/>
+  <its:withinTextRule withinText="yes" selector="//db:audioobject"/>
+  <its:withinTextRule withinText="yes" selector="//db:authorinitials"/>
+  <its:withinTextRule withinText="yes" selector="//db:biblioref"/>
+  <its:withinTextRule withinText="yes" selector="//db:citation"/>
+  <its:withinTextRule withinText="yes" selector="//db:citebiblioid"/>
+  <its:withinTextRule withinText="yes" selector="//db:citerefentry"/>
+  <its:withinTextRule withinText="yes" selector="//db:citerefentry/db:manvolnum"/>
+  <its:withinTextRule withinText="yes" selector="//db:citerefentry/db:refentrytitle"/>
+  <its:withinTextRule withinText="yes" selector="//db:citetitle"/>
+  <its:withinTextRule withinText="yes" selector="//db:city"/>
+  <its:withinTextRule withinText="yes" selector="//db:classname"/>
+  <its:withinTextRule withinText="yes" selector="//db:co"/>
+  <its:withinTextRule withinText="yes" selector="//db:coref"/>
+  <its:withinTextRule withinText="yes" selector="//db:code"/>
+  <its:withinTextRule withinText="yes" selector="//db:col"/>
+  <its:withinTextRule withinText="yes" selector="//db:colgroup"/>
+  <its:withinTextRule withinText="yes" selector="//db:command"/>
+  <its:withinTextRule withinText="yes" selector="//db:computeroutput"/>
+  <its:withinTextRule withinText="yes" selector="//db:constant"/>
+  <its:withinTextRule withinText="yes" selector="//db:constraint"/>
+  <its:withinTextRule withinText="yes" selector="//db:contrib"/>
+  <its:withinTextRule withinText="yes" selector="//db:country"/>
+  <its:withinTextRule withinText="yes" selector="//db:database"/>
+  <its:withinTextRule withinText="yes" selector="//db:date"/>
+  <its:withinTextRule withinText="yes" selector="//db:email"/>
+  <its:withinTextRule withinText="yes" selector="//db:emphasis"/>
+  <its:withinTextRule withinText="yes" selector="//db:envar"/>
+  <its:withinTextRule withinText="yes" selector="//db:errorcode"/>
+  <its:withinTextRule withinText="yes" selector="//db:errorname"/>
+  <its:withinTextRule withinText="yes" selector="//db:errortext"/>
+  <its:withinTextRule withinText="yes" selector="//db:errortype"/>
+  <its:withinTextRule withinText="yes" selector="//db:exceptionname"/>
+  <its:withinTextRule withinText="yes" selector="//db:fax"/>
+  <its:withinTextRule withinText="yes" selector="//db:filename"/>
+  <its:withinTextRule withinText="yes" selector="//db:firstname"/>
+  <its:withinTextRule withinText="yes" selector="//db:firstterm"/>
+  <its:withinTextRule withinText="yes" selector="//db:footnoteref"/>
+  <its:withinTextRule withinText="yes" selector="//db:foreignphrase"/>
+  <its:withinTextRule withinText="yes" selector="//db:funcdef"/>
+  <its:withinTextRule withinText="yes" selector="//db:funcparams"/>
+  <its:withinTextRule withinText="yes" selector="//db:function"/>
+  <its:withinTextRule withinText="yes" selector="//db:givenname"/>
+  <its:withinTextRule withinText="yes" selector="//db:glossterm"/>
+  <its:withinTextRule withinText="yes" selector="//db:group"/>
+  <its:withinTextRule withinText="yes" selector="//db:guibutton"/>
+  <its:withinTextRule withinText="yes" selector="//db:guiicon"/>
+  <its:withinTextRule withinText="yes" selector="//db:guilabel"/>
+  <its:withinTextRule withinText="yes" selector="//db:guimenu"/>
+  <its:withinTextRule withinText="yes" selector="//db:guimenuitem"/>
+  <its:withinTextRule withinText="yes" selector="//db:guisubmenu"/>
+  <its:withinTextRule withinText="yes" selector="//db:hardware"/>
+  <its:withinTextRule withinText="yes" selector="//db:holder"/>
+  <its:withinTextRule withinText="yes" selector="//db:honorific"/>
+  <its:withinTextRule withinText="yes" selector="//db:imagedata"/>
+  <its:withinTextRule withinText="yes" selector="//db:imageobject"/>
+  <its:withinTextRule withinText="yes" selector="//db:imageobjectco"/>
+  <its:withinTextRule withinText="yes" selector="//db:initializer"/>
+  <its:withinTextRule withinText="yes" selector="//db:inlineequation"/>
+  <its:withinTextRule withinText="yes" selector="//db:inlinemediaobject"/>
+  <its:withinTextRule withinText="yes" selector="//db:interfacename"/>
+  <its:withinTextRule withinText="yes" selector="//db:jobtitle"/>
+  <its:withinTextRule withinText="yes" selector="//db:keycap"/>
+  <its:withinTextRule withinText="yes" selector="//db:keycode"/>
+  <its:withinTextRule withinText="yes" selector="//db:keycombo"/>
+  <its:withinTextRule withinText="yes" selector="//db:keysym"/>
+  <its:withinTextRule withinText="yes" selector="//db:lhs"/>
+  <its:withinTextRule withinText="yes" selector="//db:lineage"/>
+  <its:withinTextRule withinText="yes" selector="//db:lineannotation"/>
+  <its:withinTextRule withinText="yes" selector="//db:link"/>
+  <its:withinTextRule withinText="yes" selector="//db:literal"/>
+  <its:withinTextRule withinText="yes" selector="//db:markup"/>
+  <its:withinTextRule withinText="yes" selector="//db:menuchoice"/>
+  <its:withinTextRule withinText="yes" selector="//db:methodname"/>
+  <its:withinTextRule withinText="yes" selector="//db:methodparam"/>
+  <its:withinTextRule withinText="yes" selector="//db:modifier"/>
+  <its:withinTextRule withinText="yes" selector="//db:mousebutton"/>
+  <its:withinTextRule withinText="yes" selector="//db:multimediaparam"/>
+  <its:withinTextRule withinText="yes" selector="//db:nonterminal"/>
+  <its:withinTextRule withinText="yes" selector="//db:olink"/>
+  <its:withinTextRule withinText="yes" selector="//db:ooclass"/>
+  <its:withinTextRule withinText="yes" selector="//db:ooexception"/>
+  <its:withinTextRule withinText="yes" selector="//db:oointerface"/>
+  <its:withinTextRule withinText="yes" selector="//db:option"/>
+  <its:withinTextRule withinText="yes" selector="//db:optional"/>
+  <its:withinTextRule withinText="yes" selector="//db:org"/>
+  <its:withinTextRule withinText="yes" selector="//db:orgdiv"/>
+  <its:withinTextRule withinText="yes" selector="//db:orgname"/>
+  <its:withinTextRule withinText="yes" selector="//db:otheraddr"/>
+  <its:withinTextRule withinText="yes" selector="//db:othername"/>
+  <its:withinTextRule withinText="yes" selector="//db:package"/>
+  <its:withinTextRule withinText="yes" selector="//db:paramdef"/>
+  <its:withinTextRule withinText="yes" selector="//db:parameter"/>
+  <its:withinTextRule withinText="yes" selector="//db:personname"/>
+  <its:withinTextRule withinText="yes" selector="//db:phone"/>
+  <its:withinTextRule withinText="yes" selector="//db:phrase"/>
+  <its:withinTextRule withinText="yes" selector="//db:pob"/>
+  <its:withinTextRule withinText="yes" selector="//db:postcode"/>
+  <its:withinTextRule withinText="yes" selector="//db:productname"/>
+  <its:withinTextRule withinText="yes" selector="//db:productnumber"/>
+  <its:withinTextRule withinText="yes" selector="//db:prompt"/>
+  <its:withinTextRule withinText="yes" selector="//db:property"/>
+  <its:withinTextRule withinText="yes" selector="//db:quote"/>
+  <its:withinTextRule withinText="yes" selector="//db:replaceable"/>
+  <its:withinTextRule withinText="yes" selector="//db:returnvalue"/>
+  <its:withinTextRule withinText="yes" selector="//db:revnumber"/>
+  <its:withinTextRule withinText="yes" selector="//db:revremark"/>
+  <its:withinTextRule withinText="yes" selector="//db:rhs"/>
+  <its:withinTextRule withinText="yes" selector="//db:sbr"/>
+  <its:withinTextRule withinText="yes" selector="//db:shortaffil"/>
+  <its:withinTextRule withinText="yes" selector="//db:shortcut"/>
+  <its:withinTextRule withinText="yes" selector="//db:state"/>
+  <its:withinTextRule withinText="yes" selector="//db:street"/>
+  <its:withinTextRule withinText="yes" selector="//db:subscript"/>
+  <its:withinTextRule withinText="yes" selector="//db:superscript"/>
+  <its:withinTextRule withinText="yes" selector="//db:surname"/>
+  <its:withinTextRule withinText="yes" selector="//db:symbol"/>
+  <its:withinTextRule withinText="yes" selector="//db:systemitem"/>
+  <its:withinTextRule withinText="yes" selector="//db:tag"/>
+  <its:withinTextRule withinText="yes" selector="//db:termdef"/>
+  <its:withinTextRule withinText="yes" selector="//db:textobject"/>
+  <its:withinTextRule withinText="yes" selector="//db:token"/>
+  <its:withinTextRule withinText="yes" selector="//db:trademark"/>
+  <its:withinTextRule withinText="yes" selector="//db:type"/>
+  <its:withinTextRule withinText="yes" selector="//db:uri"/>
+  <its:withinTextRule withinText="yes" selector="//db:userinput"/>
+  <its:withinTextRule withinText="yes" selector="//db:varargs"/>
+  <its:withinTextRule withinText="yes" selector="//db:varname"/>
+  <its:withinTextRule withinText="yes" selector="//db:videodata"/>
+  <its:withinTextRule withinText="yes" selector="//db:videoobject"/>
+  <its:withinTextRule withinText="yes" selector="//db:void"/>
+  <its:withinTextRule withinText="yes" selector="//db:wordasword"/>
+  <its:withinTextRule withinText="yes" selector="//db:xref"/>
+  <its:withinTextRule withinText="yes" selector="//db:year"/>
+
+  <!-- Mark footnotes nested, though itstool treats it as "no" -->
+  <its:withinTextRule withinText="nested" selector="//db:footnote"/>
+
+  <!-- Things with (semi-)structured content -->
+  <its:withinTextRule withinText="no" selector="//db:confgroup/*"/>
+  <its:withinTextRule withinText="no" selector="//db:biblioentry/*"/>
+  <its:withinTextRule withinText="no" selector="//db:biblioset/*"/>
+  <its:withinTextRule withinText="yes" selector="//db:bibliomixed/*"/>
+  <its:withinTextRule withinText="yes" selector="//db:bibliomset/*"/>
+  <its:withinTextRule withinText="no" selector="//db:glossentry/*"/>
+  <its:withinTextRule withinText="yes" selector="//db:indexterm//*"/>
+  <its:withinTextRule withinText="yes" selector="//db:simplelist[@type = 'inline']/descendant-or-self::*"/>
+
+  <!-- These are always verbatim -->
+  <its:preserveSpaceRule space="preserve" selector="//db:address"/>
+  <its:preserveSpaceRule space="preserve" selector="//db:classsynopsisinfo"/>
+  <its:preserveSpaceRule space="preserve" selector="//db:funcsynopsisinfo"/>
+  <its:preserveSpaceRule space="preserve" selector="//db:literallayout"/>
+  <its:preserveSpaceRule space="preserve" selector="//db:programlisting"/>
+  <its:preserveSpaceRule space="preserve" selector="//db:screen"/>
+  <its:preserveSpaceRule space="preserve" selector="//db:synopsis"/>
+
+  <!-- Don't translate editor remarks -->
+  <its:translateRule translate="no" selector="//db:remark/descendant-or-self::*"/>
+
+  <!-- External media files -->
+  <its:externalResourceRefRule externalResourceRefPointer="@fileref"
+                               selector="//db:audiodata | //db:imagedata | //db:videodata"/>
+
+  <!-- Some hacks -->
+  <its:translateRule translate="no" selector="//db:releaseinfo[@role = 'CVS' and normalize-space(.) = '$Id$']"/>
+</its:rules>
