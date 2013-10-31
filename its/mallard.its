@@ -29,13 +29,13 @@
   <its:withinTextRule withinText="yes" selector="//mal:title//*"/>
   <its:withinTextRule withinText="yes" selector="//mal:years//*"/>
 
-  <itst:preserveSpaceRule preserveSpace="yes" selector="//mal:code"/>
-  <itst:preserveSpaceRule preserveSpace="yes" selector="//mal:screen"/>
+  <its:preserveSpaceRule space="preserve" selector="//mal:code"/>
+  <its:preserveSpaceRule space="preserve" selector="//mal:screen"/>
 
   <its:translateRule translate="no" selector="//mal:comment/descendant-or-self::*"/>
   <its:translateRule translate="no" selector="//mal:credit/mal:email"/>
 
-  <itst:externalRefRule selector="//mal:media" refPointer="@src"/>
+  <its:externalResourceRefRule externalResourceRefPointer="@src" selector="//mal:media" />
 
   <itst:contextRule selector="//mal:info/mal:title[@type]" contextPointer="@type"/>
   <itst:contextRule selector="//mal:info/mal:title[@type and @role]" contextPointer="concat(@type, ':', @role)"/>
