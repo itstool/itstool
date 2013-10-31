@@ -189,23 +189,22 @@
   space-preserving translation unit.
   -->
   <its:withinTextRule withinText="yes" selector="//address[count(*) = 1 and email]"/>
-  <itst:preserveSpaceRule preserveSpace="yes" selector="//address[not(count(*) = 1 and email)]"/>
+  <its:preserveSpaceRule space="preserve" selector="//address[not(count(*) = 1 and email)]"/>
 
   <!-- These are always verbatim -->
-  <itst:preserveSpaceRule preserveSpace="yes" selector="//classsynopsisinfo"/>
-  <itst:preserveSpaceRule preserveSpace="yes" selector="//funcsynopsisinfo"/>
-  <itst:preserveSpaceRule preserveSpace="yes" selector="//literallayout"/>
-  <itst:preserveSpaceRule preserveSpace="yes" selector="//programlisting"/>
-  <itst:preserveSpaceRule preserveSpace="yes" selector="//screen"/>
-  <itst:preserveSpaceRule preserveSpace="yes" selector="//synopsis"/>
+  <its:preserveSpaceRule space="preserve" selector="//classsynopsisinfo"/>
+  <its:preserveSpaceRule space="preserve" selector="//funcsynopsisinfo"/>
+  <its:preserveSpaceRule space="preserve" selector="//literallayout"/>
+  <its:preserveSpaceRule space="preserve" selector="//programlisting"/>
+  <its:preserveSpaceRule space="preserve" selector="//screen"/>
+  <its:preserveSpaceRule space="preserve" selector="//synopsis"/>
 
   <!-- Don't translate editor remarks -->
   <its:translateRule translate="no" selector="//remark/descendant-or-self::*"/>
 
   <!-- External media files -->
-  <itst:externalRefRule selector="//audiodata" refPointer="@fileref"/>
-  <itst:externalRefRule selector="//imagedata" refPointer="@fileref"/>
-  <itst:externalRefRule selector="//videodata" refPointer="@fileref"/>
+  <its:externalResourceRefRule externalResourceRefPointer="@fileref"
+                               selector="//audiodata | //imagedata | //videodata"/>
 
   <!-- Some hacks -->
   <its:translateRule translate="no" selector="//releaseinfo[@role = 'CVS' and normalize-space(.) = '$Id$']"/>
