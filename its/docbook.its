@@ -202,8 +202,8 @@
   <its:preserveSpaceRule space="preserve" selector="//screen"/>
   <its:preserveSpaceRule space="preserve" selector="//synopsis"/>
 
-  <!-- Don't translate editor remarks -->
-  <its:translateRule translate="no" selector="//remark/descendant-or-self::*"/>
+  <!-- Drop editor remarks -->
+  <its:localeFilterRule localeFilterList="" selector="//remark"/>
 
   <!-- External media files -->
   <its:externalResourceRefRule externalResourceRefPointer="@fileref"
