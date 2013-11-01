@@ -7,7 +7,7 @@
 * Support for ITS 2.0 parameters, including user overrides
 * Support for ITS 2.0 local withinText attribute
 * Fixed handling of localization note inheritance
-* Fixed handling od namespace prefixes on elements
+* Fixed handling of namespace prefixes on elements
 * Added option to retain entity references in PO files
 * Added option to load external DTDs (Galen Charlton)
 * Added built-in rules for DocBook 5
