@@ -194,6 +194,9 @@
   <its:withinTextRule withinText="yes" selector="//address[count(*) = 1 and email]"/>
   <its:preserveSpaceRule space="preserve" selector="//address[not(count(*) = 1 and email)]"/>
 
+  <!-- Above all else, info is not a text run -->
+  <its:withinTextRule withinText="no" selector="//bookinfo/* | //chapterinfo/* | //articleinfo/*"/>
+
   <!-- These are always verbatim -->
   <its:preserveSpaceRule space="preserve" selector="//classsynopsisinfo"/>
   <its:preserveSpaceRule space="preserve" selector="//funcsynopsisinfo"/>

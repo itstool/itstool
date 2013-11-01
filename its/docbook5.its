@@ -180,6 +180,9 @@
   <its:withinTextRule withinText="yes" selector="//db:indexterm//*"/>
   <its:withinTextRule withinText="yes" selector="//db:simplelist[@type = 'inline']/descendant-or-self::*"/>
 
+  <!-- Above all else, info is not a text run -->
+  <its:withinTextRule withinText="no" selector="//db:info/*"/>
+
   <!-- These are always verbatim -->
   <its:preserveSpaceRule space="preserve" selector="//db:address"/>
   <its:preserveSpaceRule space="preserve" selector="//db:classsynopsisinfo"/>
