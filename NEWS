@@ -1,3 +1,22 @@
+2.0.0
+=====
+* Support for ITS 2.0 Preserve Space data category
+* Support for ITS 2.0 Locale Filter data category
+* Support for ITS 2.0 External Resource data category
+* Support for ITS 2.0 ID Value data category
+* Support for ITS 2.0 parameters, including user overrides
+* Support for ITS 2.0 local withinText attribute
+* Fixed handling of localization note inheritance
+* Fixed handling od namespace prefixes on elements
+* Added option to retain entity references in PO files
+* Added option to load external DTDs (Galen Charlton)
+* Added built-in rules for DocBook 5
+* Updated built-in rules to use ITS 2.0 Preserve Space and External
+  Resource instead of 1.x custom extensions
+* Excluded editor remarks and comments in built-in DocBook and Mallard
+  rules with Locale Filter
+* Made all DocBook *info children not within text in built-in rules
+
 1.2.0
 =====
 * Added new "join mode" for multilingual XML formats
