@@ -18,19 +18,18 @@
     </mal:credit>
   </itst:credits>
 
-  <its:withinTextRule withinText="yes" selector="//mal:cite//*"/>
-  <its:withinTextRule withinText="yes" selector="//mal:code//*"/>
-  <its:withinTextRule withinText="yes" selector="//mal:desc//*"/>
-  <its:withinTextRule withinText="yes" selector="//mal:email//*"/>
-  <its:withinTextRule withinText="yes" selector="//mal:link//*"/>
-  <its:withinTextRule withinText="yes" selector="//mal:name//*"/>
-  <its:withinTextRule withinText="yes" selector="//mal:p//*"/>
-  <its:withinTextRule withinText="yes" selector="//mal:screen//*"/>
-  <its:withinTextRule withinText="yes" selector="//mal:title//*"/>
-  <its:withinTextRule withinText="yes" selector="//mal:years//*"/>
+  <its:withinTextRule withinText="yes" selector="//mal:cite//*   |
+                                                 //mal:code//*   |
+                                                 //mal:desc//*   |
+                                                 //mal:email//*  |
+                                                 //mal:link//*   |
+                                                 //mal:name//*   |
+                                                 //mal:p//*      |
+                                                 //mal:screen//* |
+                                                 //mal:title//*  |
+                                                 //mal:years//*  "/>
 
-  <its:preserveSpaceRule space="preserve" selector="//mal:code"/>
-  <its:preserveSpaceRule space="preserve" selector="//mal:screen"/>
+  <its:preserveSpaceRule space="preserve" selector="//mal:code | //mal:screen "/>
 
   <its:localeFilterRule localeFilterList="" selector="//mal:comment"/>
 
