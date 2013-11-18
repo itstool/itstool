@@ -1,3 +1,7 @@
+2.0.1
+=====
+* Reworked default ITS rules for better performance
+
 2.0.0
 =====
 * Support for ITS 2.0 Preserve Space data category
