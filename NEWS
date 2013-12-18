@@ -1,3 +1,9 @@
+2.0.2
+=====
+* Fixed crash in locale filter and drop rule, #715116
+* Don't hardcode python path, #72533 (Ryan Lortie)
+* Updated man page
+
 2.0.1
 =====
 * Reworked default ITS rules for better performance
