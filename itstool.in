@@ -966,7 +966,7 @@ class Document (object):
         for attr in trans_attrs:
             newcontent = translations.ugettext(attr.get_content())
             if newcontent:
-                newnode.setProp(attr.name, translations.ugettext(attr.get_content()))
+                newnode.setProp(attr.name, newcontent.encode('utf-8'))
 
     def get_translated (self, node, translations, strict=False, lang=None):
         msg = self._msgs.get_message_by_node(node)

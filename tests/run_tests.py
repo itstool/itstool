@@ -311,6 +311,9 @@ class ItstoolTests(unittest.TestCase):
     def test_IT_attributes_1(self):
         self._test_translation_process('IT-attributes-1.xml')
 
+    def test_IT_attributes_2(self):
+        self._test_translation_process('IT-attributes-2.xml')
+
     def test_IT_context_1(self):
         self._test_translation_process('IT-context-1.xml')
 
