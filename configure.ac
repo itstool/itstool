@@ -27,6 +27,7 @@ Makefile
 itstool
 itstool.1
 its/Makefile
+setup.py
 ])
 
 AC_OUTPUT

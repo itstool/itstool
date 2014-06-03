@@ -10,7 +10,8 @@ EXTRA_DIST =		\
 	$(bin_SCRIPTS)	\
 	itstool.in	\
 	$(man_MANS)	\
-	itstool.1.in
+	itstool.1.in	\
+	setup.py
 
 ChangeLog:
 	@if test -f $(top_srcdir)/.git/HEAD; then \
