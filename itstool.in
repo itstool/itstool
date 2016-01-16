@@ -839,7 +839,8 @@ class Document (object):
             elif select == 'year' and len(trdata) == 4:
                 val = trdata[3]
             if val is not None:
-                val = val.encode('utf-8')
+                if not PY3:
+                    val = val.encode('utf-8')
                 parent.addContent(val)
         else:
             newnode = node.copyNode(2)
@@ -1546,10 +1547,18 @@ if __name__ == '__main__':
             except Exception as e:
                 sys.stderr.write('Error: Could not merge translations:\n%s\n' % ustr(e))
                 sys.exit(1)
+            serialized = doc._doc.serialize('utf-8')
+            if PY3:
+                # For some reason, under py3, our serialized data is returns as a str.
+                # Let's encode it to bytes
+                serialized = serialized.encode('utf-8')
             fout = out
-            if isinstance(fout, string_types):
-                fout = open(os.path.join(fout, os.path.basename(filename)), 'w')
-            fout.write(doc._doc.serialize('utf-8'))
+            fout_is_str = isinstance(fout, string_types)
+            if fout_is_str:
+                fout = open(os.path.join(fout, os.path.basename(filename)), 'wb')
+            fout.write(serialized)
+            if fout_is_str:
+                fout.close()
     elif opts.join is not None:
         translations = {}
         for filename in args[1:]:
