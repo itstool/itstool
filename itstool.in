@@ -473,8 +473,17 @@ class Document (object):
                 elif xml_is_ns_name(child, NS_ITS, 'rules'):
                     if child.hasNsProp('href', NS_XLINK):
                         href = child.nsProp('href', NS_XLINK)
-                        href = os.path.join(os.path.dirname(filename), href)
-                        hctxt = libxml2.createFileParserCtxt(href)
+                        fileref = os.path.join(os.path.dirname(filename), href)
+                        if not os.path.exists(fileref):
+                            if opts.itspath is not None:
+                                for pathdir in opts.itspath:
+                                    fileref = os.path.join(pathdir, href)
+                                    if os.path.exists(fileref):
+                                        break
+                        if not os.path.exists(fileref):
+                            sys.stderr.write('Error: Could not locate ITS file %s\n' % href)
+                            sys.exit(1)
+                        hctxt = libxml2.createFileParserCtxt(fileref)
                         hctxt.replaceEntities(1)
                         hctxt.parseDocument()
                         root = hctxt.doc().getRootElement()
@@ -1435,6 +1444,12 @@ if __name__ == '__main__':
                        default=None,
                        metavar='OUT',
                        help='Output PO files to file OUT or XML files in directory OUT')
+    options.add_option('--path',
+                       action='append',
+                       dest='itspath',
+                       default=None,
+                       metavar='PATHS',
+                       help='Extra path where ITS files may be found (can specify multiple times)')
     options.add_option('-s', '--strict',
                        action='store_true',
                        dest='strict',
