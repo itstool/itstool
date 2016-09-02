@@ -1415,7 +1415,9 @@ def convert_locale (locale):
 
 if __name__ == '__main__':
     options = optparse.OptionParser()
-    options.set_usage('\n  itstool [OPTIONS] [XMLFILES]\n  itstool -m <MOFILE> [OPTIONS] [XMLFILES]')
+    options.set_usage('\n  itstool [OPTIONS] [XMLFILES]\n' +
+                      '  itstool -m <MOFILE> [OPTIONS] [XMLFILES]\n' +
+                      '  itstool -j <XMLFILE> [OPTIONS] [MOFILES]')
     options.add_option('-i', '--its',
                        action='append',
                        dest='itsfile',
