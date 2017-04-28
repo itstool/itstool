@@ -16,6 +16,7 @@
 # with ITS Tool; if not, write to the Free Software Foundation, 59 Temple
 # Place, Suite 330, Boston, MA  0211-1307  USA.
 #
+from __future__ import unicode_literals
 
 VERSION="@VERSION@"
 DATADIR="@DATADIR@"
@@ -35,6 +36,20 @@ NS_ITST = 'http://itstool.org/extensions/'
 NS_BLANK = 'http://itstool.org/extensions/blank/'
 NS_XLINK = 'http://www.w3.org/1999/xlink'
 NS_XML = 'http://www.w3.org/XML/1998/namespace'
+
+
+def to_unicode(text):
+    if not isinstance(text, unicode):
+        text = unicode(text, 'utf-8')
+    return text
+
+
+def format_str(fmt, *args):
+    try:
+        return fmt % args
+    except UnicodeDecodeError:
+        return fmt % tuple(to_unicode(a) for a in args)
+
 
 class NoneTranslations:
     def gettext(self, message):
@@ -141,11 +156,11 @@ class Comment (object):
         return self._text
 
     def format (self):
-        ret = u''
+        ret = ''
         markers = {}
         for marker in self._markers:
             if not markers.has_key(marker):
-                ret += '#. (itstool) comment: ' + marker + '\n'
+                ret += format_str('#. (itstool) comment: %s\n', marker)
                 markers[marker] = marker
         if '\n' in self._text:
             doadd = False
@@ -154,7 +169,7 @@ class Comment (object):
                     doadd = True
                 if not doadd:
                     continue
-                ret += u'#. %s\n' % line
+                ret += format_str('#. %s\n', line)
         else:
             text = self._text
             while len(text) > 72:
@@ -163,9 +178,9 @@ class Comment (object):
                     j = text.find(' ')
                 if j == -1:
                     break
-                ret += u'#. %s\n' % text[:j]
+                ret += format_str('#. %s\n', text[:j])
                 text = text[j+1:]
-            ret += '#. %s\n' % text
+            ret += format_str('#. %s\n', text)
         return ret
 
 
@@ -198,8 +213,7 @@ class Message (object):
     def add_text (self, text):
         if len(self._message) == 0 or not(isinstance(self._message[-1], basestring)):
             self._message.append('')
-        if not isinstance(text, unicode):
-            text = unicode(text, 'utf-8')
+        text = to_unicode(text)
         self._message[-1] += text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
         if re.sub('\s+', ' ', text).strip() != '':
             self._empty = False
@@ -216,7 +230,7 @@ class Message (object):
     def get_placeholder (self, name):
         placeholder = 1
         for holder in self._placeholders:
-            holdername = u'%s-%i' % (holder.name, placeholder)
+            holdername = format_str('%s-%i', holder.name, placeholder)
             if holdername == unicode(name, 'utf-8'):
                 return holder
             placeholder += 1
@@ -225,18 +239,16 @@ class Message (object):
         if len(self._message) == 0 or not(isinstance(self._message[-1], basestring)):
             self._message.append('')
         if node.ns() is not None and node.ns().name is not None:
-            self._message[-1] += (u'<%s:%s' % (unicode(node.ns().name, 'utf-8'), unicode(node.name, 'utf-8')))
+            self._message[-1] += format_str('<%s:%s', node.ns().name, node.name)
         else:
-            self._message[-1] += (u'<%s' % unicode(node.name, 'utf-8'))
+            self._message[-1] += format_str('<%s', node.name)
         for prop in xml_attr_iter(node):
             name = prop.name
             if prop.ns() is not None:
-                name = prop.ns().name + ':' + name
+                name = format_str('%s:%s', prop.ns().name, name)
             atval = prop.content
-            if not isinstance(atval, unicode):
-                atval = unicode(atval, 'utf-8')
-            atval = atval.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
-            self._message += " %s=\"%s\"" % (name, atval)
+            atval = to_unicode(atval).replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
+            self._message += format_str(' %s="%s"', name, atval)
         if node.children is not None:
             self._message[-1] += '>'
         else:
@@ -247,9 +259,9 @@ class Message (object):
             if len(self._message) == 0 or not(isinstance(self._message[-1], basestring)):
                 self._message.append('')
             if node.ns() is not None and node.ns().name is not None:
-                self._message[-1] += (u'</%s:%s>' % (unicode(node.ns().name, 'utf-8'), unicode(node.name, 'utf-8')))
+                self._message[-1] += format_str('</%s:%s>', node.ns().name, node.name)
             else:
-                self._message[-1] += (u'</%s>' % unicode(node.name, 'utf-8'))
+                self._message[-1] += format_str('</%s>', node.name)
 
     def is_empty (self):
         return self._empty
@@ -261,17 +273,13 @@ class Message (object):
         self._ctxt = ctxt
 
     def add_source (self, source):
-        if not isinstance(source, unicode):
-            source = unicode(source, 'utf-8')
-        self._sources.append(source)
+        self._sources.append(to_unicode(source))
 
     def get_sources (self):
         return self._sources
 
     def add_marker (self, marker):
-        if not isinstance(marker, unicode):
-            marker = unicode(marker, 'utf-8')
-        self._markers.append(marker)
+        self._markers.append(to_unicode(marker))
 
     def get_markers (self):
         return self._markers
@@ -290,13 +298,13 @@ class Message (object):
         return self._comments
 
     def get_string (self):
-        message = u''
+        message = ''
         placeholder = 1
         for msg in self._message:
             if isinstance(msg, basestring):
                 message += msg
             elif isinstance(msg, Message.Placeholder):
-                message += u'<_:%s-%i/>' % (msg.name, placeholder)
+                message += format_str('<_:%s-%i/>', msg.name, placeholder)
                 placeholder += 1
         if not self._preserve:
             message = re.sub('\s+', ' ', message).strip()
@@ -315,11 +323,11 @@ class Message (object):
         self._locale_filter = locale
 
     def format (self):
-        ret = u''
+        ret = ''
         markers = {}
         for marker in self._markers:
             if not markers.has_key(marker):
-                ret += '#. (itstool) path: ' + marker + '\n'
+                ret += format_str('#. (itstool) path: %s\n', marker)
                 markers[marker] = marker
         for idvalue in self._id_values:
             ret += '#. (itstool) id: ' + idvalue + '\n'
@@ -340,23 +348,23 @@ class Message (object):
                 ret += '#.\n'
             ret += comments[i].format()
         for source in self._sources:
-            ret += u'#: %s\n' % source
+            ret += format_str('#: %s\n', source)
         if self._preserve:
-            ret += u'#, no-wrap\n'
+            ret += '#, no-wrap\n'
         if self._ctxt is not None:
-            ret += u'msgctxt "%s"\n' % self._ctxt
+            ret += format_str('msgctxt "%s"\n', self._ctxt)
         message = self.get_string()
         if self._preserve:
-            ret += u'msgid ""\n'
+            ret += 'msgid ""\n'
             lines = message.split('\n')
             for line, no in zip(lines, range(len(lines))):
                 if no == len(lines) - 1:
-                    ret += u'"%s"\n' % self.escape(line)
+                    ret += format_str('"%s"\n', self.escape(line))
                 else:
-                    ret += u'"%s\\n"\n' % self.escape(line)
+                    ret += format_str('"%s\\n"\n', self.escape(line))
         else:
-            ret += u'msgid "%s"\n' % self.escape(message)
-        ret += u'msgstr ""\n'
+            ret += format_str('msgid "%s"\n', self.escape(message))
+        ret += 'msgstr ""\n'
         return ret
 
 
@@ -1004,14 +1012,14 @@ class Document (object):
             blurb = node.doc.intSubset().serialize('utf-8')
         except:
             blurb = ''
-        blurb += '<' + node.name
+        blurb += format_str('<%s', node.name)
         for nsname in nss.keys():
             if nsname is None:
                 blurb += ' xmlns="%s"' % nss[nsname]
             else:
                 blurb += ' xmlns:%s="%s"' % (nsname, nss[nsname])
-        blurb += '>%s</%s>' % (trans.encode('utf-8'), node.name)
-        ctxt = libxml2.createDocParserCtxt(blurb)
+        blurb += format_str('>%s</%s>', trans, node.name)
+        ctxt = libxml2.createDocParserCtxt(blurb.encode('utf-8'))
         if self._load_dtd:
             ctxt.loadSubset(1)
         ctxt.replaceEntities(0)
@@ -1111,8 +1119,8 @@ class Document (object):
                     msg.set_preserve_space()
                 if self.get_its_locale_filter(node) != ('*', 'include'):
                     msg.set_locale_filter(self.get_its_locale_filter(node))
-                msg.add_source('%s:%i' % (self._doc.name, node.lineNo()))
-                msg.add_marker('%s/%s' % (node.parent.name, node.name))
+                msg.add_source(format_str('%s:%i', self._doc.name, node.lineNo()))
+                msg.add_marker(format_str('%s/%s', node.parent.name, node.name))
             else:
                 withinText = True
                 msg.add_start_tag(node)
@@ -1122,14 +1130,13 @@ class Document (object):
             for attr in xml_attr_iter(node):
                 if self._its_translate_nodes.get(attr, 'no') == 'yes':
                     attr_msg = Message()
-                    attr_msg.add_source('%s:%i' % (self._doc.name, node.lineNo()))
-                    attr_msg.add_marker('%s/%s@%s' % (node.parent.name, node.name, attr.name))
+                    attr_msg.add_source(format_str('%s:%i', self._doc.name, node.lineNo()))
+                    attr_msg.add_marker(format_str('%s/%s@%s', node.parent.name, node.name, attr.name))
                     attr_msg.add_text(attr.content)
                     if comments:
                         for locnote in self.get_its_loc_notes(attr):
                             comment = Comment(locnote)
-                            comment.add_marker ('%s/%s@%s' % (
-                                    node.parent.name, node.name, attr.name))
+                            comment.add_marker (format_str('%s/%s@%s', node.parent.name, node.name, attr.name))
                             attr_msg.add_comment(comment)
                     self._msgs.add_message(attr_msg, attr)
 
@@ -1140,7 +1147,7 @@ class Document (object):
                 for locnote in self.get_its_loc_notes(cnode, inherit=(not withinText)):
                     comment = Comment(locnote)
                     if withinText:
-                        comment.add_marker('.%s/%s' % (path, cnode.name))
+                        comment.add_marker(format_str('.%s/%s', path, cnode.name))
                     msg.add_comment(comment)
                     hasnote = True
                 if hasnote or not is_unit:
@@ -1156,7 +1163,7 @@ class Document (object):
                 msg.add_id_value(basename + '#' + idvalue)
 
         if withinText:
-            path = path + '/' + node.name
+            path = format_str('%s/%s', path, node.name)
         for child in xml_child_iter(node):
             self.generate_message(child, msg, comments=comments, path=path)
 
@@ -1172,10 +1179,10 @@ class Document (object):
         resref = self._its_externals[node]
         if node.type == 'element':
             translate = self.get_its_translate(node)
-            marker = '%s/%s' % (node.parent.name, node.name)
+            marker = format_str('%s/%s', node.parent.name, node.name)
         else:
             translate = self.get_its_translate(node.parent)
-            marker = '%s/%s/@%s' % (node.parent.parent.name, node.parent.name, node.name)
+            marker = format_str('%s/%s/@%s' , node.parent.parent.name, node.parent.name, node.name)
         if translate == 'no':
             return
         msg = Message()
@@ -1186,10 +1193,10 @@ class Document (object):
             filefp.close()
         except:
             filemd5 = '__failed__'
-        txt = "external ref='%s' md5='%s'" % (resref, filemd5)
+        txt = format_str("external ref='%s' md5='%s'", resref, filemd5)
         msg.set_context('_')
         msg.add_text(txt)
-        msg.add_source('%s:%i' % (self._doc.name, node.lineNo()))
+        msg.add_source(format_str('%s:%i', self._doc.name, node.lineNo()))
         msg.add_marker(marker)
         msg.add_comment(Comment('This is a reference to an external file such as an image or'
                                 ' video. When the file changes, the md5 hash will change to'
