@@ -88,7 +88,7 @@ class MessageList (object):
         msgdict = {}
         for msg in self._messages:
             key = (msg.get_context(), msg.get_string())
-            if msgdict.has_key(key):
+            if key in msgdict:
                 for source in msg.get_sources():
                     msgdict[key].add_source(source)
                 for marker in msg.get_markers():
@@ -144,7 +144,7 @@ class Comment (object):
         ret = u''
         markers = {}
         for marker in self._markers:
-            if not markers.has_key(marker):
+            if not marker in markers:
                 ret += '#. (itstool) comment: ' + marker + '\n'
                 markers[marker] = marker
         if '\n' in self._text:
@@ -318,7 +318,7 @@ class Message (object):
         ret = u''
         markers = {}
         for marker in self._markers:
-            if not markers.has_key(marker):
+            if not marker in markers:
                 ret += '#. (itstool) path: ' + marker + '\n'
                 markers[marker] = marker
         for idvalue in self._id_values:
@@ -329,7 +329,7 @@ class Message (object):
         commentsdict = {}
         for comment in self._comments:
             key = comment.get_text()
-            if commentsdict.has_key(key):
+            if key in commentsdict:
                 for marker in comment.get_markers():
                     commentsdict[key].add_marker(marker)
             else:
@@ -413,7 +413,7 @@ def fix_node_ns (node, nsdefs):
     nsdef = node.nsDefs()
     while nsdef is not None:
         nextnsdef = nsdef.next
-        if nsdefs.has_key(nsdef.name) and nsdefs[nsdef.name] == nsdef.content:
+        if nsdef.name in nsdefs and nsdefs[nsdef.name] == nsdef.content:
             node.removeNsDef(nsdef.content)
         else:
             childnsdefs[nsdef.name] = nsdef.content
@@ -541,10 +541,7 @@ class Document (object):
         for child in xml_child_iter(rules):
             if xml_is_ns_name(child, NS_ITS, 'param'):
                 name = child.nsProp('name', None)
-                if params.has_key(name):
-                    value = params[name]
-                else:
-                    value = child.getContent()
+                value = params.get(name, child.getContent())
                 xpath.xpathRegisterVariable(name, None, value)
 
     def apply_its_rule(self, rule, xpath):
@@ -760,7 +757,7 @@ class Document (object):
                     nsdef = par.nsDefs()
                     while nsdef is not None:
                         if nsdef.name is not None:
-                            if not nss.has_key(nsdef.name):
+                            if nsdef.name not in nss:
                                 nss[nsdef.name] = nsdef.content
                                 xpath.xpathRegisterNs(nsdef.name, nsdef.content)
                         nsdef = nsdef.next
@@ -779,7 +776,7 @@ class Document (object):
                 nsdef = par.nsDefs()
                 while nsdef is not None:
                     if nsdef.name is not None:
-                        if not nss.has_key(nsdef.name):
+                        if nsdef.name not in nss:
                             nss[nsdef.name] = nsdef.content
                             xpath.xpathRegisterNs(nsdef.name, nsdef.content)
                     nsdef = nsdef.next
@@ -1167,7 +1164,7 @@ class Document (object):
                 msg.add_end_tag(node)
 
     def generate_external_resource_message(self, node):
-        if not self._its_externals.has_key(node):
+        if node not in self._its_externals:
             return
         resref = self._its_externals[node]
         if node.type == 'element':
@@ -1208,7 +1205,7 @@ class Document (object):
         while node.type in ('attribute', 'element'):
             if node.getSpacePreserve() == 1:
                 return True
-            if self._its_preserve_space_nodes.has_key(node):
+            if node in self._its_preserve_space_nodes:
                 return (self._its_preserve_space_nodes[node] == 'preserve')
             node = node.parent
         return False
@@ -1219,7 +1216,7 @@ class Document (object):
             val = node.nsProp('translate', NS_ITS)
         elif xml_is_ns_name(node, NS_ITS, 'span') and node.hasNsProp('translate', None):
             val = node.nsProp('translate', None)
-        elif self._its_translate_nodes.has_key(node):
+        elif node in self._its_translate_nodes:
             val = self._its_translate_nodes[node]
         if val is not None:
             return val
@@ -1262,7 +1259,7 @@ class Document (object):
             else:
                 typ = 'include'
             return (lst, typ)
-        if self._its_locale_filters.has_key(node):
+        if node in self._its_locale_filters:
             return self._its_locale_filters[node]
         if node.parent.type == 'element':
             return self.get_its_locale_filter(node.parent)
