@@ -187,6 +187,12 @@ class Comment (object):
         return ret
 
 
+class Placeholder (object):
+    def __init__ (self, node):
+        self.node = node
+        self.name = ustr(node.name, 'utf-8')
+
+
 class Message (object):
     def __init__ (self):
         self._message = []
@@ -205,11 +211,6 @@ class Message (object):
             return "Empty message"
         return self.get_string()
 
-    class Placeholder (object):
-        def __init__ (self, node):
-            self.node = node
-            self.name = ustr(node.name, 'utf-8')
-
     def escape (self, text):
         return text.replace('\\','\\\\').replace('"', "\\\"").replace("\n","\\n").replace("\t","\\t")
 
@@ -227,7 +228,7 @@ class Message (object):
         self._empty = False
 
     def add_placeholder (self, node):
-        holder = Message.Placeholder(node)
+        holder = Placeholder(node)
         self._placeholders.append(holder)
         self._message.append(holder)
 
@@ -313,7 +314,7 @@ class Message (object):
         for msg in self._message:
             if isinstance(msg, string_types):
                 message += msg
-            elif isinstance(msg, Message.Placeholder):
+            elif isinstance(msg, Placeholder):
                 message += '<_:%s-%i/>' % (msg.name, placeholder)
                 placeholder += 1
         if not self._preserve:
