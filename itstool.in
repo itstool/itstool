@@ -16,6 +16,8 @@
 # with ITS Tool; if not, write to the Free Software Foundation, 59 Temple
 # Place, Suite 330, Boston, MA  0211-1307  USA.
 #
+from __future__ import print_function
+from __future__ import unicode_literals
 
 VERSION="@VERSION@"
 DATADIR="@DATADIR@"
@@ -29,6 +31,22 @@ import os.path
 import re
 import sys
 import time
+import io
+
+PY3 = sys.version_info[0] == 3
+if PY3:
+    string_types = str,
+    def ustr(s, encoding=None):
+        if isinstance(s, str):
+            return s
+        elif encoding:
+            return str(s, encoding)
+        else:
+            return str(s)
+    ustr_type = str
+else:
+    string_types = basestring,
+    ustr = ustr_type = unicode
 
 NS_ITS = 'http://www.w3.org/2005/11/its'
 NS_ITST = 'http://itstool.org/extensions/'
@@ -81,14 +99,14 @@ class MessageList (object):
         return self._by_node.get(node, None)
 
     def get_nodes_with_messages (self):
-        return self._by_node.keys()
+        return list(self._by_node.keys())
 
     def output (self, out):
         msgs = []
         msgdict = {}
         for msg in self._messages:
             key = (msg.get_context(), msg.get_string())
-            if msgdict.has_key(key):
+            if key in msgdict:
                 for source in msg.get_sources():
                     msgdict[key].add_source(source)
                 for marker in msg.get_markers():
@@ -105,7 +123,7 @@ class MessageList (object):
                         msgdict[key].set_locale_filter('%s, %s' % (locale, msg.get_locale_filter()))
                     else:
                         msgdict[key].set_locale_filter(msg.get_locale_filter())
-                
+
             else:
                 msgs.append(msg)
                 msgdict[key] = msg
@@ -121,13 +139,13 @@ class MessageList (object):
         out.write('"Content-Transfer-Encoding: 8bit\\n"\n')
         out.write('\n')
         for msg in msgs:
-            out.write(msg.format().encode('utf-8'))
+            out.write(msg.format())
             out.write('\n')
 
 
 class Comment (object):
     def __init__ (self, text):
-        self._text = str(text)
+        self._text = ustr(text)
         assert(text is not None)
         self._markers = []
 
@@ -141,10 +159,10 @@ class Comment (object):
         return self._text
 
     def format (self):
-        ret = u''
+        ret = ''
         markers = {}
         for marker in self._markers:
-            if not markers.has_key(marker):
+            if marker not in markers:
                 ret += '#. (itstool) comment: ' + marker + '\n'
                 markers[marker] = marker
         if '\n' in self._text:
@@ -154,7 +172,7 @@ class Comment (object):
                     doadd = True
                 if not doadd:
                     continue
-                ret += u'#. %s\n' % line
+                ret += '#. %s\n' % line
         else:
             text = self._text
             while len(text) > 72:
@@ -163,7 +181,7 @@ class Comment (object):
                     j = text.find(' ')
                 if j == -1:
                     break
-                ret += u'#. %s\n' % text[:j]
+                ret += '#. %s\n' % text[:j]
                 text = text[j+1:]
             ret += '#. %s\n' % text
         return ret
@@ -172,7 +190,7 @@ class Comment (object):
 class Placeholder (object):
     def __init__ (self, node):
         self.node = node
-        self.name = unicode(node.name, 'utf-8')
+        self.name = ustr(node.name, 'utf-8')
 
 
 class Message (object):
@@ -197,10 +215,10 @@ class Message (object):
         return text.replace('\\','\\\\').replace('"', "\\\"").replace("\n","\\n").replace("\t","\\t")
 
     def add_text (self, text):
-        if len(self._message) == 0 or not(isinstance(self._message[-1], basestring)):
+        if len(self._message) == 0 or not(isinstance(self._message[-1], string_types)):
             self._message.append('')
-        if not isinstance(text, unicode):
-            text = unicode(text, 'utf-8')
+        if not isinstance(text, ustr_type):
+            text = ustr(text, 'utf-8')
         self._message[-1] += text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
         if re.sub('\s+', ' ', text).strip() != '':
             self._empty = False
@@ -217,25 +235,25 @@ class Message (object):
     def get_placeholder (self, name):
         placeholder = 1
         for holder in self._placeholders:
-            holdername = u'%s-%i' % (holder.name, placeholder)
-            if holdername == unicode(name, 'utf-8'):
+            holdername = '%s-%i' % (holder.name, placeholder)
+            if holdername == ustr(name, 'utf-8'):
                 return holder
             placeholder += 1
 
     def add_start_tag (self, node):
-        if len(self._message) == 0 or not(isinstance(self._message[-1], basestring)):
+        if len(self._message) == 0 or not(isinstance(self._message[-1], string_types)):
             self._message.append('')
         if node.ns() is not None and node.ns().name is not None:
-            self._message[-1] += (u'<%s:%s' % (unicode(node.ns().name, 'utf-8'), unicode(node.name, 'utf-8')))
+            self._message[-1] += ('<%s:%s' % (ustr(node.ns().name, 'utf-8'), ustr(node.name, 'utf-8')))
         else:
-            self._message[-1] += (u'<%s' % unicode(node.name, 'utf-8'))
+            self._message[-1] += ('<%s' % ustr(node.name, 'utf-8'))
         for prop in xml_attr_iter(node):
             name = prop.name
             if prop.ns() is not None:
                 name = prop.ns().name + ':' + name
             atval = prop.content
-            if not isinstance(atval, unicode):
-                atval = unicode(atval, 'utf-8')
+            if not isinstance(atval, ustr_type):
+                atval = ustr(atval, 'utf-8')
             atval = atval.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;')
             self._message += " %s=\"%s\"" % (name, atval)
         if node.children is not None:
@@ -245,12 +263,12 @@ class Message (object):
 
     def add_end_tag (self, node):
         if node.children is not None:
-            if len(self._message) == 0 or not(isinstance(self._message[-1], basestring)):
+            if len(self._message) == 0 or not(isinstance(self._message[-1], string_types)):
                 self._message.append('')
             if node.ns() is not None and node.ns().name is not None:
-                self._message[-1] += (u'</%s:%s>' % (unicode(node.ns().name, 'utf-8'), unicode(node.name, 'utf-8')))
+                self._message[-1] += ('</%s:%s>' % (ustr(node.ns().name, 'utf-8'), ustr(node.name, 'utf-8')))
             else:
-                self._message[-1] += (u'</%s>' % unicode(node.name, 'utf-8'))
+                self._message[-1] += ('</%s>' % ustr(node.name, 'utf-8'))
 
     def is_empty (self):
         return self._empty
@@ -262,16 +280,16 @@ class Message (object):
         self._ctxt = ctxt
 
     def add_source (self, source):
-        if not isinstance(source, unicode):
-            source = unicode(source, 'utf-8')
+        if not isinstance(source, ustr_type):
+            source = ustr(source, 'utf-8')
         self._sources.append(source)
 
     def get_sources (self):
         return self._sources
 
     def add_marker (self, marker):
-        if not isinstance(marker, unicode):
-            marker = unicode(marker, 'utf-8')
+        if not isinstance(marker, ustr_type):
+            marker = ustr(marker, 'utf-8')
         self._markers.append(marker)
 
     def get_markers (self):
@@ -291,13 +309,13 @@ class Message (object):
         return self._comments
 
     def get_string (self):
-        message = u''
+        message = ''
         placeholder = 1
         for msg in self._message:
-            if isinstance(msg, basestring):
+            if isinstance(msg, string_types):
                 message += msg
             elif isinstance(msg, Placeholder):
-                message += u'<_:%s-%i/>' % (msg.name, placeholder)
+                message += '<_:%s-%i/>' % (msg.name, placeholder)
                 placeholder += 1
         if not self._preserve:
             message = re.sub('\s+', ' ', message).strip()
@@ -316,10 +334,10 @@ class Message (object):
         self._locale_filter = locale
 
     def format (self):
-        ret = u''
+        ret = ''
         markers = {}
         for marker in self._markers:
-            if not markers.has_key(marker):
+            if marker not in markers:
                 ret += '#. (itstool) path: ' + marker + '\n'
                 markers[marker] = marker
         for idvalue in self._id_values:
@@ -330,7 +348,7 @@ class Message (object):
         commentsdict = {}
         for comment in self._comments:
             key = comment.get_text()
-            if commentsdict.has_key(key):
+            if key in commentsdict:
                 for marker in comment.get_markers():
                     commentsdict[key].add_marker(marker)
             else:
@@ -341,23 +359,23 @@ class Message (object):
                 ret += '#.\n'
             ret += comments[i].format()
         for source in self._sources:
-            ret += u'#: %s\n' % source
+            ret += '#: %s\n' % source
         if self._preserve:
-            ret += u'#, no-wrap\n'
+            ret += '#, no-wrap\n'
         if self._ctxt is not None:
-            ret += u'msgctxt "%s"\n' % self._ctxt
+            ret += 'msgctxt "%s"\n' % self._ctxt
         message = self.get_string()
         if self._preserve:
-            ret += u'msgid ""\n'
+            ret += 'msgid ""\n'
             lines = message.split('\n')
-            for line, no in zip(lines, range(len(lines))):
+            for line, no in zip(lines, list(range(len(lines)))):
                 if no == len(lines) - 1:
-                    ret += u'"%s"\n' % self.escape(line)
+                    ret += '"%s"\n' % self.escape(line)
                 else:
-                    ret += u'"%s\\n"\n' % self.escape(line)
+                    ret += '"%s\\n"\n' % self.escape(line)
         else:
-            ret += u'msgid "%s"\n' % self.escape(message)
-        ret += u'msgstr ""\n'
+            ret += 'msgid "%s"\n' % self.escape(message)
+        ret += 'msgstr ""\n'
         return ret
 
 
@@ -414,7 +432,7 @@ def fix_node_ns (node, nsdefs):
     nsdef = node.nsDefs()
     while nsdef is not None:
         nextnsdef = nsdef.next
-        if nsdefs.has_key(nsdef.name) and nsdefs[nsdef.name] == nsdef.content:
+        if nsdef.name in nsdefs and nsdefs[nsdef.name] == nsdef.content:
             node.removeNsDef(nsdef.content)
         else:
             childnsdefs[nsdef.name] = nsdef.content
@@ -459,6 +477,7 @@ class Document (object):
         if load_dtd:
             ctxt.loadSubset(1)
         if keep_entities:
+            ctxt.ctxtUseOptions(libxml2.XML_PARSE_DTDLOAD)
             ctxt.replaceEntities(0)
         else:
             ctxt.replaceEntities(1)
@@ -518,7 +537,7 @@ class Document (object):
         try:
             self._check_errors()
         except libxml2.parserError as e:
-            sys.stderr.write('Error: Could not parse document:\n%s\n' % str(e))
+            sys.stderr.write('Error: Could not parse document:\n%s\n' % ustr(e))
             sys.exit(1)
         self._msgs = messages
         self._its_translate_nodes = {}
@@ -542,7 +561,7 @@ class Document (object):
         for child in xml_child_iter(rules):
             if xml_is_ns_name(child, NS_ITS, 'param'):
                 name = child.nsProp('name', None)
-                if params.has_key(name):
+                if name in params:
                     value = params[name]
                 else:
                     value = child.getContent()
@@ -596,7 +615,7 @@ class Document (object):
                         oldnode = None
                     xpath.setContextNode(node)
                     idvalue = self._try_xpath_eval(xpath, idv)
-                    if isinstance(idvalue, basestring):
+                    if isinstance(idvalue, string_types):
                         self._its_id_values[node] = idvalue
                     else:
                         for val in idvalue:
@@ -616,7 +635,7 @@ class Document (object):
                             oldnode = None
                         xpath.setContextNode(node)
                         ctxt = self._try_xpath_eval(xpath, rule.nsProp('contextPointer', None))
-                        if isinstance(ctxt, basestring):
+                        if isinstance(ctxt, string_types):
                             self._itst_contexts[node] = ctxt
                         else:
                             for ctxt in ctxt:
@@ -652,7 +671,7 @@ class Document (object):
                             oldnode = None
                         xpath.setContextNode(node)
                         note = self._try_xpath_eval(xpath, sel)
-                        if isinstance(note, basestring):
+                        if isinstance(note, string_types):
                             if ref:
                                 nodenote = LocNote(locnoteref=note, locnotetype=notetype)
                             else:
@@ -761,7 +780,7 @@ class Document (object):
                     nsdef = par.nsDefs()
                     while nsdef is not None:
                         if nsdef.name is not None:
-                            if not nss.has_key(nsdef.name):
+                            if nsdef.name not in nss:
                                 nss[nsdef.name] = nsdef.content
                                 xpath.xpathRegisterNs(nsdef.name, nsdef.content)
                         nsdef = nsdef.next
@@ -780,7 +799,7 @@ class Document (object):
                 nsdef = par.nsDefs()
                 while nsdef is not None:
                     if nsdef.name is not None:
-                        if not nss.has_key(nsdef.name):
+                        if nsdef.name not in nss:
                             nss[nsdef.name] = nsdef.content
                             xpath.xpathRegisterNs(nsdef.name, nsdef.content)
                     nsdef = nsdef.next
@@ -831,7 +850,8 @@ class Document (object):
             elif select == 'year' and len(trdata) == 4:
                 val = trdata[3]
             if val is not None:
-                val = val.encode('utf-8')
+                if not PY3:
+                    val = val.encode('utf-8')
                 parent.addContent(val)
         else:
             newnode = node.copyNode(2)
@@ -885,7 +905,7 @@ class Document (object):
                 prevtext = node.prev.content
                 if re.sub('\s+', '', prevtext) == '':
                     prevnode = node.prev
-            for lang in sorted(translations.keys(), reverse=True):
+            for lang in sorted(list(translations.keys()), reverse=True):
                 locale = self.get_its_locale_filter(node)
                 lmatch = match_locale_list(locale[0], lang)
                 if (locale[1] == 'include' and not lmatch) or (locale[1] == 'exclude' and lmatch):
@@ -976,7 +996,9 @@ class Document (object):
         for attr in trans_attrs:
             newcontent = translations.ugettext(attr.get_content())
             if newcontent:
-                newnode.setProp(attr.name, newcontent.encode('utf-8'))
+                if not PY3:
+                    newcontent = newcontent.encode('utf-8')
+                newnode.setProp(attr.name, newcontent)
 
     def get_translated (self, node, translations, strict=False, lang=None):
         msg = self._msgs.get_message_by_node(node)
@@ -1003,24 +1025,27 @@ class Document (object):
         nss['_'] = NS_BLANK
         try:
             blurb = node.doc.intSubset().serialize('utf-8')
-        except:
+        except Exception:
             blurb = ''
-        blurb += '<' + node.name
-        for nsname in nss.keys():
+        blurb += '<' + ustr(node.name, 'utf-8')
+        for nsname in list(nss.keys()):
             if nsname is None:
                 blurb += ' xmlns="%s"' % nss[nsname]
             else:
                 blurb += ' xmlns:%s="%s"' % (nsname, nss[nsname])
-        blurb += '>%s</%s>' % (trans.encode('utf-8'), node.name)
+        blurb += '>%s</%s>' % (trans, ustr(node.name, 'utf-8'))
+        if not PY3:
+            blurb = blurb.encode('utf-8')
         ctxt = libxml2.createDocParserCtxt(blurb)
         if self._load_dtd:
             ctxt.loadSubset(1)
+        ctxt.ctxtUseOptions(libxml2.XML_PARSE_DTDLOAD)
         ctxt.replaceEntities(0)
         ctxt.parseDocument()
         trnode = ctxt.doc().getRootElement()
         try:
             self._check_errors()
-        except libxml2.parserError as e:
+        except libxml2.parserError:
             if strict:
                 raise
             else:
@@ -1113,7 +1138,7 @@ class Document (object):
                 if self.get_its_locale_filter(node) != ('*', 'include'):
                     msg.set_locale_filter(self.get_its_locale_filter(node))
                 msg.add_source('%s:%i' % (self._doc.name, node.lineNo()))
-                msg.add_marker('%s/%s' % (node.parent.name, node.name))
+                msg.add_marker('%s/%s' % (ustr(node.parent.name, 'utf-8'), ustr(node.name, 'utf-8')))
             else:
                 withinText = True
                 msg.add_start_tag(node)
@@ -1168,7 +1193,7 @@ class Document (object):
                 msg.add_end_tag(node)
 
     def generate_external_resource_message(self, node):
-        if not self._its_externals.has_key(node):
+        if node not in self._its_externals:
             return
         resref = self._its_externals[node]
         if node.type == 'element':
@@ -1182,10 +1207,10 @@ class Document (object):
         msg = Message()
         try:
             fullfile = os.path.join(os.path.dirname(self._filename), resref)
-            filefp = open(fullfile)
+            filefp = open(fullfile, 'rb')
             filemd5 = hashlib.md5(filefp.read()).hexdigest()
             filefp.close()
-        except:
+        except Exception:
             filemd5 = '__failed__'
         txt = "external ref='%s' md5='%s'" % (resref, filemd5)
         msg.set_context('_')
@@ -1209,7 +1234,7 @@ class Document (object):
         while node.type in ('attribute', 'element'):
             if node.getSpacePreserve() == 1:
                 return True
-            if self._its_preserve_space_nodes.has_key(node):
+            if node in self._its_preserve_space_nodes:
                 return (self._its_preserve_space_nodes[node] == 'preserve')
             node = node.parent
         return False
@@ -1220,7 +1245,7 @@ class Document (object):
             val = node.nsProp('translate', NS_ITS)
         elif xml_is_ns_name(node, NS_ITS, 'span') and node.hasNsProp('translate', None):
             val = node.nsProp('translate', None)
-        elif self._its_translate_nodes.has_key(node):
+        elif node in self._its_translate_nodes:
             val = self._its_translate_nodes[node]
         if val is not None:
             return val
@@ -1252,7 +1277,7 @@ class Document (object):
             else:
                 typ = 'include'
             return (lst, typ)
-        if (xml_is_ns_name(node, NS_ITS, 'span') and 
+        if (xml_is_ns_name(node, NS_ITS, 'span') and
             (node.hasNsProp('localeFilterList', None) or node.hasNsProp('localeFilterType', None))):
             if node.hasNsProp('localeFilterList', None):
                 lst = node.nsProp('localeFilterList', None)
@@ -1263,7 +1288,7 @@ class Document (object):
             else:
                 typ = 'include'
             return (lst, typ)
-        if self._its_locale_filters.has_key(node):
+        if node in self._its_locale_filters:
             return self._its_locale_filters[node]
         if node.parent.type == 'element':
             return self.get_its_locale_filter(node.parent)
@@ -1318,7 +1343,7 @@ class Document (object):
             val = self.get_its_loc_notes(node)
             if len(val) > 0:
                 if val[0].locnote is not None:
-                    compval = 'locNote="%s"\tlocNoteType="%s"' % (str(val[0]), val[0].locnotetype)
+                    compval = 'locNote="%s"\tlocNoteType="%s"' % (ustr(val[0]), val[0].locnotetype)
                 elif val[0].locnoteref is not None:
                     compval = 'locNoteRef="%s"\tlocNoteType="%s"' % (val[0].locnoteref, val[0].locnotetype)
         elif category == 'externalResourceRef':
@@ -1341,7 +1366,7 @@ class Document (object):
             out.write('%s\t%s\r\n' % (xml_get_node_path(node), compval))
         else:
             out.write('%s\r\n' % (xml_get_node_path(node)))
-        for attr in sorted(xml_attr_iter(node), lambda x, y: cmp(str(x), str(y))):
+        for attr in sorted(xml_attr_iter(node), key=ustr):
             self.output_test_data(category, out, attr)
         for child in xml_child_iter(node):
             if child.type == 'element':
@@ -1509,7 +1534,7 @@ if __name__ == '__main__':
             out = sys.stdout
         else:
             try:
-                out = file(opts.output, 'w')
+                out = io.open(opts.output, 'wt', encoding='utf-8')
             except:
                 sys.stderr.write('Error: Cannot write to file %s\n' % opts.output)
                 sys.exit(1)
@@ -1523,6 +1548,8 @@ if __name__ == '__main__':
         except:
             sys.stderr.write('Error: cannot open mo file %s\n' % opts.merge)
             sys.exit(1)
+        if PY3:
+            translations.ugettext = translations.gettext
         translations.add_fallback(NoneTranslations())
         if opts.lang is None:
             opts.lang = convert_locale(os.path.splitext(os.path.basename(opts.merge))[0])
@@ -1534,7 +1561,7 @@ if __name__ == '__main__':
             if opts.output == '-':
                 out = sys.stdout
             else:
-                out = file(opts.output, 'w')
+                out = open(opts.output, 'w')
         else:
             sys.stderr.write('Error: Non-directory output for multiple files\n')
             sys.exit(1)
@@ -1548,12 +1575,20 @@ if __name__ == '__main__':
             try:
                 doc.merge_translations(translations, opts.lang, strict=opts.strict)
             except Exception as e:
-                sys.stderr.write('Error: Could not merge translations:\n%s\n' % str(e))
+                sys.stderr.write('Error: Could not merge translations:\n%s\n' % ustr(e))
                 sys.exit(1)
+            serialized = doc._doc.serialize('utf-8')
+            if PY3:
+                # For some reason, under py3, our serialized data is returns as a str.
+                # Let's encode it to bytes
+                serialized = serialized.encode('utf-8')
             fout = out
-            if isinstance(fout, basestring):
-                fout = file(os.path.join(fout, os.path.basename(filename)), 'w')
-            fout.write(doc._doc.serialize('utf-8'))
+            fout_is_str = isinstance(fout, string_types)
+            if fout_is_str:
+                fout = open(os.path.join(fout, os.path.basename(filename)), 'wb')
+            fout.write(serialized)
+            if fout_is_str:
+                fout.close()
     elif opts.join is not None:
         translations = {}
         for filename in args[1:]:
@@ -1563,14 +1598,16 @@ if __name__ == '__main__':
                 sys.stderr.write('Error: cannot open mo file %s\n' % filename)
                 sys.exit(1)
             thistr.add_fallback(NoneTranslations())
+            if PY3:
+                thistr.ugettext = thistr.gettext
             lang = convert_locale(os.path.splitext(os.path.basename(filename))[0])
             translations[lang] = thistr
         if opts.output is None:
             out = sys.stdout
         elif os.path.isdir(opts.output):
-            out = file(os.path.join(opts.output, os.path.basename(filename)), 'w')
+            out = open(os.path.join(opts.output, os.path.basename(filename)), 'w')
         else:
-            out = file(opts.output, 'w')
+            out = open(opts.output, 'w')
         messages = MessageList()
         doc = Document(opts.join, messages)
         doc.apply_its_rules(not(opts.nobuiltins), params=params)
@@ -1583,9 +1620,9 @@ if __name__ == '__main__':
             try:
                 doc.merge_translations(translations, opts.lang, strict=opts.strict)
             except Exception as e:
-                sys.stderr.write('Error: Could not merge translations:\n%s\n' % str(e))
+                sys.stderr.write('Error: Could not merge translations:\n%s\n' % ustr(e))
                 sys.exit(1)
             fout = out
-            if isinstance(fout, basestring):
-                fout = file(os.path.join(fout, os.path.basename(filename)), 'w')
+            if isinstance(fout, string_types):
+                fout = open(os.path.join(fout, os.path.basename(filename)), 'w')
             fout.write(doc._doc.serialize('utf-8'))
