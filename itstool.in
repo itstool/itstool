@@ -458,6 +458,7 @@ class Document (object):
         if load_dtd:
             ctxt.loadSubset(1)
         if keep_entities:
+            ctxt.ctxtUseOptions(libxml2.XML_PARSE_DTDLOAD)
             ctxt.replaceEntities(0)
         else:
             ctxt.replaceEntities(1)
@@ -1014,6 +1015,7 @@ class Document (object):
         ctxt = libxml2.createDocParserCtxt(blurb)
         if self._load_dtd:
             ctxt.loadSubset(1)
+        ctxt.ctxtUseOptions(libxml2.XML_PARSE_DTDLOAD)
         ctxt.replaceEntities(0)
         ctxt.parseDocument()
         trnode = ctxt.doc().getRootElement()
