@@ -1,3 +1,11 @@
+2.0.3
+=====
+* Added Python 3 support. Keeping Python 2 support for now. (Virgil Dupras)
+* Fixed --keep-entities mode after some libxml2 changes.
+* Added --path option for extra paths for ITS files.
+* Don't error out (except under -s) for mismatched placeholders.
+* Fixed UTF-8 handling for translated attributes.
+
 2.0.2
 =====
 * Fixed crash in locale filter and drop rule, #715116
