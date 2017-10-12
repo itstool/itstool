@@ -553,6 +553,9 @@ class Document (object):
         self._itst_credits = None
         self._its_externals = {}
 
+    def __del__ (self):
+        self._doc.freeDoc()
+
     def _check_errors(self):
         if self._xml_err:
             raise libxml2.parserError(self._xml_err)
@@ -1039,8 +1042,11 @@ class Document (object):
         ctxt = libxml2.createDocParserCtxt(blurb)
         if self._load_dtd:
             ctxt.loadSubset(1)
-        ctxt.ctxtUseOptions(libxml2.XML_PARSE_DTDLOAD)
-        ctxt.replaceEntities(0)
+        if self._keep_entities:
+            ctxt.ctxtUseOptions(libxml2.XML_PARSE_DTDLOAD)
+            ctxt.replaceEntities(0)
+        else:
+            ctxt.replaceEntities(1)
         ctxt.parseDocument()
         trnode = ctxt.doc().getRootElement()
         try:
@@ -1082,6 +1088,7 @@ class Document (object):
         retnode = node.copyNode(2)
         for child in xml_child_iter(trnode):
             retnode.addChild(child.copyNode(1))
+        ctxt.doc().freeDoc()
         return retnode
 
     def generate_messages(self, comments=True):
