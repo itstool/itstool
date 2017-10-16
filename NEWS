@@ -1,3 +1,7 @@
+2.0.4
+=====
+* Fixed a massive performance issue
+
 2.0.3
 =====
 * Added Python 3 support. Keeping Python 2 support for now. (Virgil Dupras)
