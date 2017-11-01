@@ -1048,7 +1048,7 @@ class Document (object):
         else:
             ctxt.replaceEntities(1)
         ctxt.parseDocument()
-        trnode = ctxt.doc().getRootElement()
+        trnode = ctxt.doc().getRootElement().copyNode(1)
         try:
             self._check_errors()
         except libxml2.parserError:
