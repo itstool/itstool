@@ -1245,9 +1245,8 @@ class Document (object):
         msg = Message()
         try:
             fullfile = os.path.join(os.path.dirname(self._filename), resref)
-            filefp = open(fullfile, 'rb')
-            filemd5 = hashlib.md5(filefp.read()).hexdigest()
-            filefp.close()
+            with io.open(fullfile, 'rb') as filefp:
+                filemd5 = hashlib.md5(filefp.read()).hexdigest()
         except Exception:
             filemd5 = '__failed__'
         txt = "external ref='%s' md5='%s'" % (resref, filemd5)
@@ -1602,8 +1601,9 @@ if __name__ == '__main__':
             out.flush()
     elif opts.merge is not None:
         try:
-            translations = gettext.GNUTranslations(open(opts.merge, 'rb'))
-        except:
+            with io.open(opts.merge, 'rb') as mergefp:
+                translations = gettext.GNUTranslations(mergefp)
+        except OSError:
             sys.stderr.write('Error: cannot open mo file %s\n' % opts.merge)
             sys.exit(1)
         if PY3:
@@ -1619,7 +1619,7 @@ if __name__ == '__main__':
             if opts.output == '-':
                 out = sys.stdout
             else:
-                out = open(opts.output, 'wb')
+                out = io.open(opts.output, 'w')
         else:
             sys.stderr.write('Error: Non-directory output for multiple files\n')
             sys.exit(1)
@@ -1637,23 +1637,20 @@ if __name__ == '__main__':
                 sys.stderr.write('Error: Could not merge translations:\n%s\n' % ustr(e))
                 sys.exit(1)
             serialized = doc._doc.serialize('utf-8')
-            if PY3:
-                # For some reason, under py3, our serialized data is returns as a str.
-                # Let's encode it to bytes
-                serialized = serialized.encode('utf-8')
-            fout = out
-            fout_is_str = isinstance(fout, string_types)
-            if fout_is_str:
-                fout = open(os.path.join(fout, os.path.basename(filename)), 'wb')
-            fout.write(serialized)
-            fout.flush()
-            if fout_is_str:
-                fout.close()
+            if isinstance(serialized, bytes):
+                serialized = serialized.decode('utf-8')
+
+            if isinstance(out, string_types):
+                with io.open(os.path.join(fout, os.path.basename(filename)), 'w') as fout:
+                    fout.write(serialized)
+            else:
+                out.write(serialized)
+
     elif opts.join is not None:
         translations = {}
         for filename in args[1:]:
             try:
-                thistr = gettext.GNUTranslations(open(filename, 'rb'))
+                thistr = gettext.GNUTranslations(io.open(filename, 'rb'))
             except:
                 sys.stderr.write('Error: cannot open mo file %s\n' % filename)
                 sys.exit(1)
@@ -1676,16 +1673,16 @@ if __name__ == '__main__':
                 doc.apply_its_file(itsfile, userparams=userparams)
         doc.join_translations(translations, strict=opts.strict)
         serialized = doc._doc.serialize('utf-8')
-        if PY3:
-            # For some reason, under py3, our serialized data is returns as a str.
-            # Let's encode it to bytes
-            serialized = serialized.encode('utf-8')
-        out.write(serialized)
-        out.flush()
+        if isinstance(serialized, bytes):
+            serialized = serialized.decode('utf-8')
 
-#if __name__ == '__main__':
-#    if os.getenv('ITSTOOL_PROFILE') is not None:
-#        import cProfile
-#        cProfile.run('main()')
-#    else:
-#        main()
+        if opts.output is None:
+            sys.stdout.write(serialized)
+        else:
+            if os.path.isdir(opts.output):
+                outfname = os.path.join(opts.output, os.path.basename(filename))
+            else:
+                outfname = opts.output
+
+            with io.open(outfname, 'w') as out:
+                out.write(serialized)
