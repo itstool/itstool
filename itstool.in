@@ -1560,6 +1560,7 @@ if __name__ == '__main__':
             doc.output_test_data(opts.test, out)
         else:
             messages.output(out)
+            out.flush()
     elif opts.merge is not None:
         try:
             translations = gettext.GNUTranslations(open(opts.merge, 'rb'))
@@ -1605,6 +1606,7 @@ if __name__ == '__main__':
             if fout_is_str:
                 fout = open(os.path.join(fout, os.path.basename(filename)), 'wb')
             fout.write(serialized)
+            fout.flush()
             if fout_is_str:
                 fout.close()
     elif opts.join is not None:
@@ -1644,3 +1646,4 @@ if __name__ == '__main__':
             if isinstance(fout, string_types):
                 fout = open(os.path.join(fout, os.path.basename(filename)), 'w')
             fout.write(doc._doc.serialize('utf-8'))
+            fout.flush()
