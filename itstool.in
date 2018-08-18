@@ -1164,6 +1164,8 @@ class Document (object):
             for attr in xml_attr_iter(node):
                 if self._its_translate_nodes.get(attr, 'no') == 'yes':
                     attr_msg = Message()
+                    if self.get_preserve_space(attr):
+                        attr_msg.set_preserve_space()
                     attr_msg.add_source('%s:%i' % (self._doc.name, node.lineNo()))
                     attr_msg.add_marker('%s/%s@%s' % (node.parent.name, node.name, attr.name))
                     attr_msg.add_text(attr.content)
