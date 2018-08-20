@@ -1580,7 +1580,7 @@ if __name__ == '__main__':
             if opts.output == '-':
                 out = sys.stdout
             else:
-                out = open(opts.output, 'w')
+                out = open(opts.output, 'wb')
         else:
             sys.stderr.write('Error: Non-directory output for multiple files\n')
             sys.exit(1)
@@ -1597,10 +1597,10 @@ if __name__ == '__main__':
                 sys.stderr.write('Error: Could not merge translations:\n%s\n' % ustr(e))
                 sys.exit(1)
             serialized = doc._doc.serialize('utf-8')
-            #if PY3:
+            if PY3:
                 # For some reason, under py3, our serialized data is returns as a str.
                 # Let's encode it to bytes
-                #serialized = serialized.encode('utf-8')
+                serialized = serialized.encode('utf-8')
             fout = out
             fout_is_str = isinstance(fout, string_types)
             if fout_is_str:
