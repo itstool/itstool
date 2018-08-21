@@ -3,13 +3,14 @@
  <info>
   <its:rules
     version="2.0">
-   <its:preserveSpaceRule selector="//verse" space="preserve"/>
+   <its:translateRule selector="//verse/@text" translate="yes"/>
+   <its:preserveSpaceRule selector="//verse/@text" space="preserve"/>
   </its:rules>
  </info>
- <verse>
+ <verse text="
  ’Twas brillig, and the slithy toves
   Did gyre and gimble in the wabe;
  All mimsy were the borogoves,
   And the mome raths outgrabe.
- </verse>
+"/>
 </book>

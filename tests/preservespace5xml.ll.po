@@ -1,0 +1,19 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"POT-Creation-Date: 2018-08-20 18:22-0400\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. (itstool) path: book/verse@text
+#: tests/preservespace5xml.xml:15
+#, no-wrap
+msgid ""
+"  ’Twas brillig, and the slithy toves   Did gyre and gimble in the wabe;  All mimsy were the borogoves,   And the mome raths outgrabe. "
+msgstr ""
+"  ’Translated brillig, and the slithy toves   Did gyre and gimble in the wabe;  All mimsy were the borogoves,   And the mome raths outgrabe. "
+

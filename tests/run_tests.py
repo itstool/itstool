@@ -6,6 +6,10 @@ import unittest
 
 TEST_DIR    = os.path.dirname(os.path.abspath(__file__))
 ITSTOOL_DIR = os.path.dirname(TEST_DIR)
+if sys.version_info[0] == 3:
+    PYTHON = 'python3'
+else:
+    PYTHON = 'python2'
 
 class ItstoolTests(unittest.TestCase):
     def tearDown(self):
@@ -32,7 +36,8 @@ class ItstoolTests(unittest.TestCase):
 
     def _test_pot_generation(self, start_file, reference_pot=None, expected_status=0, options=None):
         start_file_base = os.path.splitext(start_file)[0]
-        result = self.run_command("cd %(dir)s && python itstool_test %(opt)s -n -o %(out)s %(in)s" % {
+        result = self.run_command("cd %(dir)s && %(python)s itstool_test %(opt)s -n -o %(out)s %(in)s" % {
+            'python' : PYTHON,
             'dir' : ITSTOOL_DIR,
             'opt' : (options or ''),
             'out' : os.path.join('tests', "test.pot"),
@@ -57,7 +62,8 @@ class ItstoolTests(unittest.TestCase):
             mo_file = '%s.mo' % lang
             self.run_command("cd %(dir)s && msgfmt -o %(mo_file)s %(po_file)s" %
                              {'dir': TEST_DIR, 'mo_file': mo_file, 'po_file': po_file})
-        result = self.run_command("cd %(dir)s && python itstool_test -n -o%(res)s -j %(src)s %(mo)s" % {
+        result = self.run_command("cd %(dir)s && %(python)s itstool_test -n -o%(res)s -j %(src)s %(mo)s" % {
+                'python' : PYTHON,
                 'dir': ITSTOOL_DIR,
                 'res': os.path.join(TEST_DIR, 'test.xml'),
                 'src': os.path.join(TEST_DIR, start_file),
@@ -80,7 +86,8 @@ class ItstoolTests(unittest.TestCase):
             outputs = [("%s.ll.po" % start_file_base, "%s.ll.xml" % start_file_base, 'll')]
         for po_file, xml_file, lang in outputs:
             self.run_command("cd %(dir)s && msgfmt -o test.mo %(po_file)s" % {'dir': TEST_DIR, 'po_file': po_file}) 
-            self.run_command("cd %(dir)s && python itstool_test -n %(opt)s -l %(lc)s -m %(mo)s -o %(res)s %(src)s" % {
+            self.run_command("cd %(dir)s && %(python)s itstool_test -n %(opt)s -l %(lc)s -m %(mo)s -o %(res)s %(src)s" % {
+                    'python' : PYTHON,
                     'dir': ITSTOOL_DIR,
                     'opt': (options or ''),
                     'lc' : lang,
@@ -135,6 +142,9 @@ class ItstoolTests(unittest.TestCase):
 
     def test_PreserveSpace4(self):
         self._test_pot_generation('preservespace4xml.xml')
+
+    def test_PreserveSpace5(self):
+        self._test_translation_process('preservespace5xml.xml')
 
     def test_Translate1(self):
         self._test_translation_process('Translate/Translate1.xml')

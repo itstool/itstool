@@ -1,6 +1,6 @@
 #!@PYTHON@ -s
 #
-# Copyright (c) 2010-2013 Shaun McCance <shaunm@gnome.org>
+# Copyright (c) 2010-2018 Shaun McCance <shaunm@gnome.org>
 #
 # ITS Tool program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by the
@@ -998,7 +998,10 @@ class Document (object):
     def translate_attrs(self, oldnode, newnode):
         trans_attrs = [attr for attr in xml_attr_iter(oldnode) if self._its_translate_nodes.get(attr, 'no') == 'yes']
         for attr in trans_attrs:
-            newcontent = translations.ugettext(attr.get_content())
+            srccontent = attr.get_content()
+            if not PY3:
+                srccontent = srccontent.decode('utf-8')
+            newcontent = translations.ugettext(srccontent)
             if newcontent:
                 if not PY3:
                     newcontent = newcontent.encode('utf-8')
@@ -1594,6 +1597,7 @@ if __name__ == '__main__':
             try:
                 doc.merge_translations(translations, opts.lang, strict=opts.strict)
             except Exception as e:
+                raise
                 sys.stderr.write('Error: Could not merge translations:\n%s\n' % ustr(e))
                 sys.exit(1)
             serialized = doc._doc.serialize('utf-8')
@@ -1625,25 +1629,17 @@ if __name__ == '__main__':
         if opts.output is None:
             out = sys.stdout
         elif os.path.isdir(opts.output):
-            out = open(os.path.join(opts.output, os.path.basename(filename)), 'w')
+            out = open(os.path.join(opts.output, os.path.basename(filename)), 'wb')
         else:
-            out = open(opts.output, 'w')
+            out = open(opts.output, 'wb')
         messages = MessageList()
         doc = Document(opts.join, messages)
         doc.apply_its_rules(not(opts.nobuiltins), params=params)
         doc.join_translations(translations, strict=opts.strict)
-        out.write(doc._doc.serialize('utf-8'))
-        if False:
-            if opts.itsfile is not None:
-                for itsfile in opts.itsfile:
-                    doc.apply_its_file(itsfile, params=params)
-            try:
-                doc.merge_translations(translations, opts.lang, strict=opts.strict)
-            except Exception as e:
-                sys.stderr.write('Error: Could not merge translations:\n%s\n' % ustr(e))
-                sys.exit(1)
-            fout = out
-            if isinstance(fout, string_types):
-                fout = open(os.path.join(fout, os.path.basename(filename)), 'w')
-            fout.write(doc._doc.serialize('utf-8'))
-            fout.flush()
+        serialized = doc._doc.serialize('utf-8')
+        if PY3:
+            # For some reason, under py3, our serialized data is returns as a str.
+            # Let's encode it to bytes
+            serialized = serialized.encode('utf-8')
+        out.write(serialized)
+        out.flush()
