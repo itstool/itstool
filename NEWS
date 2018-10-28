@@ -1,3 +1,10 @@
+2.0.5
+=====
+* Allow preserveSpace on XML attributes (Álvaro Muñoz)
+* Fixed issue with writing files under macOS (Álvaro Muñoz)
+* Fixed various differences between Python 2 and 3
+* Fixed issues with libxml2 memory management
+
 2.0.4
 =====
 * Fixed a massive performance issue
