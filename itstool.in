@@ -1635,6 +1635,9 @@ if __name__ == '__main__':
         messages = MessageList()
         doc = Document(opts.join, messages)
         doc.apply_its_rules(not(opts.nobuiltins), params=params)
+        if opts.itsfile is not None:
+            for itsfile in opts.itsfile:
+                doc.apply_its_file(itsfile, params=params)
         doc.join_translations(translations, strict=opts.strict)
         serialized = doc._doc.serialize('utf-8')
         if PY3:
