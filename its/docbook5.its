@@ -99,6 +99,7 @@
                                 //db:keycode |
                                 //db:keycombo |
                                 //db:keysym |
+                                //db:keyword |
                                 //db:lhs |
                                 //db:lineage |
                                 //db:lineannotation |
