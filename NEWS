@@ -1,3 +1,8 @@
+2.0.6
+=====
+* Make DocBook keyword element within text
+* Apply ITS files passed with -i in --join mode
+
 2.0.5
 =====
 * Allow preserveSpace on XML attributes (Álvaro Muñoz)

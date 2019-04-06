@@ -1,4 +1,4 @@
-AC_INIT([itstool], [2.0.5], [])
+AC_INIT([itstool], [2.0.6], [])
 AM_INIT_AUTOMAKE([1.9 no-dist-gzip dist-bzip2])
 
 DATADIR=`(
