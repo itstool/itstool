@@ -561,15 +561,19 @@ class Document (object):
         if self._xml_err:
             raise libxml2.parserError(self._xml_err)
 
-    def register_its_params(self, xpath, rules, params={}):
+    def get_its_params(self, rules):
+        params = {}
         for child in xml_child_iter(rules):
             if xml_is_ns_name(child, NS_ITS, 'param'):
-                name = child.nsProp('name', None)
-                if name in params:
-                    value = params[name]
-                else:
-                    value = child.getContent()
-                xpath.xpathRegisterVariable(name, None, value)
+                params[child.nsProp('name', None)] = child.getContent()
+        return params
+
+    def register_its_params(self, xpath, params, userparams={}):
+        for param in params:
+            if param in userparams:
+                xpath.xpathRegisterVariable(name, None, userparams[param])
+            else:
+                xpath.xpathRegisterVariable(name, None, params[param])
 
     def apply_its_rule(self, rule, xpath):
         if rule.type != 'element':
@@ -733,7 +737,7 @@ class Document (object):
                         self._its_externals[node] = res[0].content
                     xpath.setContextNode(oldnode)
 
-    def apply_its_rules(self, builtins, params={}):
+    def apply_its_rules(self, builtins, userparams={}):
         if builtins:
             dirs = []
             ddir = os.getenv('XDG_DATA_HOME', '')
@@ -754,11 +758,11 @@ class Document (object):
                 for dfile in os.listdir(itsdir):
                     if dfile.endswith('.its'):
                         if not ddone.get(dfile, False):
-                            self.apply_its_file(os.path.join(itsdir, dfile), params=params)
+                            self.apply_its_file(os.path.join(itsdir, dfile), userparams=userparams)
                             ddone[dfile] = True
-        self.apply_local_its_rules(params=params)
+        self.apply_local_its_rules(userparams=userparams)
 
-    def apply_its_file(self, filename, params={}):
+    def apply_its_file(self, filename, userparams={}):
         doc = libxml2.parseFile(filename)
         root = doc.getRootElement()
         if not xml_is_ns_name(root, NS_ITS, 'rules'):
@@ -795,6 +799,7 @@ class Document (object):
                         break
         if matched == False:
             return
+        params = self.get_its_params(root)
         for rule in xml_child_iter(root):
             xpath = self._doc.xpathNewContext()
             par = match
@@ -808,10 +813,10 @@ class Document (object):
                             xpath.xpathRegisterNs(nsdef.name, nsdef.content)
                     nsdef = nsdef.next
                 par = par.parent
-            self.register_its_params(xpath, root, params=params)
+            self.register_its_params(xpath, params, userparams=userparams)
             self.apply_its_rule(rule, xpath)
 
-    def apply_local_its_rules(self, params={}):
+    def apply_local_its_rules(self, userparams={}):
         for rules in self._localrules:
             def reg_ns(xpath, node):
                 if node.parent is not None:
@@ -823,14 +828,15 @@ class Document (object):
                     nsdef = nsdef.next
             xpath = self._doc.xpathNewContext()
             reg_ns(xpath, rules)
-            self.register_its_params(xpath, rules, params=params)
+            params = self.get_its_params(rules)
+            self.register_its_params(xpath, params, userparams=userparams)
             for rule in xml_child_iter(rules):
                 if rule.type != 'element':
                     continue
                 if rule.nsDefs() is not None:
                     rule_xpath = self._doc.xpathNewContext()
                     reg_ns(rule_xpath, rule)
-                    self.register_its_params(rule_xpath, rules, params=params)
+                    self.register_its_params(rule_xpath, params, userparams=userparams)
                 else:
                     rule_xpath = xpath
                 self.apply_its_rule(rule, rule_xpath)
@@ -1460,7 +1466,7 @@ def convert_locale (locale):
     return ret
 
 
-if __name__ == '__main__':
+def main():
     options = optparse.OptionParser()
     options.set_usage('\n  itstool [OPTIONS] [XMLFILES]\n' +
                       '  itstool -m <MOFILE> [OPTIONS] [XMLFILES]\n' +
@@ -1516,7 +1522,7 @@ if __name__ == '__main__':
                        help='Keep entity reference unexpanded')
     options.add_option('-p', '--param',
                        action='append',
-                       dest='params',
+                       dest='userparams',
                        default=[],
                        nargs=2,
                        metavar='NAME VALUE',
@@ -1537,18 +1543,18 @@ if __name__ == '__main__':
         print('itstool %s' % VERSION)
         sys.exit(0)
 
-    params = {}
-    for name, value in opts.params:
-        params[name] = value
+    userparams = {}
+    for name, value in opts.userparams:
+        userparams[name] = value
 
     if opts.merge is None and opts.join is None:
         messages = MessageList()
         for filename in args[1:]:
             doc = Document(filename, messages, load_dtd=opts.load_dtd, keep_entities=opts.keep_entities)
-            doc.apply_its_rules(not(opts.nobuiltins), params=params)
+            doc.apply_its_rules(not(opts.nobuiltins), userparams=userparams)
             if opts.itsfile is not None:
                 for itsfile in opts.itsfile:
-                    doc.apply_its_file(itsfile, params=params)
+                    doc.apply_its_file(itsfile, userparams=userparams)
             if opts.test is None:
                 doc.generate_messages()
         if opts.output is None or opts.output == '-':
@@ -1590,10 +1596,10 @@ if __name__ == '__main__':
         for filename in args[1:]:
             messages = MessageList()
             doc = Document(filename, messages, load_dtd=opts.load_dtd, keep_entities=opts.keep_entities)
-            doc.apply_its_rules(not(opts.nobuiltins), params=params)
+            doc.apply_its_rules(not(opts.nobuiltins), userparams=userparams)
             if opts.itsfile is not None:
                 for itsfile in opts.itsfile:
-                    doc.apply_its_file(itsfile, params=params)
+                    doc.apply_its_file(itsfile, userparams=userparams)
             try:
                 doc.merge_translations(translations, opts.lang, strict=opts.strict)
             except Exception as e:
@@ -1634,10 +1640,10 @@ if __name__ == '__main__':
             out = open(opts.output, 'wb')
         messages = MessageList()
         doc = Document(opts.join, messages)
-        doc.apply_its_rules(not(opts.nobuiltins), params=params)
+        doc.apply_its_rules(not(opts.nobuiltins), userparams=userparams)
         if opts.itsfile is not None:
             for itsfile in opts.itsfile:
-                doc.apply_its_file(itsfile, params=params)
+                doc.apply_its_file(itsfile, userparams=userparams)
         doc.join_translations(translations, strict=opts.strict)
         serialized = doc._doc.serialize('utf-8')
         if PY3:
@@ -1646,3 +1652,10 @@ if __name__ == '__main__':
             serialized = serialized.encode('utf-8')
         out.write(serialized)
         out.flush()
+
+if __name__ == '__main__':
+    if os.getenv('ITSTOOL_PROFILE') is not None:
+        import cProfile
+        cProfile.run('main()')
+    else:
+        main()
