@@ -554,12 +554,19 @@ class Document (object):
         self._itst_credits = None
         self._its_externals = {}
 
+        self._clear_cache()
+
     def __del__ (self):
         self._doc.freeDoc()
 
     def _check_errors(self):
         if self._xml_err:
             raise libxml2.parserError(self._xml_err)
+
+    def _clear_cache(self):
+        self._its_translate_nodes_cache = {}
+        self._its_locale_filters_cache = {}
+        self._its_loc_notes_cache = {}
 
     def get_its_params(self, rules):
         params = {}
@@ -576,6 +583,7 @@ class Document (object):
                 xpath.xpathRegisterVariable(name, None, params[param])
 
     def apply_its_rule(self, rule, xpath):
+        self._clear_cache()
         if rule.type != 'element':
             return
         if xml_is_ns_name(rule, NS_ITS, 'translateRule'):
@@ -738,6 +746,7 @@ class Document (object):
                     xpath.setContextNode(oldnode)
 
     def apply_its_rules(self, builtins, userparams={}):
+        self._clear_cache()
         if builtins:
             dirs = []
             ddir = os.getenv('XDG_DATA_HOME', '')
@@ -763,6 +772,7 @@ class Document (object):
         self.apply_local_its_rules(userparams=userparams)
 
     def apply_its_file(self, filename, userparams={}):
+        self._clear_cache()
         doc = libxml2.parseFile(filename)
         root = doc.getRootElement()
         if not xml_is_ns_name(root, NS_ITS, 'rules'):
@@ -817,6 +827,7 @@ class Document (object):
             self.apply_its_rule(rule, xpath)
 
     def apply_local_its_rules(self, userparams={}):
+        self._clear_cache()
         for rules in self._localrules:
             def reg_ns(xpath, node):
                 if node.parent is not None:
@@ -1117,7 +1128,7 @@ class Document (object):
                 self.generate_message(child, None, comments=comments)
                 break
 
-    def generate_message (self, node, msg, comments=True, path=None):
+    def generate_message(self, node, msg, comments=True, path=None):
         if node.type in ('text', 'cdata') and msg is not None:
             msg.add_text(node.content)
             return
@@ -1267,6 +1278,8 @@ class Document (object):
         return False
 
     def get_its_translate(self, node):
+        if node in self._its_translate_nodes_cache:
+            return self._its_translate_nodes_cache[node]
         val = None
         if node.hasNsProp('translate', NS_ITS):
             val = node.nsProp('translate', NS_ITS)
@@ -1275,11 +1288,14 @@ class Document (object):
         elif node in self._its_translate_nodes:
             val = self._its_translate_nodes[node]
         if val is not None:
+            self._its_translate_nodes_cache[node] = val
             return val
         if node.type == 'attribute':
             return 'no'
         if node.parent.type == 'element':
-            return self.get_its_translate(node.parent)
+            parval = self.get_its_translate(node.parent)
+            self._its_translate_nodes_cache[node] = parval
+            return parval
         return 'yes'
 
     def get_its_within_text(self, node):
@@ -1294,6 +1310,8 @@ class Document (object):
         return 'no'
 
     def get_its_locale_filter(self, node):
+        if node in self._its_locale_filters_cache:
+            return self._its_locale_filters_cache[node]
         if node.hasNsProp('localeFilterList', NS_ITS) or node.hasNsProp('localeFilterType', NS_ITS):
             if node.hasNsProp('localeFilterList', NS_ITS):
                 lst = node.nsProp('localeFilterList', NS_ITS)
@@ -1318,7 +1336,9 @@ class Document (object):
         if node in self._its_locale_filters:
             return self._its_locale_filters[node]
         if node.parent.type == 'element':
-            return self.get_its_locale_filter(node.parent)
+            parval = self.get_its_locale_filter(node.parent)
+            self._its_locale_filters_cache[node] = parval
+            return parval
         return ('*', 'include')
 
     def get_itst_drop(self, node):
@@ -1334,15 +1354,21 @@ class Document (object):
         return self._its_id_values.get(node, None)
 
     def get_its_loc_notes(self, node, inherit=True):
+        if node in self._its_loc_notes_cache:
+            return self._its_loc_notes_cache[node]
         ret = []
-        if node.hasNsProp('locNote', NS_ITS) or node.hasNsProp('locNoteRef', NS_ITS) or node.hasNsProp('locNoteType', NS_ITS):
+        if ( node.hasNsProp('locNote', NS_ITS)     or
+             node.hasNsProp('locNoteRef', NS_ITS)  or
+             node.hasNsProp('locNoteType', NS_ITS) ):
             notetype = node.nsProp('locNoteType', NS_ITS)
             if node.hasNsProp('locNote', NS_ITS):
                 ret.append(LocNote(locnote=node.nsProp('locNote', NS_ITS), locnotetype=notetype))
             elif node.hasNsProp('locNoteRef', NS_ITS):
                 ret.append(LocNote(locnoteref=node.nsProp('locNoteRef', NS_ITS), locnotetype=notetype))
         elif  xml_is_ns_name(node, NS_ITS, 'span'):
-            if node.hasNsProp('locNote', None) or node.hasNsProp('locNoteRef', None) or node.hasNsProp('locNoteType', None):
+            if ( node.hasNsProp('locNote', None)     or
+                 node.hasNsProp('locNoteRef', None)  or
+                 node.hasNsProp('locNoteType', None) ):
                 notetype = node.nsProp('locNoteType', None)
                 if node.hasNsProp('locNote', None):
                     ret.append(LocNote(locnote=node.nsProp('locNote', None), locnotetype=notetype))
@@ -1352,7 +1378,10 @@ class Document (object):
             ret.append(locnote)
         if (len(ret) == 0 and inherit and
             node.type != 'attribute' and node.parent is not None and node.parent.type == 'element'):
-            return self.get_its_loc_notes(node.parent)
+            parval = self.get_its_loc_notes(node.parent)
+            self._its_loc_notes_cache[node] = parval
+            return parval
+        self._its_loc_notes_cache[node] = ret
         return ret
 
     def output_test_data(self, category, out, node=None):
