@@ -6,10 +6,7 @@ import unittest
 
 TEST_DIR    = os.path.dirname(os.path.abspath(__file__))
 ITSTOOL_DIR = os.path.dirname(TEST_DIR)
-if sys.version_info[0] == 3:
-    PYTHON = 'python3'
-else:
-    PYTHON = 'python2'
+PYTHON = sys.executable or 'python3'
 
 class ItstoolTests(unittest.TestCase):
     def tearDown(self):
