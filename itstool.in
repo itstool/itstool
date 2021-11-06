@@ -477,7 +477,6 @@ class Document (object):
         if load_dtd:
             ctxt.loadSubset(1)
         if keep_entities:
-            ctxt.loadSubset(1)
             ctxt.ctxtUseOptions(libxml2.XML_PARSE_DTDLOAD)
             ctxt.replaceEntities(0)
         else:
@@ -1064,13 +1063,12 @@ class Document (object):
         if self._load_dtd:
             ctxt.loadSubset(1)
         if self._keep_entities:
-            ctxt.loadSubset(1)
             ctxt.ctxtUseOptions(libxml2.XML_PARSE_DTDLOAD)
             ctxt.replaceEntities(0)
         else:
             ctxt.replaceEntities(1)
         ctxt.parseDocument()
-        trnode = ctxt.doc().getRootElement()
+        trnode = ctxt.doc().getRootElement().copyNode(1)
         try:
             self._check_errors()
         except libxml2.parserError:
@@ -1091,9 +1089,7 @@ class Document (object):
                     ph_node = msg.get_placeholder(child.name).node
                     if self.has_child_elements(ph_node):
                         self.merge_translations(translations, None, ph_node, strict=strict)
-                        newnode = ph_node.copyNode(1)
-                        newnode.setTreeDoc(self._doc)
-                        child.replaceNode(newnode)
+                        child.replaceNode(ph_node)
                     else:
                         repl = self.get_translated(ph_node, translations, strict=strict, lang=lang)
                         child.replaceNode(repl)
@@ -1108,15 +1104,10 @@ class Document (object):
                     (lang + ' ') if lang is not None else '',
                     msgstr.encode('utf-8')))
                 self._xml_err = ''
-                ctxt.doc().freeDoc()
                 return node
         retnode = node.copyNode(2)
-        retnode.setTreeDoc(self._doc)
         for child in xml_child_iter(trnode):
-            newnode = child.copyNode(1)
-            newnode.setTreeDoc(self._doc)
-            retnode.addChild(newnode)
-
+            retnode.addChild(child.copyNode(1))
         ctxt.doc().freeDoc()
         return retnode
 
