@@ -5,26 +5,28 @@ itstool \- convert between XML and PO using ITS
 
 
 .SH "SYNOPSIS"
-itstool [OPTIONS] XMLFILES...
+\fBitstool\fR [OPTIONS] \fIXMLFILES\fR...
 .br
-itstool \fB\-m\fR <MOFILE> [OPTIONS] XMLFILES...
+\fBitstool\fR \fB\-m\fR \fIMOFILE\fR [OPTIONS] \fIXMLFILES\fR...
 .br
-itstool \fB\-j\fR <XMLFILE> [OPTIONS] MOFILES...
+\fBitstool\fR \fB\-j\fR \fIXMLFILE\fR [OPTIONS] \fIMOFILES\fR...
 
 
 .SH "DESCRIPTION"
 \fBitstool \fR extracts messages from XML files and outputs PO template files,
 then merges translations from MO files to create translated XML files. It
-determines what to translate and how to chunk it into messages using the W3C
-Internationalization Tag Set (ITS).
+determines what to translate and how to chunk it into messages using the
+.UR https://www.w3.org/TR/its20/
+W3C Internationalization Tag Set (ITS)
+.UE .
 
-To extract messages from XML files \fBXMLFILES\fR and output them to \fBOUT.pot\fR:
+To extract messages from XML files \fIXMLFILES\fR and output them to \fIOUT.pot\fR:
 
 .BR "itstool \-o OUT.pot XMLFILES"
 
 After merging with existing translations or translating strings, generate an
-MO file with \fBmsgfmt(1)\fR, then output translated files to the directory
-\fBDIR\fR:
+MO file with \fBmsgfmt\fR(1), then output translated files to the directory
+\fIDIR\fR:
 
 .BR "itstool \-m OUT.mo \-o DIR XMLFILES"
 
@@ -46,14 +48,14 @@ passing the \fB-n\fR option.
 .IP "\fB\-o \fIOUT.pot\fR" 4
 .PD 0
 .IP "\fB\-\-out \fIOUT.pot\fR" 4
-output PO template to the file \fBOUT.pot\fR
+output PO template to the file \fIOUT.pot\fR
 
 .SS "Merging"
 
 .IP "\fB\-m \fIMOFILE\fR \fIXMLFILES\fR" 4
 .PD 0
 .IP "\fB\-\-merge \fIMOFILE\fR \fIXMLFILES\fR" 4
-merge from an MO file \fBMOFILE\fR and output translated XML files for source \fBXMLFILES\fR
+merge from an MO file \fIMOFILE\fR and output translated XML files for source \fIXMLFILES\fR
 
 .IP "\fB\-l \fILANG\fR" 4
 .PD 0
@@ -63,31 +65,31 @@ explicitly set the language code output to XML
 .IP "\fB\-o \fIOUT\fR" 4
 .PD 0
 .IP "\fB\-\-out \fIOUT \fR" 4
-output XML files in the directory \fBOUT\fR
+output XML files in the directory \fIOUT\fR
 
 .SS "Joining"
 
 .IP "\fB\-j \fXMLIFILE\fR \fIMOFILES\fR" 4
 .PD 0
 .IP "\fB\-\-join \fIXMLFILE\fR \fIMOFILES\fR" 4
-join translations from \fBMOFILES\fR into a multilingual file based on source \fBXMLFILE\fR
+join translations from \fIMOFILES\fR into a multilingual file based on source \fIXMLFILE\fR
 
 .IP "\fB\-o \fIOUT.xml\fR" 4
 .PD 0
 .IP "\fB\-\-out \fIOUT.xml\fR" 4
-output to the XML file \fBOUT.xml\fR
+output to the XML file \fIOUT.xml\fR
 
 .SS "Common"
 
 .IP "\fB\-i \fIITS\fR" 4
 .PD 0
 .IP "\fB\-\-its \fIITS\fR" 4
-load the ITS rules in the file \fBITS\fR (can specify multiple times)
+load the ITS rules in the file \fIITS\fR (can specify multiple times)
 
 .IP "\fB\-n\fR" 4
 .PD 0
 .IP "\fB\-\-no\-builtins\fR" 4
-do not apply the built-in ITS rules that ship with itstool
+do not apply the built-in ITS rules that ship with \fBitstool\fR
 
 .IP "\fB\-s\fR" 4
 .PD 0
@@ -107,14 +109,16 @@ keep entity references unexpanded in PO files
 .IP "\fB\-p \fINAME VALUE\fR" 4
 .PD 0
 .IP "\fB\-\-param \fINAME VALUE\fR" 4
-define ITS parameter \fBNAME\fR to the value \fBVALUE\fR (can specify multiple times)
+define ITS parameter \fINAME\fR to the value \fIVALUE\fR (can specify multiple times)
 
 
 .SH "AUTHOR"
-Shaun McCance <shaunm@gnome.org>
+.MT shaunm@gnome.org
+Shaun McCance
+.ME
 
 
 .SH "SEE ALSO"
 More documentation for \fBitstool\fR is maintained online. For more information, see:
-
-.BR "http://itstool.org/documentation/"
+.UR "http://itstool.org/documentation/"
+.UE
