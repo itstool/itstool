@@ -111,6 +111,12 @@ keep entity references unexpanded in PO files
 .IP "\fB\-\-param \fINAME VALUE\fR" 4
 define ITS parameter \fINAME\fR to the value \fIVALUE\fR (can specify multiple times)
 
+.SH "REPORTING BUGS"
+For bug reports, use
+.UR https://github.com/itstool/itstool/issues/new
+our bug tracker at Github
+.UE .
+
 
 .SH "AUTHOR"
 .MT shaunm@gnome.org
