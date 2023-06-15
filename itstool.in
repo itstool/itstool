@@ -1096,6 +1096,8 @@ class Document (object):
                         child.replaceNode(newnode)
                     else:
                         repl = self.get_translated(ph_node, translations, strict=strict, lang=lang)
+                        if repl == ph_node:
+                            repl = repl.copyNode(1)
                         child.replaceNode(repl)
                 scan_node(child)
         try:
