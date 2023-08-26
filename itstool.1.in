@@ -67,7 +67,7 @@ output XML files in the directory \fBOUT\fR
 
 .SS "Joining"
 
-.IP "\fB\-j \fXMLIFILE\fR \fIMOFILES\fR" 4
+.IP "\fB\-j \fIXMLFILE\fR \fIMOFILES\fR" 4
 .PD 0
 .IP "\fB\-\-join \fIXMLFILE\fR \fIMOFILES\fR" 4
 join translations from \fBMOFILES\fR into a multilingual file based on source \fBXMLFILE\fR
