@@ -5,7 +5,7 @@
 # file for details on installing with make. This file is here to make it easier
 # to upload itstool to pypi.
 
-from distutils.core import setup
+from setuptools import setup
 
 setup(name='itstool',
       version='@VERSION@',
