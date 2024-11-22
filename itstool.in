@@ -130,6 +130,7 @@ class MessageList (object):
         out.write('msgid ""\n')
         out.write('msgstr ""\n')
         out.write('"Project-Id-Version: PACKAGE VERSION\\n"\n')
+        out.write('"Report-Msgid-Bugs-To: %s\\n"\n' % bugsTo)
         out.write('"POT-Creation-Date: %s\\n"\n' % time.strftime("%Y-%m-%d %H:%M%z"))
         out.write('"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\\n"\n')
         out.write('"Last-Translator: FULL NAME <EMAIL@ADDRESS>\\n"\n')
@@ -1557,6 +1558,11 @@ if __name__ == '__main__':
                        nargs=2,
                        metavar='NAME VALUE',
                        help='Define the ITS parameter NAME to the value VALUE (can specify multiple times)')
+    options.add_option('-b', '--bugs-to',
+                       dest='bugsTo',
+                       default=None,
+                       metavar='NAME',
+                       help='Fill Report-Msgid-Bugs-To: field in header')
     options.add_option('-t', '--test',
                        dest='test',
                        default=None,
@@ -1576,6 +1582,11 @@ if __name__ == '__main__':
     userparams = {}
     for name, value in opts.userparams:
         userparams[name] = value
+
+    bugsTo = ""
+    if opts.bugsTo is not None:
+        bugsTo = opts.bugsTo
+
 
     if opts.merge is None and opts.join is None:
         messages = MessageList()
